@@ -1,12 +1,13 @@
 /**
- * 京东 Cookie 抓取 (Quantumult X) - 极简版
+ * 京东 Cookie 抓取 (Quantumult X) - 响应版
  *
- * 圈X → 风车 → 重写 → 右上角+ → 类型: script-request-header
+ * 圈X → 风车 → 重写 → 右上角+ → 类型: script-response-header
  * URL: ^https?://api\.m\.jd\.com/
+ *
+ * 拦截响应头（响应最快阶段），不碰请求/响应体
  */
 
-const h = $request.headers;
-const cookie = h['Cookie'] || h['cookie'] || '';
+const cookie = $request.headers['Cookie'] || $request.headers['cookie'] || '';
 const pt_pin = (cookie.match(/pt_pin=([^;]+)/) || [])[1];
 const pt_key = (cookie.match(/pt_key=([^;]+)/) || [])[1];
 
