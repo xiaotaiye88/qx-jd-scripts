@@ -11,7 +11,7 @@ if (pi >= 0) { const s = c.substring(pi + 7); pin = s.split(';')[0]; }
 if (ki >= 0) { const s = c.substring(ki + 7); key = s.split(';')[0]; }
 
 if (pin && key) {
-  $notification.post('京东Cookie', pin, key);
+  $notify('京东Cookie', pin, key);
 }
 
 $done({});
