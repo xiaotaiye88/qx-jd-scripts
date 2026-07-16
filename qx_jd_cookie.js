@@ -29,7 +29,7 @@ if (pin && key) {
   $prefs.setValueForKey('jd_cookies', '[' + ts + '] ' + cookie + '\n' + old);
 
   // 弹窗通知（第4个参数为 QX 专用格式）
-  $notify('JD Cookie 已更新', pin, key.slice(0, 40) + '...', {
+  $notify('JD Cookie 已更新', pin, cookie, {
     'update-pasteboard': cookie
   });
 }
@@ -41,7 +41,7 @@ if (ws) {
   const oldWs = $prefs.valueForKey('jd_wskeys') || '';
   $prefs.setValueForKey('jd_wskeys', '[' + ts + '] ' + wskeyStr + '\n' + oldWs);
 
-  $notify('JD Wskey 已更新', pin || '(无pin)', ws.slice(0, 30) + '...', {
+  $notify('JD Wskey 已更新', pin || '(无pin)', wskeyStr, {
     'update-pasteboard': wskeyStr
   });
 }
