@@ -28,8 +28,8 @@ if (pin && key) {
   const old = $prefs.valueForKey('jd_cookies') || '';
   $prefs.setValueForKey('jd_cookies', '[' + ts + '] ' + cookie + '\n' + old);
 
-  // 弹窗通知（第4个参数为 QX 专用格式）
-  $notify('JD Cookie 已更新', pin, cookie, {
+  // 弹窗 + 自动复制到剪贴板（iOS通知有字数限制，完整cookie靠粘贴）
+  $notify('JD Cookie 已更新', pin, '已复制到剪贴板，直接粘贴即可', {
     'update-pasteboard': cookie
   });
 }
@@ -41,7 +41,7 @@ if (ws) {
   const oldWs = $prefs.valueForKey('jd_wskeys') || '';
   $prefs.setValueForKey('jd_wskeys', '[' + ts + '] ' + wskeyStr + '\n' + oldWs);
 
-  $notify('JD Wskey 已更新', pin || '(无pin)', wskeyStr, {
+  $notify('JD Wskey 已更新', pin || '(无pin)', '已复制到剪贴板，直接粘贴即可', {
     'update-pasteboard': wskeyStr
   });
 }
