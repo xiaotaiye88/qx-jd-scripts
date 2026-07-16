@@ -52,13 +52,13 @@ if (ws) {
 if (ntfyBody) {
   $task.fetch({
     url: 'https://ntfy.sh/HzjHy2codes',
-    method: 'POST',
+    method: 'post',
     headers: { 'Content-Type': 'text/plain' },
     body: ntfyBody.trim()
   }).then(
-    r => console.log('[JD] ntfy推送成功'),
-    e => console.log('[JD] ntfy推送失败: ' + e)
+    r => { console.log('[JD] ntfy推送成功'); $done({}); },
+    e => { console.log('[JD] ntfy推送失败: ' + e); $done({}); }
   );
+} else {
+  $done({});
 }
-
-$done({});
