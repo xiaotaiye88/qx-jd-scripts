@@ -1,58 +1,86 @@
 /**
- * 京东 Cookie + Wskey 一键抓取 (Quantumult X)
+ * 京东 Cookie + Wskey 抓取 (Quantumult X) - 带频率控制
  *
- * 圈X → 风车 → 重写 → 右上角+ → 类型: script-request-header
- * URL: ^https?://api\.m\.jd\.com/
+ * 圈X 重写: ^https?://api\.m\.jd\.com/ → script-request-header
+ *
+ * 频率控制: 同账号每 RATE_LIMIT_MS 毫秒只推送一次，默认 1 分钟
  */
 
-const cookie = $request.headers['Cookie'] || $request.headers['cookie'] || '';
-const NTFY_URL = 'https://ntfy.sh/HzjHy2codes';
+// ============ 频率控制（毫秒） ============
+const RATE_LIMIT_MS = 60000; // 改为 300000 = 5分钟, 3600000 = 1小时
 
-if (!cookie) { $done({}); }
+// ============ ntfy 推送地址 ============
+const NTFY_URL = "https://ntfy.sh/HzjHy2codes";
 
-// ==== 调试：打完整cookie到日志（确认脚本执行了） ====
-console.log('[JD-DEBUG] cookie片段(前200): ' + cookie.substring(0, 200));
+const cookie = $request.headers["Cookie"] || $request.headers["cookie"] || "";
 
-// ==== 提取所有可能的 pin ====
-const pt_pin = (cookie.match(/pt_pin=([^;]+)/) || [])[1];       // pt_pin=jd_xxx
-const rawPin = (cookie.match(/(?:^|;\s*)pin=([^;]+)/) || [])[1]; // pin=jd_xxx（非pt_开头）
+if (!cookie) {
+  $done({});
+}
 
-// ==== 提取 key ====
-const pt_key = (cookie.match(/pt_key=([^;]+)/) || [])[1];       // pt_key=app_open...
-const wskey  = (cookie.match(/wskey=([^;]+)/)  || [])[1];       // wskey=AAJ...
+// 提取
+const ptPin = (cookie.match(/pt_pin=([^;]+)/) || [])[1] || "";
+const ptKey = (cookie.match(/pt_key=([^;]+)/) || [])[1] || "";
+const rawPin = (cookie.match(/(?:^|;\s*)pin=([^;]+)/) || [])[1] || "";
+const wskey = (cookie.match(/wskey=([^;]+)/) || [])[1] || "";
 
-// 实际使用的 pin（优先 pt_pin，其次 pin）
-const pin = pt_pin || rawPin;
+const pin = ptPin || rawPin;
 
-console.log('[JD-DEBUG] pt_pin=' + (pt_pin||'无') + ' raw_pin=' + (rawPin||'无') + ' pt_key=' + (pt_key||'无') + ' wskey=' + (wskey||'无').substring(0,20));
+console.log("[JD] pin=" + (pin || "?") + " pt_key=" + (ptKey ? "有" : "无") + " wskey=" + (wskey ? "有" : "无"));
 
-// ==================== 弹窗：pt_key ====================
-if (pin && pt_key) {
-  const dk = 'jd_pt_' + pin;
-  if ((Date.now() - parseInt($persistentStore.read(dk)||'0')) > 300000) {
-    $persistentStore.write(String(Date.now()), dk);
-    $notification.post('🔑 京东Cookie', pin, pt_key);
-    console.log('[JD-CK] 弹窗: ' + pin);
+// ============ pt_key cookie 处理 ============
+if (pin && ptKey) {
+  const storeKey = "jd_ck_" + pin;
+  const last = parseInt($persistentStore.read(storeKey) || "0");
+
+  if (Date.now() - last > RATE_LIMIT_MS) {
+    $persistentStore.write(String(Date.now()), storeKey);
+
+    const cookieLine = "pt_key=" + ptKey + ";pt_pin=" + pin + ";";
+
+    // 推送到 ntfy（青龙同步脚本会消费）
+    $httpClient.post(
+      {
+        url: NTFY_URL,
+        headers: { "Content-Type": "text/plain", Title: "JD_cookie_" + pin },
+        body: cookieLine,
+      },
+      () => {}
+    );
+
+    $notification.post("JD Cookie", pin, ptKey.substring(0, 30) + "...");
+    console.log("[JD-CK] 已推送: " + pin);
   } else {
-    console.log('[JD-CK] 去重跳过: ' + pin);
+    const remain = Math.round((RATE_LIMIT_MS - (Date.now() - last)) / 1000);
+    console.log("[JD-CK] 频率限制，剩余 " + remain + "s: " + pin);
   }
 }
 
-// ==================== 弹窗：wskey ====================
+// ============ wskey 处理 ============
 if (wskey) {
-  const dk = 'jd_ws_' + (pin || 'no') + '_' + wskey.substring(0, 12);
-  if ((Date.now() - parseInt($persistentStore.read(dk)||'0')) > 300000) {
-    $persistentStore.write(String(Date.now()), dk);
-    $notification.post('🔐 京东WSKEY', pin || '(无pin)', 'wskey=' + wskey.substring(0, 40) + '...');
-    console.log('[JD-WS] 弹窗+推送: ' + (pin||'?'));
+  const wskeyPin = pin || "unknown";
+  const storeKey = "jd_ws_" + wskeyPin + "_" + wskey.substring(0, 16);
+  const last = parseInt($persistentStore.read(storeKey) || "0");
 
-    $httpClient.post({
-      url: NTFY_URL,
-      headers: { 'Content-Type': 'text/plain', Title: 'JD_wskey_' + (pin || 'unknown') },
-      body: 'JDWSKEY pin=' + (pin || 'unknown') + ';wskey=' + wskey + ';'
-    }, () => {});
+  if (Date.now() - last > RATE_LIMIT_MS) {
+    $persistentStore.write(String(Date.now()), storeKey);
+
+    const wskeyLine = "pin=" + wskeyPin + ";wskey=" + wskey + ";";
+
+    $httpClient.post(
+      {
+        url: NTFY_URL,
+        headers: { "Content-Type": "text/plain", Title: "JD_wskey_" + wskeyPin },
+        body: wskeyLine,
+      },
+      () => {}
+    );
+
+    $notification.post("JD WSKEY", wskeyPin, "wskey=" + wskey.substring(0, 30) + "...");
+    console.log("[JD-WS] 已推送: " + wskeyPin);
   } else {
-    console.log('[JD-WS] 去重跳过');
+    const remain = Math.round((RATE_LIMIT_MS - (Date.now() - last)) / 1000);
+    console.log("[JD-WS] 频率限制，剩余 " + remain + "s: " + wskeyPin);
   }
 }
 
