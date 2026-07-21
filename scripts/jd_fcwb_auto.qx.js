@@ -1,10 +1,10 @@
 /*
- * APP —— 我的 —— 欢乐挖宝 (jd_fcwb_auto.js) — QX 打包版
+ * 欢乐挖宝任务 (jd_fcwb_auto.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 08:32:23 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-21 08:57:02 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
- * cron: 30 7 * * *
+ * cron: 1 1 1 1 *
  */
 
 // ==================== prelude ====================

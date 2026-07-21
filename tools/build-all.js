@@ -82,26 +82,39 @@ ${source}
 `;
 }
 
+// 中文名来源优先级: new Env('名') > 入口：名 > 文件名
+// 描述从头部注释的入口行 / 活动行 / 域名行提取
 function extractMeta(fileName, source) {
-  let name = '', cron = '';
+  let name = '', desc = '', cron = '';
+
+  // 1) 中文名: new Env('xxx') 最可靠，所有 Dylan 脚本都有
+  const envMatch = source.match(/new\s+Env\(\s*['\"](.+?)['\"]\s*\)/);
+  if (envMatch) name = envMatch[1].trim();
+
   const lines = source.split(/\r?\n/);
-  for (let i = 0; i < Math.min(15, lines.length); i++) {
+  for (let i = 0; i < Math.min(20, lines.length); i++) {
     const line = lines[i].trim();
-    // 入口 / 活动名（丢弃注释符号和星号碎片）
-    const nm = line.match(/^[/\*]*\s*入口[：:]\s*(.+)/);
-    if (nm) name = nm[1].replace(/[\*\t]/g, '').trim();
+    // 2) 入口/活动名（作为 desc 补充，或 name 兜底）
+    const nm = line.match(/^[/\*]*\s*(?:入口|活动入口|活动|cron)[：:]\s*(.+)/);
+    if (nm) {
+      const v = nm[1].replace(/[\*\t]/g, '').replace(/\.js.*$/, '').trim();
+      if (v && !name) name = v;
+      else if (v && !desc) desc = v;
+    }
     // cron 格式一: "cron: M H D M W"
     const cr1 = line.match(/^cron:\s*(\d[\d\s,*/#@-]{4,})/i);
     if (cr1) { cron = cr1[1].trim(); continue; }
-    // cron 格式二: "M H D M W jd_xxx.js"（多行注释块内嵌 cron）
+    // cron 格式二: "M H D M W jd_xxx.js"
     const cr2 = line.match(/^\s*(\d[\d\s,*/#@-]+?)\s+jd_/);
     if (cr2) { cron = cr2[1].trim(); continue; }
   }
+
   if (!name) name = fileName.replace(/\.js$/, '').replace(/^jd_/, '');
+  if (!desc) desc = name;
   if (!cron) cron = '30 7 * * *';
   const fields = cron.split(/\s+/);
   if (fields.length !== 5) cron = '30 7 * * *';
-  return { name, cron, tag: name };
+  return { name, desc, cron, tag: name };
 }
 
 function buildOne(fileName) {
@@ -251,7 +264,7 @@ function generateBoxJs(scripts) {
   const apps = scripts.map(s => ({
     id: 'jd_' + s.tag,
     name: s.name,
-    desc: `京东 ${s.name}（${s.file}）cron: ${s.cron}`,
+    desc: `${s.desc}（${s.file}）\ncron: ${s.cron}`,
     icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png',
     repo: REPO,
     script: `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`,
