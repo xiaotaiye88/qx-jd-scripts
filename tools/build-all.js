@@ -88,7 +88,18 @@ const SKIP = new Set([
   'jd_proxy_check.js',   // 代理池检测
   'jd_code2url.js',      // 口令转链接（依赖第三方 nolan 服务，且为按需工具非定时任务）
   'jd_wxtoken_m.js',     // 微信 token 获取（需要 wx app）
+  'jd_CheckCK.js',       // 通过青龙 API 管理 CK（ql.getEnvs/DisableCk），圈X 无对应接口；改用原生版 jd_ckcheck_qx.js
 ]);
+
+// 原生圈X 脚本（手写，不打包，直接引用文件 URL）。会追加进三种订阅。
+const NATIVE_SCRIPTS = [
+  {
+    file: 'jd_ckcheck_qx.js',
+    name: 'CK检测',
+    desc: '检测所有京东 Cookie 有效性，失效账号及时通知（圈X 原生版，替代青龙的 jd_CheckCK）',
+    cron: '30 7 * * *',
+  },
+];
 
 function readCached(name) {
   return fs.readFileSync(path.join(CACHE, name), 'utf8');
@@ -214,21 +225,34 @@ function main() {
   // 汇总
   const ok = results.filter(r => r.ok);
   const failed = results.filter(r => !r.ok);
-  console.log(`\n===== 打包结果: ${ok.length} 成功, ${failed.length} 失败 =====`);
+
+  // 追加原生圈X 脚本（手写，不打包）
+  const nativeResults = NATIVE_SCRIPTS.map(s => ({
+    ...s,
+    tag: s.name,
+    file: s.file,
+    size: 0,
+    cron: s.cron,
+    icon: iconFor(s.name, s.file),
+    ok: true,
+    native: true,
+  }));
+  const allScripts = ok.concat(nativeResults);
+  console.log(`\n===== 打包结果: ${ok.length} 成功, ${failed.length} 跳过/失败, ${nativeResults.length} 原生 =====`);
 
   // 写 conf 文件
-  generateConf(ok);
+  generateConf(allScripts);
   // 写 tasks 画廊 JSON（圈X 标准任务订阅格式）
-  generateTasks(ok);
+  generateTasks(allScripts);
   // 写 BoxJs JSON
-  generateBoxJs(ok);
+  generateBoxJs(allScripts);
 
   if (failed.length) {
     console.log('\n失败详情:');
     failed.forEach(f => console.log('  ' + f.file + ': ' + (f.skip ? '已跳过' : f.error)));
   }
 
-  return { ok, failed };
+  return { ok: allScripts, failed };
 }
 
 function generateConf(scripts) {
@@ -284,6 +308,7 @@ function generateBoxJs(scripts) {
     { id: 'CookieJD', name: '方式二：账号1 Cookie', val: '', type: 'textarea', desc: 'pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。' },
     { id: 'CookieJD2', name: '方式二：账号2 Cookie', val: '', type: 'textarea', desc: '第二个账号（可选），格式同上。' },
     { id: 'JD_ENV_JSON', name: '高级：环境变量注入', val: '{}', type: 'textarea', desc: 'JSON 对象，注入为脚本的 process.env。仅高级用户。' },
+    { id: 'JD_CKCHECK_AUTODEL', name: 'CK检测自动清理失效Cookie', val: 'true', type: 'boolean', desc: '开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。' },
   ];
 
   const apps = scripts.map(s => ({
