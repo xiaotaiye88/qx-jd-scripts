@@ -1,7 +1,7 @@
 /*
  * 秒送签到 (jd_msSign.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 09:17:09 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-21 09:26:54 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 38 4,16 * * *
