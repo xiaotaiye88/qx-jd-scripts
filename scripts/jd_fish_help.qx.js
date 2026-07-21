@@ -1,7 +1,7 @@
 /*
- * fish_help (jd_fish_help.js) — QX 打包版
+ * 金融捕鱼助力 (jd_fish_help.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 08:32:23 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-21 08:57:02 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 8 8 29 2 *

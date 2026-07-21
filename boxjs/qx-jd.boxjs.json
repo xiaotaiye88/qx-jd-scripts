@@ -6,9 +6,9 @@
   "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
   "apps": [
     {
-      "id": "jd_AutoEval",
-      "name": "AutoEval",
-      "desc": "京东 AutoEval（jd_AutoEval.qx.js）cron: 3 12 3 12 *",
+      "id": "jd_带图评价晒单",
+      "name": "带图评价晒单",
+      "desc": "带图评价晒单（jd_AutoEval.qx.js）\ncron: 3 12 3 12 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_AutoEval.qx.js",
@@ -50,9 +50,9 @@
       ]
     },
     {
-      "id": "jd_OnceApply",
-      "name": "OnceApply",
-      "desc": "京东 OnceApply（jd_OnceApply.qx.js）cron: 55 11 * * *",
+      "id": "jd_一键价保",
+      "name": "一键价保",
+      "desc": "一键价保（jd_OnceApply.qx.js）\ncron: 55 11 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_OnceApply.qx.js",
@@ -94,9 +94,9 @@
       ]
     },
     {
-      "id": "jd_bean_change",
-      "name": "bean_change",
-      "desc": "京东 bean_change（jd_bean_change.qx.js）cron: 28 8,21 * * *",
+      "id": "jd_京东资产统计",
+      "name": "京东资产统计",
+      "desc": "28 8,21（jd_bean_change.qx.js）\ncron: 28 8,21 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_change.qx.js",
@@ -138,9 +138,9 @@
       ]
     },
     {
-      "id": "jd_bean_info",
-      "name": "bean_info",
-      "desc": "京东 bean_info（jd_bean_info.qx.js）cron: 2 20 14 12 *",
+      "id": "jd_京豆详情统计",
+      "name": "京豆详情统计",
+      "desc": "京豆详情统计（jd_bean_info.qx.js）\ncron: 2 20 14 12 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_info.qx.js",
@@ -182,9 +182,9 @@
       ]
     },
     {
-      "id": "jd_book_draw",
-      "name": "book_draw",
-      "desc": "京东 book_draw（jd_book_draw.qx.js）cron: 18 19 * * *",
+      "id": "jd_图书抽奖",
+      "name": "图书抽奖",
+      "desc": "图书抽奖（jd_book_draw.qx.js）\ncron: 18 19 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_book_draw.qx.js",
@@ -226,9 +226,9 @@
       ]
     },
     {
-      "id": "jd_cjzzj",
-      "name": "cjzzj",
-      "desc": "京东 cjzzj（jd_cjzzj.qx.js）cron: 0 6,20 * * *",
+      "id": "jd_超级抓抓机",
+      "name": "超级抓抓机",
+      "desc": "超级抓抓机（jd_cjzzj.qx.js）\ncron: 0 6,20 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_cjzzj.qx.js",
@@ -270,9 +270,9 @@
       ]
     },
     {
-      "id": "jd_dddraw",
-      "name": "dddraw",
-      "desc": "京东 dddraw（jd_dddraw.qx.js）cron: 2 2 29 2 *",
+      "id": "jd_天天抽红包",
+      "name": "天天抽红包",
+      "desc": "2 2 29 2（jd_dddraw.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dddraw.qx.js",
@@ -314,9 +314,9 @@
       ]
     },
     {
-      "id": "jd_delLjq",
-      "name": "delLjq",
-      "desc": "京东 delLjq（jd_delLjq.qx.js）cron: 2 2 29 2 *",
+      "id": "jd_批量删垃圾券",
+      "name": "批量删垃圾券",
+      "desc": "批量删垃圾券（jd_delLjq.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_delLjq.qx.js",
@@ -358,9 +358,9 @@
       ]
     },
     {
-      "id": "jd_deliverySign_sign",
-      "name": "deliverySign_sign",
-      "desc": "京东 deliverySign_sign（jd_deliverySign_sign.qx.js）cron: 22 6,14 * * *",
+      "id": "jd_天天领豆",
+      "name": "天天领豆",
+      "desc": "天天领豆（jd_deliverySign_sign.qx.js）\ncron: 22 6,14 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_deliverySign_sign.qx.js",
@@ -402,9 +402,9 @@
       ]
     },
     {
-      "id": "jd_dplhbshop",
-      "name": "dplhbshop",
-      "desc": "京东 dplhbshop（jd_dplhbshop.qx.js）cron: 30 7 * * *",
+      "id": "jd_大牌浏览店铺",
+      "name": "大牌浏览店铺",
+      "desc": "大牌浏览店铺（jd_dplhbshop.qx.js）\ncron: 30 7 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dplhbshop.qx.js",
@@ -446,9 +446,9 @@
       ]
     },
     {
-      "id": "jd_dpqd_main",
-      "name": "dpqd_main",
-      "desc": "京东 dpqd_main（jd_dpqd_main.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_批量店铺签到_活动查询_",
+      "name": "批量店铺签到（活动查询）",
+      "desc": "1 1 1 1（jd_dpqd_main.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_main.qx.js",
@@ -490,9 +490,9 @@
       ]
     },
     {
-      "id": "jd_dpqd_sign",
-      "name": "dpqd_sign",
-      "desc": "京东 dpqd_sign（jd_dpqd_sign.qx.js）cron: 30 7 * * *",
+      "id": "jd_批量店铺签到",
+      "name": "批量店铺签到",
+      "desc": "批量店铺签到（jd_dpqd_sign.qx.js）\ncron: 30 7 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_sign.qx.js",
@@ -534,9 +534,9 @@
       ]
     },
     {
-      "id": "jd_dpqd_single",
-      "name": "dpqd_single",
-      "desc": "京东 dpqd_single（jd_dpqd_single.qx.js）cron: 7 7 29 2 *",
+      "id": "jd_单个店铺签到",
+      "name": "单个店铺签到",
+      "desc": "单个店铺签到（jd_dpqd_single.qx.js）\ncron: 7 7 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_single.qx.js",
@@ -578,9 +578,9 @@
       ]
     },
     {
-      "id": "jd_首页-赚话费",
-      "name": "首页-赚话费",
-      "desc": "京东 首页-赚话费（jd_dwapp.qx.js）cron: 38 2,15 * * *",
+      "id": "jd_积分换话费",
+      "name": "积分换话费",
+      "desc": "首页-赚话费（jd_dwapp.qx.js）\ncron: 38 2,15 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dwapp.qx.js",
@@ -622,9 +622,9 @@
       ]
     },
     {
-      "id": "jd_farmnew_ck_help",
-      "name": "farmnew_ck_help",
-      "desc": "京东 farmnew_ck_help（jd_farmnew_ck_help.qx.js）cron: 12 5,10 * * *",
+      "id": "jd_新农场CK顺序助力",
+      "name": "新农场CK顺序助力",
+      "desc": "新农场CK顺序助力（jd_farmnew_ck_help.qx.js）\ncron: 12 5,10 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_ck_help.qx.js",
@@ -666,9 +666,9 @@
       ]
     },
     {
-      "id": "jd_farmnew_code_help",
-      "name": "farmnew_code_help",
-      "desc": "京东 farmnew_code_help（jd_farmnew_code_help.qx.js）cron: 22 2 29 2 *",
+      "id": "jd_新农场助力码助力",
+      "name": "新农场助力码助力",
+      "desc": "新农场助力码助力（jd_farmnew_code_help.qx.js）\ncron: 22 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_code_help.qx.js",
@@ -710,9 +710,9 @@
       ]
     },
     {
-      "id": "jd_APP____我的____欢乐挖宝",
-      "name": "APP —— 我的 —— 欢乐挖宝",
-      "desc": "京东 APP —— 我的 —— 欢乐挖宝（jd_fcwb_auto.qx.js）cron: 30 7 * * *",
+      "id": "jd_欢乐挖宝任务",
+      "name": "欢乐挖宝任务",
+      "desc": "APP —— 我的 —— 欢乐挖宝（jd_fcwb_auto.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_auto.qx.js",
@@ -754,9 +754,9 @@
       ]
     },
     {
-      "id": "jd_fcwb_help",
-      "name": "fcwb_help",
-      "desc": "京东 fcwb_help（jd_fcwb_help.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_欢乐挖宝助力",
+      "name": "欢乐挖宝助力",
+      "desc": "1 1 1 1（jd_fcwb_help.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_help.qx.js",
@@ -798,9 +798,9 @@
       ]
     },
     {
-      "id": "jd_fish_help",
-      "name": "fish_help",
-      "desc": "京东 fish_help（jd_fish_help.qx.js）cron: 8 8 29 2 *",
+      "id": "jd_金融捕鱼助力",
+      "name": "金融捕鱼助力",
+      "desc": "金融捕鱼助力（jd_fish_help.qx.js）\ncron: 8 8 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fish_help.qx.js",
@@ -842,9 +842,9 @@
       ]
     },
     {
-      "id": "jd_fruit_new",
-      "name": "fruit_new",
-      "desc": "京东 fruit_new（jd_fruit_new.qx.js）cron: 15 6,16 * * *",
+      "id": "jd_新农场任务",
+      "name": "新农场任务",
+      "desc": "京东APP我的--东东农场（jd_fruit_new.qx.js）\ncron: 15 6,16 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fruit_new.qx.js",
@@ -886,9 +886,9 @@
       ]
     },
     {
-      "id": "jd_hssign",
-      "name": "hssign",
-      "desc": "京东 hssign（jd_hssign.qx.js）cron: 15 8 * * *",
+      "id": "jd_hs每日签到",
+      "name": "hs每日签到",
+      "desc": "15 8（jd_hssign.qx.js）\ncron: 15 8 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_hssign.qx.js",
@@ -930,9 +930,9 @@
       ]
     },
     {
-      "id": "jd_ifdraw",
-      "name": "ifdraw",
-      "desc": "京东 ifdraw（jd_ifdraw.qx.js）cron: 33 7,15 * * *",
+      "id": "jd_IF任务抽奖合集",
+      "name": "IF任务抽奖合集",
+      "desc": "33 7,15（jd_ifdraw.qx.js）\ncron: 33 7,15 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ifdraw.qx.js",
@@ -974,9 +974,9 @@
       ]
     },
     {
-      "id": "jd_jingpai",
-      "name": "jingpai",
-      "desc": "京东 jingpai（jd_jingpai.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_竞拍竞猜",
+      "name": "竞拍竞猜",
+      "desc": "1 1 1 1（jd_jingpai.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jingpai.qx.js",
@@ -1018,9 +1018,9 @@
       ]
     },
     {
-      "id": "jd_京东app-我的-汪汪庄园",
-      "name": "京东app-我的-汪汪庄园",
-      "desc": "京东 京东app-我的-汪汪庄园（jd_joypark_leave.qx.js）cron: 1 1 29 2 *",
+      "id": "jd_汪汪庄园离线收金币",
+      "name": "汪汪庄园离线收金币",
+      "desc": "京东app-我的-汪汪庄园（jd_joypark_leave.qx.js）\ncron: 1 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_leave.qx.js",
@@ -1062,9 +1062,9 @@
       ]
     },
     {
-      "id": "jd_joypark_task",
-      "name": "joypark_task",
-      "desc": "京东 joypark_task（jd_joypark_task.qx.js）cron: 38 8,13 * * *",
+      "id": "jd_汪汪庄园任务",
+      "name": "汪汪庄园任务",
+      "desc": "汪汪庄园任务（jd_joypark_task.qx.js）\ncron: 38 8,13 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_task.qx.js",
@@ -1106,9 +1106,9 @@
       ]
     },
     {
-      "id": "jd_lmdraw",
-      "name": "lmdraw",
-      "desc": "京东 lmdraw（jd_lmdraw.qx.js）cron: 29 2 29 2 *",
+      "id": "jd_LM任务抽奖合集",
+      "name": "LM任务抽奖合集",
+      "desc": "29 2 29 2（jd_lmdraw.qx.js）\ncron: 29 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_lmdraw.qx.js",
@@ -1150,9 +1150,9 @@
       ]
     },
     {
-      "id": "jd_luck_draw",
-      "name": "luck_draw",
-      "desc": "京东 luck_draw（jd_luck_draw.qx.js）cron: 10 9 * * *",
+      "id": "jd_天天抽好运",
+      "name": "天天抽好运",
+      "desc": "10 9（jd_luck_draw.qx.js）\ncron: 10 9 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luck_draw.qx.js",
@@ -1194,9 +1194,9 @@
       ]
     },
     {
-      "id": "jd_luckyDraw",
-      "name": "luckyDraw",
-      "desc": "京东 luckyDraw（jd_luckyDraw.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_幸运抽奖",
+      "name": "幸运抽奖",
+      "desc": "1 1 1 1（jd_luckyDraw.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luckyDraw.qx.js",
@@ -1238,9 +1238,9 @@
       ]
     },
     {
-      "id": "jd_mkt_answer",
-      "name": "mkt_answer",
-      "desc": "京东 mkt_answer（jd_mkt_answer.qx.js）cron: 22 13 29 2 *",
+      "id": "jd_对暗号赢免单",
+      "name": "对暗号赢免单",
+      "desc": "对暗号赢免单（jd_mkt_answer.qx.js）\ncron: 22 13 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mkt_answer.qx.js",
@@ -1282,9 +1282,9 @@
       ]
     },
     {
-      "id": "jd_mohe",
-      "name": "mohe",
-      "desc": "京东 mohe（jd_mohe.qx.js）cron: 13 9 * * *",
+      "id": "jd_plus天天盲盒",
+      "name": "plus天天盲盒",
+      "desc": "13 9（jd_mohe.qx.js）\ncron: 13 9 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mohe.qx.js",
@@ -1326,9 +1326,9 @@
       ]
     },
     {
-      "id": "jd_msDraw",
-      "name": "msDraw",
-      "desc": "京东 msDraw（jd_msDraw.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_秒送抽奖",
+      "name": "秒送抽奖",
+      "desc": "1 1 1 1（jd_msDraw.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msDraw.qx.js",
@@ -1370,9 +1370,9 @@
       ]
     },
     {
-      "id": "jd_msSign",
-      "name": "msSign",
-      "desc": "京东 msSign（jd_msSign.qx.js）cron: 38 4,16 * * *",
+      "id": "jd_秒送签到",
+      "name": "秒送签到",
+      "desc": "38 4,16（jd_msSign.qx.js）\ncron: 38 4,16 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msSign.qx.js",
@@ -1414,9 +1414,9 @@
       ]
     },
     {
-      "id": "jd_newfarmlottery",
-      "name": "newfarmlottery",
-      "desc": "京东 newfarmlottery（jd_newfarmlottery.qx.js）cron: 53 7,15 * * *",
+      "id": "jd_新农场幸运转盘",
+      "name": "新农场幸运转盘",
+      "desc": "新农场幸运转盘（jd_newfarmlottery.qx.js）\ncron: 53 7,15 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_newfarmlottery.qx.js",
@@ -1458,9 +1458,9 @@
       ]
     },
     {
-      "id": "jd_pkabeans",
-      "name": "pkabeans",
-      "desc": "京东 pkabeans（jd_pkabeans.qx.js）cron: 11 11 29 2 *",
+      "id": "jd_礼品卡领豆",
+      "name": "礼品卡领豆",
+      "desc": "礼品卡领豆（jd_pkabeans.qx.js）\ncron: 11 11 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_pkabeans.qx.js",
@@ -1502,9 +1502,9 @@
       ]
     },
     {
-      "id": "jd_plantBean",
-      "name": "plantBean",
-      "desc": "京东 plantBean（jd_plantBean.qx.js）cron: 21 7-21/2 * * *",
+      "id": "jd_种豆得豆任务",
+      "name": "种豆得豆任务",
+      "desc": "APP我的--种豆得豆（jd_plantBean.qx.js）\ncron: 21 7-21/2 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean.qx.js",
@@ -1546,9 +1546,9 @@
       ]
     },
     {
-      "id": "jd_plantBean_help",
-      "name": "plantBean_help",
-      "desc": "京东 plantBean_help（jd_plantBean_help.qx.js）cron: 22 5,15 * * *",
+      "id": "jd_种豆得豆互助",
+      "name": "种豆得豆互助",
+      "desc": "种豆得豆互助（jd_plantBean_help.qx.js）\ncron: 22 5,15 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean_help.qx.js",
@@ -1590,9 +1590,9 @@
       ]
     },
     {
-      "id": "jd_qy_sign",
-      "name": "qy_sign",
-      "desc": "京东 qy_sign（jd_qy_sign.qx.js）cron: 21 10 * * *",
+      "id": "jd_权益中心签到",
+      "name": "权益中心签到",
+      "desc": "21 10（jd_qy_sign.qx.js）\ncron: 21 10 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_qy_sign.qx.js",
@@ -1634,9 +1634,9 @@
       ]
     },
     {
-      "id": "jd_rankVote",
-      "name": "rankVote",
-      "desc": "京东 rankVote（jd_rankVote.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_排行榜投票",
+      "name": "排行榜投票",
+      "desc": "1 1 1 1（jd_rankVote.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rankVote.qx.js",
@@ -1678,9 +1678,9 @@
       ]
     },
     {
-      "id": "jd_rmvcart",
-      "name": "rmvcart",
-      "desc": "京东 rmvcart（jd_rmvcart.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_清空购物车",
+      "name": "清空购物车",
+      "desc": "清空购物车（jd_rmvcart.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rmvcart.qx.js",
@@ -1722,9 +1722,9 @@
       ]
     },
     {
-      "id": "jd_signbeanact_",
-      "name": "signbeanact_",
-      "desc": "京东 signbeanact_（jd_signbeanact_.qx.js）cron: 2 6,16 * * *",
+      "id": "jd_天天领豆",
+      "name": "天天领豆",
+      "desc": "天天领豆（jd_signbeanact_.qx.js）\ncron: 2 6,16 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_signbeanact_.qx.js",
@@ -1766,9 +1766,9 @@
       ]
     },
     {
-      "id": "jd_sldraw",
-      "name": "sldraw",
-      "desc": "京东 sldraw（jd_sldraw.qx.js）cron: 1 1 1 1 *",
+      "id": "jd_SL任务抽奖合集",
+      "name": "SL任务抽奖合集",
+      "desc": "1 1 1 1（jd_sldraw.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_sldraw.qx.js",
@@ -1810,9 +1810,9 @@
       ]
     },
     {
-      "id": "jd_superRedBagDraw",
-      "name": "superRedBagDraw",
-      "desc": "京东 superRedBagDraw（jd_superRedBagDraw.qx.js）cron: 12 2 29 2 *",
+      "id": "jd_互动游戏摇红包",
+      "name": "互动游戏摇红包",
+      "desc": "12 2 29 2（jd_superRedBagDraw.qx.js）\ncron: 12 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_superRedBagDraw.qx.js",
@@ -1854,9 +1854,9 @@
       ]
     },
     {
-      "id": "jd_ttgd",
-      "name": "ttgd",
-      "desc": "京东 ttgd（jd_ttgd.qx.js）cron: 21 4,15 * * *",
+      "id": "jd_天天刮京豆",
+      "name": "天天刮京豆",
+      "desc": "21 4,15（jd_ttgd.qx.js）\ncron: 21 4,15 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ttgd.qx.js",
@@ -1898,9 +1898,9 @@
       ]
     },
     {
-      "id": "jd_unsubscribe",
-      "name": "unsubscribe",
-      "desc": "京东 unsubscribe（jd_unsubscribe.qx.js）cron: 2 2 29 2 *",
+      "id": "jd_批量取关店铺和商品",
+      "name": "批量取关店铺和商品",
+      "desc": "批量取关店铺和商品（jd_unsubscribe.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_unsubscribe.qx.js",
@@ -1942,9 +1942,9 @@
       ]
     },
     {
-      "id": "jd_video_task",
-      "name": "video_task",
-      "desc": "京东 video_task（jd_video_task.qx.js）cron: 1 1 29 2 *",
+      "id": "jd_看视频赚现金-任务",
+      "name": "看视频赚现金-任务",
+      "desc": "看视频赚现金-任务（jd_video_task.qx.js）\ncron: 1 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_task.qx.js",
@@ -1986,9 +1986,9 @@
       ]
     },
     {
-      "id": "jd_video_view",
-      "name": "video_view",
-      "desc": "京东 video_view（jd_video_view.qx.js）cron: 1 1 29 2 *",
+      "id": "jd_看视频赚现金-浏览",
+      "name": "看视频赚现金-浏览",
+      "desc": "看视频赚现金-浏览（jd_video_view.qx.js）\ncron: 1 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_view.qx.js",
@@ -2030,9 +2030,9 @@
       ]
     },
     {
-      "id": "jd_vu50",
-      "name": "vu50",
-      "desc": "京东 vu50（jd_vu50.qx.js）cron: 15 10 * * *",
+      "id": "jd_V你50超市卡",
+      "name": "V你50超市卡",
+      "desc": "V你50超市卡（jd_vu50.qx.js）\ncron: 15 10 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_vu50.qx.js",
@@ -2074,9 +2074,9 @@
       ]
     },
     {
-      "id": "jd_water_new",
-      "name": "water_new",
-      "desc": "京东 water_new（jd_water_new.qx.js）cron: 15 1 29 2 *",
+      "id": "jd_新农场浇水",
+      "name": "新农场浇水",
+      "desc": "新农场浇水（jd_water_new.qx.js）\ncron: 15 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_water_new.qx.js",
@@ -2118,9 +2118,9 @@
       ]
     },
     {
-      "id": "jd_wduoyu",
-      "name": "wduoyu",
-      "desc": "京东 wduoyu（jd_wduoyu.qx.js）cron: 29 2 29 2 *",
+      "id": "jd_多投多赚",
+      "name": "多投多赚",
+      "desc": "29 2 29 2（jd_wduoyu.qx.js）\ncron: 29 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wduoyu.qx.js",
@@ -2162,9 +2162,9 @@
       ]
     },
     {
-      "id": "jd_weGameLottery",
-      "name": "weGameLottery",
-      "desc": "京东 weGameLottery（jd_weGameLottery.qx.js）cron: 12 7,15 * * *",
+      "id": "jd_互动游戏签到",
+      "name": "互动游戏签到",
+      "desc": "12 7,15（jd_weGameLottery.qx.js）\ncron: 12 7,15 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_weGameLottery.qx.js",
@@ -2206,9 +2206,9 @@
       ]
     },
     {
-      "id": "jd_京东app-我的-汪汪庄园",
-      "name": "京东app-我的-汪汪庄园",
-      "desc": "京东 京东app-我的-汪汪庄园（jd_wwmanor_merge.qx.js）cron: 2 2 29 2 *",
+      "id": "jd_汪汪庄园合成",
+      "name": "汪汪庄园合成",
+      "desc": "京东app-我的-汪汪庄园（jd_wwmanor_merge.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wwmanor_merge.qx.js",
@@ -2250,9 +2250,9 @@
       ]
     },
     {
-      "id": "jd_xqmh",
-      "name": "xqmh",
-      "desc": "京东 xqmh（jd_xqmh.qx.js）cron: 11 9,16 * * *",
+      "id": "jd_新奇盲盒",
+      "name": "新奇盲盒",
+      "desc": "11 9,16（jd_xqmh.qx.js）\ncron: 11 9,16 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xqmh.qx.js",
@@ -2294,9 +2294,9 @@
       ]
     },
     {
-      "id": "jd_xsjx",
-      "name": "xsjx",
-      "desc": "京东 xsjx（jd_xsjx.qx.js）cron: 38 7,19 * * *",
+      "id": "jd_限时京喜",
+      "name": "限时京喜",
+      "desc": "38 7,19（jd_xsjx.qx.js）\ncron: 38 7,19 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xsjx.qx.js",
@@ -2338,9 +2338,9 @@
       ]
     },
     {
-      "id": "jd_yssign",
-      "name": "yssign",
-      "desc": "京东 yssign（jd_yssign.qx.js）cron: 20 9 * * *",
+      "id": "jd_ys每日签到",
+      "name": "ys每日签到",
+      "desc": "20 9（jd_yssign.qx.js）\ncron: 20 9 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_yssign.qx.js",

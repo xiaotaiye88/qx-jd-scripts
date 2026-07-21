@@ -1,7 +1,7 @@
 /*
- * AutoEval (jd_AutoEval.js) — QX 打包版
+ * 带图评价晒单 (jd_AutoEval.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 08:32:23 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-21 08:57:02 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 3 12 3 12 *
