@@ -16,7 +16,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -46,6 +47,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -67,7 +75,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -97,6 +106,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -118,7 +134,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -148,6 +165,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -169,7 +193,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -199,6 +224,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -220,7 +252,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -250,6 +283,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -271,7 +311,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -301,6 +342,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -322,7 +370,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -352,6 +401,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -373,7 +429,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -403,6 +460,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -424,7 +488,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -454,6 +519,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -475,7 +547,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -505,6 +578,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -526,7 +606,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -556,6 +637,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -577,7 +665,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -607,6 +696,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -628,7 +724,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -658,6 +755,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -679,7 +783,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -709,6 +814,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -730,7 +842,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -760,6 +873,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -781,7 +901,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -811,6 +932,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -832,7 +960,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -862,6 +991,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -883,7 +1019,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -913,6 +1050,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -934,7 +1078,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -964,6 +1109,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -985,7 +1137,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1015,6 +1168,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1036,7 +1196,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1066,6 +1227,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1087,7 +1255,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1117,6 +1286,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1138,7 +1314,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1168,6 +1345,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1189,7 +1373,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1219,6 +1404,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1240,7 +1432,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1270,6 +1463,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1291,7 +1491,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1321,6 +1522,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1342,7 +1550,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1372,6 +1581,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1393,7 +1609,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1423,6 +1640,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1444,7 +1668,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1474,6 +1699,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1495,7 +1727,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1525,6 +1758,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1546,7 +1786,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1576,6 +1817,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1597,7 +1845,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1627,6 +1876,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1648,7 +1904,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1678,6 +1935,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1699,7 +1963,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1729,6 +1994,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1750,7 +2022,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1780,6 +2053,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1801,7 +2081,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1831,6 +2112,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1852,7 +2140,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1882,6 +2171,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1903,7 +2199,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1933,6 +2230,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -1954,7 +2258,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -1984,6 +2289,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2005,7 +2317,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2035,6 +2348,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2056,7 +2376,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2086,6 +2407,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2107,7 +2435,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2137,6 +2466,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2158,7 +2494,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2188,6 +2525,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2209,7 +2553,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2239,6 +2584,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2260,7 +2612,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2290,6 +2643,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2311,7 +2671,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2341,6 +2702,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2362,7 +2730,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2392,6 +2761,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2413,7 +2789,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2443,6 +2820,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2464,7 +2848,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2494,6 +2879,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2515,7 +2907,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2545,6 +2938,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2566,7 +2966,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2596,6 +2997,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2617,7 +3025,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2647,6 +3056,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2668,7 +3084,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2698,6 +3115,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2719,7 +3143,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2749,6 +3174,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",
@@ -2770,7 +3202,8 @@
         "CookiesJD",
         "CookieJD",
         "CookieJD2",
-        "JD_ENV_JSON"
+        "JD_ENV_JSON",
+        "JD_NTFY_TOPIC"
       ],
       "settings": [
         {
@@ -2800,6 +3233,13 @@
           "val": "{}",
           "type": "textarea",
           "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        },
+        {
+          "id": "JD_NTFY_TOPIC",
+          "name": "Ntfy 推送 Topic（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。"
         },
         {
           "id": "JD_CKCHECK_AUTODEL",

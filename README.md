@@ -6,7 +6,7 @@
 
 | 功能 | 类型 | 说明 |
 |------|------|------|
-| Cookie/Wskey 抓取 | rewrite 重写 | 打开京东 App 时自动抓取 `pt_key`+`pt_pin`+`wskey`，同步 BoxJs 本地存储 |
+| Cookie/Wskey 抓取 | rewrite 重写 | 打开京东 App 时自动抓取 `pt_key`+`pt_pin`+`wskey`，同步 BoxJs 本地存储（可选 ntfy 外推）|
 | 积分换话费 | task 定时任务 | 京东「首页-赚话费」自动签到做任务，移植自 [6dylan6/jdpro](https://github.com/6dylan6/jdpro) 的 `jd_dwapp.js`（青龙版），经打包管线转换为圈X 单文件脚本 |
 
 ## 快速开始
@@ -40,6 +40,12 @@ https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/qx-jd.b
 - **手动**：BoxJs → 京东脚本 → 积分换话费 → 在 `CookieJD` 填写 `pt_key=xxx;pt_pin=xxx;`。
   ⚠️ 同一账号不要同时在 `CookiesJD` 和 `CookieJD` 里配置，会重复执行。
 
+#### （可选）配置 ntfy 外推
+
+如需将 Cookie/Wskey 推送到 ntfy.sh（方便电脑端同步），在 BoxJs 中设置 `JD_NTFY_TOPIC` 为你的 topic 名称（如 `mytopic`），脚本会推送到 `https://ntfy.sh/mytopic`。
+
+不配置此项则仅 BoxJs 本地存储，不外推。
+
 ### 4. 运行
 
 到点自动运行；也可在圈X → 风车 → 任务 中手动触发「积分换话费」查看日志。
@@ -48,7 +54,7 @@ https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/qx-jd.b
 
 ```
 ├── jd_scripts.conf          # 圈X 资源订阅（rewrite + task + mitm）
-├── qx_jd_all.js             # Cookie/Wskey 抓取（频率控制 + BoxJs 同步）
+├── qx_jd_all.js             # Cookie/Wskey 抓取（频率控制 + BoxJs 同步 + 可选 ntfy）
 ├── qx_jd_cookie.js          # 旧版 Cookie 抓取（保留）
 ├── qx_jd_wskey.js           # 旧版 Wskey 抓取（保留）
 ├── boxjs/
@@ -91,7 +97,7 @@ node tools/smoke-test.js   # 冒烟测试
 
 - 仅供学习交流，请于下载后 24 小时内删除，勿用于商业用途。
 - 使用本脚本产生的任何账号风险（包括但不限于黑号、封号）由使用者自行承担。
-- 脚本 Cookie 仅存储在你本机圈X 的 BoxJs 中，不会上传到任何外部服务器。
+- 脚本 Cookie 仅存储在你本机圈X 的 BoxJs 中；若启用 ntfy 外推，请自行保管 topic 名称，避免泄露。
 
 ## 致谢
 
