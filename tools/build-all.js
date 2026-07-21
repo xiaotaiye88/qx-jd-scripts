@@ -55,6 +55,33 @@ function requiredModules(scriptSrc) {
   return deps;
 }
 
+// 图标库: 58xinian/icon（京东专用，200+ 图标）
+const ICON_BASE = 'https://raw.githubusercontent.com/58xinian/icon/master/';
+const ICON_DEFAULT = ICON_BASE + 'jd.png';
+
+// 按任务中文名/文件名关键词匹配图标
+function iconFor(name, fileName) {
+  const s = name + ' ' + fileName;
+  // 顺序敏感：更具体的优先
+  if (/农场|浇水|fruit|water|farmnew/.test(s)) return ICON_BASE + 'jdnc.png';         // 农场
+  if (/种豆|plantBean/.test(s)) return ICON_BASE + 'jdzz.png';                         // 种豆
+  if (/庄园|汪汪|joy/.test(s)) return ICON_BASE + 'jdcww.png';                         // 汪汪庄园
+  if (/红包|redBag|RedBag|摇/.test(s)) return ICON_BASE + 'jd_redPacket.png';          // 红包
+  if (/抽奖|转盘|盲盒|lottery|draw|抓抓|挖宝|竞拍|捕鱼|抽奖机/.test(s)) return ICON_BASE + 'jd_lotteryMachine.png'; // 抽奖
+  if (/京豆|资产|领豆|刮京|礼品卡|bean_change|bean_info|ttgd|pkabeans/.test(s)) return ICON_BASE + 'jd_bean_home.png'; // 京豆
+  if (/签到|sign/.test(s)) return ICON_BASE + 'jx_sign.png';                           // 签到
+  if (/视频|video/.test(s)) return ICON_BASE + 'jd_watch.png';                         // 视频
+  if (/话费|dwapp|现金|多投/.test(s)) return ICON_BASE + 'jd_cash.png';                     // 话费/现金
+  if (/取关|删|unsubscribe|delLjq/.test(s)) return ICON_BASE + 'jd_unbind.png';        // 取关/清理（先于店铺判断）
+  if (/店铺|购物车|价保|评价|晒单|大牌|dpqd|rmvcart|OnceApply|AutoEval|dplhb/.test(s)) return ICON_BASE + 'jd_shop.png'; // 店铺/购物
+  if (/排行|投票|rank/.test(s)) return ICON_BASE + 'jd_rankingList.png';               // 排行榜
+  if (/图书|book/.test(s)) return ICON_BASE + 'jd_bookshop.png';                       // 图书
+  if (/健康|plus|mohe/.test(s)) return ICON_BASE + 'jd_health.png';                    // 健康/PLUS
+  if (/京喜|xsjx|jingxi/.test(s)) return ICON_BASE + 'jingxi.png';                     // 京喜
+  if (/超市|vu50/.test(s)) return ICON_BASE + 'jd_syj.png';                            // 超市卡
+  return ICON_DEFAULT;
+}
+
 // 排除列表（青龙专属工具，不适合圈X 运行）
 const SKIP = new Set([
   'jd_indeps.js',        // 青龙依赖安装
@@ -159,7 +186,7 @@ ${mainSrc}
 
   const bundle = parts.join('\n');
   fs.writeFileSync(outPath, bundle, 'utf8');
-  return { ...meta, tag: safeTag, file: outName, size: Buffer.byteLength(bundle), cron: meta.cron, ok: true };
+  return { ...meta, tag: safeTag, file: outName, size: Buffer.byteLength(bundle), cron: meta.cron, icon: iconFor(meta.name, fileName), ok: true };
 }
 
 function main() {
@@ -221,7 +248,7 @@ function generateConf(scripts) {
     const url = `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`;
     const escName = s.name.replace(/,/g, '，');
     lines.push(`# ${escName}`);
-    lines.push(`${s.cron} ${url}, tag=${escName}, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true`);
+    lines.push(`${s.cron} ${url}, tag=${escName}, img-url=${s.icon}, enabled=true`);
     lines.push('');
   }
 
@@ -233,11 +260,10 @@ function generateConf(scripts) {
 }
 
 function generateTasks(scripts) {
-  const icon = 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png';
   const tasks = scripts.map(s => {
     const url = `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`;
     const tag = s.name.replace(/,/g, '，');
-    return `${s.cron} ${url}, tag=${tag}, img-url=${icon}, enabled=true`;
+    return `${s.cron} ${url}, tag=${tag}, img-url=${s.icon}, enabled=true`;
   });
 
   const json = {
@@ -265,7 +291,7 @@ function generateBoxJs(scripts) {
     id: 'jd_' + s.tag,
     name: s.name,
     desc: `${s.desc}（${s.file}）\ncron: ${s.cron}`,
-    icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png',
+    icon: s.icon,
     repo: REPO,
     script: `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`,
     keys: ['CookiesJD', 'CookieJD', 'CookieJD2', 'JD_ENV_JSON'],
