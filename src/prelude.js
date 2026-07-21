@@ -368,6 +368,25 @@ __qxDefine('moment', function () {
   return moment;
 });
 
+// ---------- String 数组方法兜底 ----------
+// 部分脚本在 $.isNode() 分支里把变量初始化为数组(如黑名单/白名单 env)，
+// 圈X 下 isNode=false，变量保持空字符串 ""，后续在外面调 .find/.filter 会崩。
+// 给 String 补上数组迭代方法的安全空实现（视为空列表）。
+['find', 'findIndex', 'filter', 'some', 'every', 'map', 'forEach', 'reduce', 'flatMap'].forEach(function (m) {
+  if (!String.prototype[m]) {
+    Object.defineProperty(String.prototype, m, {
+      value: function () {
+        if (m === 'find') return undefined;
+        if (m === 'findIndex') return -1;
+        if (m === 'reduce') return arguments[1];
+        if (m === 'filter' || m === 'map' || m === 'flatMap') return [];
+        return false; // some / every / forEach(无返回)
+      },
+      writable: true, configurable: true, enumerable: false
+    });
+  }
+});
+
 // ---------- $task.fetch 适配：把响应包装成类 Node 形态 ----------
 function __qxFetch(reqOpts) {
   return new Promise(function (resolve, reject) {

@@ -1,7 +1,7 @@
 /*
  * 看视频赚现金-浏览 (jd_video_view.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 10:11:57 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-21 10:20:34 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 1 1 29 2 *
@@ -376,6 +376,25 @@ __qxDefine('moment', function () {
   moment.max = function () { var a = [].map.call(arguments, function (x) { return x && x.valueOf ? x.valueOf() : new Date(x).getTime(); }); return new M(new Date(Math.max.apply(Math, a))); };
   moment.now = function () { return Date.now(); };
   return moment;
+});
+
+// ---------- String 数组方法兜底 ----------
+// 部分脚本在 $.isNode() 分支里把变量初始化为数组(如黑名单/白名单 env)，
+// 圈X 下 isNode=false，变量保持空字符串 ""，后续在外面调 .find/.filter 会崩。
+// 给 String 补上数组迭代方法的安全空实现（视为空列表）。
+['find', 'findIndex', 'filter', 'some', 'every', 'map', 'forEach', 'reduce', 'flatMap'].forEach(function (m) {
+  if (!String.prototype[m]) {
+    Object.defineProperty(String.prototype, m, {
+      value: function () {
+        if (m === 'find') return undefined;
+        if (m === 'findIndex') return -1;
+        if (m === 'reduce') return arguments[1];
+        if (m === 'filter' || m === 'map' || m === 'flatMap') return [];
+        return false; // some / every / forEach(无返回)
+      },
+      writable: true, configurable: true, enumerable: false
+    });
+  }
 });
 
 // ---------- $task.fetch 适配：把响应包装成类 Node 形态 ----------
