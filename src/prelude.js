@@ -40,6 +40,11 @@ function __qxPermissiveStub(name) {
 
 function require(name) {
   if (name in __qxModules) return __qxModules[name];
+  // 规范化: 去掉末尾 .js 再试
+  if (!(name in __qxFactories) && name.endsWith('.js')) {
+    var bare = name.slice(0, -3);
+    if (bare in __qxFactories) name = bare;
+  }
   if (__qxFactories[name]) {
     var f = __qxFactories[name];
     delete __qxFactories[name];
@@ -243,6 +248,8 @@ if (typeof __QX_G.Buffer === 'undefined') {
     };
   })();
 }
+// 确保 Buffer 在全局和局部都可见
+var Buffer = __QX_G.Buffer;
 
 // ---------- $task.fetch 适配：把响应包装成类 Node 形态 ----------
 function __qxFetch(reqOpts) {
@@ -494,6 +501,15 @@ __qxDefine('tough-cookie', function () {
   return { CookieJar: CookieJar, Cookie: { parse: function (s) { return { key: '', value: '', toString: function () { return String(s); } }; } } };
 });
 
+// ---------- USER_AGENTS 桩（京东 App 常用 UA 列表） ----------
+__qxDefine('./USER_AGENTS', function () {
+  return [
+    'jdapp;iPhone;11.0.4;14.3;network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+    'jdapp;iPhone;11.0.4;15.0;network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+    'jdapp;iPhone;11.0.4;13.5;Mozilla/5.0 (iPhone; CPU iPhone OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+  ];
+});
+
 // ---------- 青龙专属模块桩 ----------
 __qxDefine('./sendNotify', function () {
   return {
@@ -519,9 +535,10 @@ __qxDefine('./function/proxy.js', function () {
 
 // ---------- 其他全局兼容 ----------
 if (typeof __QX_G.global === 'undefined') __QX_G.global = __QX_G;
-// 跨平台模板遗留全局：脚本 QX 分支里用 jsonformat(str||"[]") 解析 BoxJs 的 JSON 值，等价 JSON.parse
+// 跨平台模板遗留全局：脚本 QX 分支里用 jsonformat/jsonFormat(str||"[]") 解析 BoxJs 的 JSON 值，等价 JSON.parse
 if (typeof __QX_G.jsonformat === 'undefined') {
-  var jsonformat = function (s) { return JSON.parse(s); };
+  __QX_G.jsonformat = function (s) { return JSON.parse(String(s || '[]')); };
+  __QX_G.jsonFormat = __QX_G.jsonformat;  // 兼容大小写
 }
 var __dirname = '/';
 var __filename = 'jd_dwapp.js';
