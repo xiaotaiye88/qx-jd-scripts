@@ -30,8 +30,7 @@ const DEP_MODULES = {
   './function/dylanw': 'dylanw.js',
   './function/dylany': 'dylany.js',
   './function/dylank': 'dylank.js',
-  // moment.js
-  'moment':            'moment.min.js',
+  // moment 由 prelude 内置轻量垫片提供（不用 moment.min.js，避免 JSC locale 报错）
   // jdCommon（jd_dpqd_single.js 需要）
   './function/jdCommon': 'jdCommon.js',
 };

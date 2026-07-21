@@ -1,7 +1,7 @@
 /*
  * 图书抽奖 (jd_book_draw.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 10:05:28 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-21 10:11:57 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 18 19 * * *
@@ -269,6 +269,114 @@ if (typeof __QX_G.Buffer === 'undefined') {
 }
 // 确保 Buffer 在全局和局部都可见
 var Buffer = __QX_G.Buffer;
+
+// ---------- moment 轻量垫片（绕开 locale，避免 _ordinalParse.source 报错） ----------
+// 仅覆盖京东脚本常用 API: format/add/subtract/diff/startOf/endOf/isBefore/isAfter/isSame/valueOf/toDate/unix
+__qxDefine('moment', function () {
+  function pad(n, w) { w = w || 2; var s = String(Math.abs(n)); while (s.length < w) s = '0' + s; return (n < 0 ? '-' : '') + s; }
+  var UNITS = { year:'y', years:'y', y:'y', month:'M', months:'M', M:'M', week:'w', weeks:'w', w:'w', day:'d', days:'d', d:'d', hour:'h', hours:'h', h:'h', minute:'m', minutes:'m', m:'m', second:'s', seconds:'s', s:'s', ms:'ms', millisecond:'ms', milliseconds:'ms' };
+  var MULT = { y: 31536e6, M: 2592e6, w: 6048e5, d: 864e5, h: 36e5, m: 6e4, s: 1e3, ms: 1 };
+
+  function M(date) {
+    this._d = date instanceof Date ? new Date(date.getTime()) : new Date(date);
+    if (isNaN(this._d.getTime())) this._d = new Date(NaN);
+  }
+  M.prototype.isValid = function () { return !isNaN(this._d.getTime()); };
+  M.prototype.valueOf = function () { return this._d.getTime(); };
+  M.prototype.unix = function () { return Math.floor(this._d.getTime() / 1000); };
+  M.prototype.toDate = function () { return new Date(this._d.getTime()); };
+  M.prototype.clone = function () { return new M(this._d); };
+  M.prototype.toString = function () { return this._d.toString(); };
+
+  M.prototype.format = function (fmt) {
+    var d = this._d;
+    if (!this.isValid()) return 'Invalid date';
+    if (!fmt) return d.toISOString().slice(0, 19).replace('T', ' ');
+    var map = {
+      'YYYY': d.getFullYear(), 'YY': String(d.getFullYear()).slice(-2),
+      'MM': pad(d.getMonth() + 1), 'M': d.getMonth() + 1,
+      'DD': pad(d.getDate()), 'D': d.getDate(),
+      'HH': pad(d.getHours()), 'H': d.getHours(),
+      'mm': pad(d.getMinutes()), 'm': d.getMinutes(),
+      'ss': pad(d.getSeconds()), 's': d.getSeconds(),
+      'SSS': pad(d.getMilliseconds(), 3)
+    };
+    var out = fmt;
+    ['YYYY', 'SSS', 'YY', 'MM', 'DD', 'HH', 'mm', 'ss', 'M', 'D', 'H', 'm', 's'].forEach(function (t) {
+      out = out.split(t).join(map[t]);
+    });
+    return out;
+  };
+
+  function shift(self, n, unit) {
+    var u = UNITS[unit] || 'ms';
+    var d = new Date(self._d.getTime());
+    if (u === 'y') d.setFullYear(d.getFullYear() + n);
+    else if (u === 'M') d.setMonth(d.getMonth() + n);
+    else d.setTime(d.getTime() + n * (MULT[u] || 0));
+    return new M(d);
+  }
+  M.prototype.add = function (n, unit) { return shift(this, n, unit); };
+  M.prototype.subtract = function (n, unit) { return shift(this, -n, unit); };
+
+  M.prototype.diff = function (other, unit, asFloat) {
+    var o = other && other.valueOf ? other.valueOf() : new Date(other).getTime();
+    var ms = this._d.getTime() - o;
+    if (!unit) return ms;
+    var v = ms / (MULT[UNITS[unit] || 'ms'] || 1);
+    return asFloat ? v : Math.round(v);
+  };
+
+  M.prototype.startOf = function (unit) {
+    var u = UNITS[unit] || 'ms';
+    var d = new Date(this._d.getTime());
+    if (u === 'y') { d.setMonth(0, 1); d.setHours(0, 0, 0, 0); }
+    else if (u === 'M') { d.setDate(1); d.setHours(0, 0, 0, 0); }
+    else if (u === 'd' || u === 'w') { d.setHours(0, 0, 0, 0); }
+    else if (u === 'h') { d.setMinutes(0, 0, 0); }
+    else if (u === 'm') { d.setSeconds(0, 0); }
+    else if (u === 's') { d.setMilliseconds(0); }
+    return new M(d);
+  };
+  M.prototype.endOf = function (unit) {
+    var u = UNITS[unit] || 'ms';
+    return this.startOf(unit).add(1, u).subtract(1, 'ms');
+  };
+
+  M.prototype.isBefore = function (o, u) { return this.diff(o, u) < 0; };
+  M.prototype.isAfter = function (o, u) { return this.diff(o, u) > 0; };
+  M.prototype.isSame = function (o, u) {
+    if (!u) return this.valueOf() === (o && o.valueOf ? o.valueOf() : new Date(o).getTime());
+    return this.startOf(u).valueOf() === new M(o && o.toDate ? o.toDate() : o).startOf(u).valueOf();
+  };
+  M.prototype.isSameOrBefore = function (o, u) { return this.diff(o, u) <= 0; };
+  M.prototype.isSameOrAfter = function (o, u) { return this.diff(o, u) >= 0; };
+
+  // 简化 getter: .year() .month() .date() .day() .hour() .minute() .second()
+  var getters = { year: 'getFullYear', month: 'getMonth', date: 'getDate', day: 'getDay', hour: 'getHours', minute: 'getMinutes', second: 'getSeconds', millisecond: 'getMilliseconds' };
+  Object.keys(getters).forEach(function (fn) {
+    M.prototype[fn] = function () { return this._d[getters[fn]](); };
+  });
+
+  function moment(input) {
+    if (input === undefined || input === null) return new M(new Date());
+    if (input instanceof M) return input.clone();
+    if (typeof input === 'number') return new M(new Date(input));
+    if (input instanceof Date) return new M(input);
+    return new M(new Date(input));
+  }
+  moment.fn = M.prototype;
+  moment.locale = function () { return 'en'; };
+  moment.unix = function (ts) { return new M(new Date(ts * 1000)); };
+  moment.isMoment = function (o) { return o instanceof M; };
+  moment.duration = function (ms) {
+    return { asMilliseconds: function () { return ms; }, asSeconds: function () { return ms / 1000; }, asMinutes: function () { return ms / 6e4; }, asHours: function () { return ms / 36e5; }, humanize: function () { return ms + 'ms'; } };
+  };
+  moment.min = function () { var a = [].map.call(arguments, function (x) { return x && x.valueOf ? x.valueOf() : new Date(x).getTime(); }); return new M(new Date(Math.min.apply(Math, a))); };
+  moment.max = function () { var a = [].map.call(arguments, function (x) { return x && x.valueOf ? x.valueOf() : new Date(x).getTime(); }); return new M(new Date(Math.max.apply(Math, a))); };
+  moment.now = function () { return Date.now(); };
+  return moment;
+});
 
 // ---------- $task.fetch 适配：把响应包装成类 Node 形态 ----------
 function __qxFetch(reqOpts) {
