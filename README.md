@@ -11,15 +11,18 @@
 
 ## 快速开始
 
-### 1. 添加资源订阅（重写 + 定时任务，一步搞定）
+### 1. 添加任务订阅（推荐：画廊式）
 
-圈X → 风车 → **资源** → 右上角 `+` → 粘贴：
+圈X → 风车 → **任务** → 右上角 `+` → 粘贴（添加为"任务订阅"，可整体一键开启/关闭）：
 
 ```
-https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/jd_scripts.conf
+https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/tasks/qx-jd-tasks.json
 ```
 
-这会同时导入：Cookie 抓取重写、`api.m.jd.com` 的 MITM 主机名、积分换话费定时任务（每天 02:38 / 15:38）。
+> 或用资源订阅方式（含 Cookie 抓包重写，一次导入全套）：
+> ```
+> https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/jd_scripts.conf
+> ```
 
 > 若 MITM 证书未配置过：圈X → 设置 → MITM → 生成证书 → 安装并信任证书。
 
@@ -50,6 +53,8 @@ https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/qx-jd.b
 ├── qx_jd_wskey.js           # 旧版 Wskey 抓取（保留）
 ├── boxjs/
 │   └── qx-jd.boxjs.json     # BoxJs 订阅
+├── tasks/
+│   └── qx-jd-tasks.json     # 圈X 任务画廊订阅（fmz200 同款格式）
 ├── scripts/
 │   └── jd_dwapp.qx.js       # 积分换话费打包产物（自动生成，勿手改）
 ├── src/

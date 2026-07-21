@@ -179,6 +179,8 @@ function main() {
 
   // 写 conf 文件
   generateConf(ok);
+  // 写 tasks 画廊 JSON（圈X 标准任务订阅格式）
+  generateTasks(ok);
   // 写 BoxJs JSON
   generateBoxJs(ok);
 
@@ -215,6 +217,27 @@ function generateConf(scripts) {
 
   fs.writeFileSync(path.join(ROOT, 'jd_scripts.conf'), lines.join('\n'), 'utf8');
   console.log('已生成 jd_scripts.conf (' + scripts.length + ' 个任务)');
+}
+
+function generateTasks(scripts) {
+  const icon = 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png';
+  const tasks = scripts.map(s => {
+    const url = `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`;
+    const tag = s.name.replace(/,/g, '，');
+    return `${s.cron} ${url}, tag=${tag}, img-url=${icon}, enabled=true`;
+  });
+
+  const json = {
+    name: '京东脚本 - QX Task Gallery',
+    description: '京东全家桶：54 个自动化脚本（签到/农场/牧场/种豆/抽奖/价保/话费等），上游 @6dylan6/jdpro，由 @xiaotaiye88 移植打包',
+    raw: 'https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/tasks/qx-jd-tasks.json',
+    task: tasks,
+  };
+
+  const dir = path.join(ROOT, 'tasks');
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'qx-jd-tasks.json'), JSON.stringify(json, null, 2), 'utf8');
+  console.log('已生成 tasks/qx-jd-tasks.json (' + tasks.length + ' 个任务)');
 }
 
 function generateBoxJs(scripts) {
