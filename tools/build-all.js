@@ -86,8 +86,7 @@ function iconFor(name, fileName) {
 const SKIP = new Set([
   'jd_indeps.js',        // 青龙依赖安装
   'jd_proxy_check.js',   // 代理池检测
-  'jd_code2url.js',      // 短链转换工具
-  'jd_CheckCK.js',       // Cookie 有效性检查（没有写 QX 分支，可能失败）
+  'jd_code2url.js',      // 口令转链接（依赖第三方 nolan 服务，且为按需工具非定时任务）
   'jd_wxtoken_m.js',     // 微信 token 获取（需要 wx app）
 ]);
 
