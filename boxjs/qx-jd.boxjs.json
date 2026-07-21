@@ -6,9 +6,581 @@
   "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
   "apps": [
     {
-      "id": "jd_dwapp",
-      "name": "积分换话费",
-      "desc": "京东首页-赚话费 自动任务（青龙 jdpro 的 jd_dwapp.js 打包移植版）。Cookie 三选一配置，推荐方式一。",
+      "id": "jd_AutoEval",
+      "name": "AutoEval",
+      "desc": "京东 AutoEval（jd_AutoEval.qx.js）cron: 3 12 3 12 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_AutoEval.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_OnceApply",
+      "name": "OnceApply",
+      "desc": "京东 OnceApply（jd_OnceApply.qx.js）cron: 55 11 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_OnceApply.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_bean_change",
+      "name": "bean_change",
+      "desc": "京东 bean_change（jd_bean_change.qx.js）cron: 28 8,21 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_change.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_bean_info",
+      "name": "bean_info",
+      "desc": "京东 bean_info（jd_bean_info.qx.js）cron: 2 20 14 12 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_info.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_book_draw",
+      "name": "book_draw",
+      "desc": "京东 book_draw（jd_book_draw.qx.js）cron: 18 19 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_book_draw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_cjzzj",
+      "name": "cjzzj",
+      "desc": "京东 cjzzj（jd_cjzzj.qx.js）cron: 0 6,20 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_cjzzj.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_dddraw",
+      "name": "dddraw",
+      "desc": "京东 dddraw（jd_dddraw.qx.js）cron: 2 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dddraw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_delLjq",
+      "name": "delLjq",
+      "desc": "京东 delLjq（jd_delLjq.qx.js）cron: 2 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_delLjq.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_deliverySign_sign",
+      "name": "deliverySign_sign",
+      "desc": "京东 deliverySign_sign（jd_deliverySign_sign.qx.js）cron: 22 6,14 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_deliverySign_sign.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_dplhbshop",
+      "name": "dplhbshop",
+      "desc": "京东 dplhbshop（jd_dplhbshop.qx.js）cron: 30 7 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dplhbshop.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_dpqd_main",
+      "name": "dpqd_main",
+      "desc": "京东 dpqd_main（jd_dpqd_main.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_main.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_dpqd_sign",
+      "name": "dpqd_sign",
+      "desc": "京东 dpqd_sign（jd_dpqd_sign.qx.js）cron: 30 7 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_sign.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_dpqd_single",
+      "name": "dpqd_single",
+      "desc": "京东 dpqd_single（jd_dpqd_single.qx.js）cron: 7 7 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_single.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_首页-赚话费",
+      "name": "首页-赚话费",
+      "desc": "京东 首页-赚话费（jd_dwapp.qx.js）cron: 38 2,15 * * *",
       "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dwapp.qx.js",
@@ -24,14 +596,14 @@
           "name": "方式一：多账号 Cookie（推荐）",
           "val": "[]",
           "type": "textarea",
-          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库的抓包重写时会自动维护此项，一般无需手填。"
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
         },
         {
           "id": "CookieJD",
           "name": "方式二：账号1 Cookie",
           "val": "",
           "type": "textarea",
-          "desc": "pt_key=xxx;pt_pin=xxx; 格式。注意：与方式一同时配置同一账号会重复执行。"
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
         },
         {
           "id": "CookieJD2",
@@ -45,7 +617,1767 @@
           "name": "高级：环境变量注入",
           "val": "{}",
           "type": "textarea",
-          "desc": "JSON 对象，注入为脚本的 process.env（青龙环境变量）。例如 {\"dwappRewardId\":\"xxx\"}，一般用不到。"
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_farmnew_ck_help",
+      "name": "farmnew_ck_help",
+      "desc": "京东 farmnew_ck_help（jd_farmnew_ck_help.qx.js）cron: 12 5,10 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_ck_help.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_farmnew_code_help",
+      "name": "farmnew_code_help",
+      "desc": "京东 farmnew_code_help（jd_farmnew_code_help.qx.js）cron: 22 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_code_help.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_APP____我的____欢乐挖宝",
+      "name": "APP —— 我的 —— 欢乐挖宝",
+      "desc": "京东 APP —— 我的 —— 欢乐挖宝（jd_fcwb_auto.qx.js）cron: 30 7 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_auto.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_fcwb_help",
+      "name": "fcwb_help",
+      "desc": "京东 fcwb_help（jd_fcwb_help.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_help.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_fish_help",
+      "name": "fish_help",
+      "desc": "京东 fish_help（jd_fish_help.qx.js）cron: 8 8 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fish_help.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_fruit_new",
+      "name": "fruit_new",
+      "desc": "京东 fruit_new（jd_fruit_new.qx.js）cron: 15 6,16 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fruit_new.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_hssign",
+      "name": "hssign",
+      "desc": "京东 hssign（jd_hssign.qx.js）cron: 15 8 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_hssign.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_ifdraw",
+      "name": "ifdraw",
+      "desc": "京东 ifdraw（jd_ifdraw.qx.js）cron: 33 7,15 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ifdraw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_jingpai",
+      "name": "jingpai",
+      "desc": "京东 jingpai（jd_jingpai.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jingpai.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_京东app-我的-汪汪庄园",
+      "name": "京东app-我的-汪汪庄园",
+      "desc": "京东 京东app-我的-汪汪庄园（jd_joypark_leave.qx.js）cron: 1 1 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_leave.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_joypark_task",
+      "name": "joypark_task",
+      "desc": "京东 joypark_task（jd_joypark_task.qx.js）cron: 38 8,13 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_task.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_lmdraw",
+      "name": "lmdraw",
+      "desc": "京东 lmdraw（jd_lmdraw.qx.js）cron: 29 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_lmdraw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_luck_draw",
+      "name": "luck_draw",
+      "desc": "京东 luck_draw（jd_luck_draw.qx.js）cron: 10 9 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luck_draw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_luckyDraw",
+      "name": "luckyDraw",
+      "desc": "京东 luckyDraw（jd_luckyDraw.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luckyDraw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_mkt_answer",
+      "name": "mkt_answer",
+      "desc": "京东 mkt_answer（jd_mkt_answer.qx.js）cron: 22 13 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mkt_answer.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_mohe",
+      "name": "mohe",
+      "desc": "京东 mohe（jd_mohe.qx.js）cron: 13 9 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mohe.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_msDraw",
+      "name": "msDraw",
+      "desc": "京东 msDraw（jd_msDraw.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msDraw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_msSign",
+      "name": "msSign",
+      "desc": "京东 msSign（jd_msSign.qx.js）cron: 38 4,16 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msSign.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_newfarmlottery",
+      "name": "newfarmlottery",
+      "desc": "京东 newfarmlottery（jd_newfarmlottery.qx.js）cron: 53 7,15 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_newfarmlottery.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_pkabeans",
+      "name": "pkabeans",
+      "desc": "京东 pkabeans（jd_pkabeans.qx.js）cron: 11 11 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_pkabeans.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_plantBean",
+      "name": "plantBean",
+      "desc": "京东 plantBean（jd_plantBean.qx.js）cron: 21 7-21/2 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_plantBean_help",
+      "name": "plantBean_help",
+      "desc": "京东 plantBean_help（jd_plantBean_help.qx.js）cron: 22 5,15 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean_help.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_qy_sign",
+      "name": "qy_sign",
+      "desc": "京东 qy_sign（jd_qy_sign.qx.js）cron: 21 10 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_qy_sign.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_rankVote",
+      "name": "rankVote",
+      "desc": "京东 rankVote（jd_rankVote.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rankVote.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_rmvcart",
+      "name": "rmvcart",
+      "desc": "京东 rmvcart（jd_rmvcart.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rmvcart.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_signbeanact_",
+      "name": "signbeanact_",
+      "desc": "京东 signbeanact_（jd_signbeanact_.qx.js）cron: 2 6,16 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_signbeanact_.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_sldraw",
+      "name": "sldraw",
+      "desc": "京东 sldraw（jd_sldraw.qx.js）cron: 1 1 1 1 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_sldraw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_superRedBagDraw",
+      "name": "superRedBagDraw",
+      "desc": "京东 superRedBagDraw（jd_superRedBagDraw.qx.js）cron: 12 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_superRedBagDraw.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_ttgd",
+      "name": "ttgd",
+      "desc": "京东 ttgd（jd_ttgd.qx.js）cron: 21 4,15 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ttgd.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_unsubscribe",
+      "name": "unsubscribe",
+      "desc": "京东 unsubscribe（jd_unsubscribe.qx.js）cron: 2 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_unsubscribe.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_video_task",
+      "name": "video_task",
+      "desc": "京东 video_task（jd_video_task.qx.js）cron: 1 1 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_task.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_video_view",
+      "name": "video_view",
+      "desc": "京东 video_view（jd_video_view.qx.js）cron: 1 1 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_view.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_vu50",
+      "name": "vu50",
+      "desc": "京东 vu50（jd_vu50.qx.js）cron: 15 10 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_vu50.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_water_new",
+      "name": "water_new",
+      "desc": "京东 water_new（jd_water_new.qx.js）cron: 15 1 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_water_new.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_wduoyu",
+      "name": "wduoyu",
+      "desc": "京东 wduoyu（jd_wduoyu.qx.js）cron: 29 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wduoyu.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_weGameLottery",
+      "name": "weGameLottery",
+      "desc": "京东 weGameLottery（jd_weGameLottery.qx.js）cron: 12 7,15 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_weGameLottery.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_京东app-我的-汪汪庄园",
+      "name": "京东app-我的-汪汪庄园",
+      "desc": "京东 京东app-我的-汪汪庄园（jd_wwmanor_merge.qx.js）cron: 2 2 29 2 *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wwmanor_merge.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_xqmh",
+      "name": "xqmh",
+      "desc": "京东 xqmh（jd_xqmh.qx.js）cron: 11 9,16 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xqmh.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_xsjx",
+      "name": "xsjx",
+      "desc": "京东 xsjx（jd_xsjx.qx.js）cron: 38 7,19 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xsjx.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
+        }
+      ]
+    },
+    {
+      "id": "jd_yssign",
+      "name": "yssign",
+      "desc": "京东 yssign（jd_yssign.qx.js）cron: 20 9 * * *",
+      "icon": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_yssign.qx.js",
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_ENV_JSON"
+      ],
+      "settings": [
+        {
+          "id": "CookiesJD",
+          "name": "方式一：多账号 Cookie（推荐）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"pt_key=xxx;pt_pin=xxx;\"}]。使用本仓库抓包重写时会自动维护此项。"
+        },
+        {
+          "id": "CookieJD",
+          "name": "方式二：账号1 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。"
+        },
+        {
+          "id": "CookieJD2",
+          "name": "方式二：账号2 Cookie",
+          "val": "",
+          "type": "textarea",
+          "desc": "第二个账号（可选），格式同上。"
+        },
+        {
+          "id": "JD_ENV_JSON",
+          "name": "高级：环境变量注入",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，注入为脚本的 process.env。仅高级用户。"
         }
       ]
     }
