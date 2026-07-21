@@ -38,8 +38,17 @@ function __qxPermissiveStub(name) {
   });
 }
 
+// 注: 部分原生模块（sharp/canvas/jimp 等图片处理）圈X 无法加载。
+// 实测这些脚本对 require 的 try/catch 在混淆后未必能接住抛错，反而用宽松桩让脚本继续加载更稳；
+// 真用到图片处理时会在运行时报错（属于功能限制，非加载崩溃）。
+var __qxThrowOnRequire = {}; // 暂空，保留扩展位
+
 function require(name) {
   if (name in __qxModules) return __qxModules[name];
+  if (__qxThrowOnRequire[name]) {
+    console.log('[qx-shim] 原生模块不可用(抛错触发降级): ' + name);
+    throw new Error("Cannot find module '" + name + "' (QX 不支持原生模块)");
+  }
   // 规范化: 去掉末尾 .js 再试
   if (!(name in __qxFactories) && name.endsWith('.js')) {
     var bare = name.slice(0, -3);
@@ -535,12 +544,13 @@ __qxDefine('./function/proxy.js', function () {
 
 // ---------- 其他全局兼容 ----------
 if (typeof __QX_G.global === 'undefined') __QX_G.global = __QX_G;
-// 跨平台模板遗留全局：脚本里用 jsonformat/jsonFormat/jsonfomat(拼写错误) 解析 BoxJs 的 JSON 值，等价 JSON.parse
+// 跨平台模板遗留全局：脚本里用 jsonformat/jsonFormat/jsonParse/jsonfomat(拼写错误) 解析 JSON 值，等价 JSON.parse
 // 不同脚本拼写不一，全部注册为别名
 if (typeof __QX_G.jsonformat === 'undefined') {
   var jsonformat = function (s) { return JSON.parse(String(s || '[]')); };
   __QX_G.jsonformat = jsonformat;
   __QX_G.jsonFormat = jsonformat;   // 驼峰
+  __QX_G.jsonParse = jsonformat;    // jsonParse
   __QX_G.jsonfomat = jsonformat;    // 拼写错误（少 r）
   __QX_G.jsonFomat = jsonformat;    // 拼写错误 + 驼峰
 }
