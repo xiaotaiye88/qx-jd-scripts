@@ -6,7 +6,7 @@
 
 | 功能 | 类型 | 说明 |
 |------|------|------|
-| Cookie/Wskey 抓取 | rewrite 重写 | 打开京东 App 时自动抓取 `pt_key`+`pt_pin`+`wskey`，推送 ntfy 并同步 BoxJs |
+| Cookie/Wskey 抓取 | rewrite 重写 | 打开京东 App 时自动抓取 `pt_key`+`pt_pin`+`wskey`，同步 BoxJs 本地存储 |
 | 积分换话费 | task 定时任务 | 京东「首页-赚话费」自动签到做任务，移植自 [6dylan6/jdpro](https://github.com/6dylan6/jdpro) 的 `jd_dwapp.js`（青龙版），经打包管线转换为圈X 单文件脚本 |
 
 ## 快速开始
@@ -48,7 +48,7 @@ https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/qx-jd.b
 
 ```
 ├── jd_scripts.conf          # 圈X 资源订阅（rewrite + task + mitm）
-├── qx_jd_all.js             # Cookie/Wskey 抓取（频率控制 + ntfy + BoxJs 同步）
+├── qx_jd_all.js             # Cookie/Wskey 抓取（频率控制 + BoxJs 同步）
 ├── qx_jd_cookie.js          # 旧版 Cookie 抓取（保留）
 ├── qx_jd_wskey.js           # 旧版 Wskey 抓取（保留）
 ├── boxjs/
@@ -91,7 +91,7 @@ node tools/smoke-test.js   # 冒烟测试
 
 - 仅供学习交流，请于下载后 24 小时内删除，勿用于商业用途。
 - 使用本脚本产生的任何账号风险（包括但不限于黑号、封号）由使用者自行承担。
-- 脚本 Cookie 仅存储在你本机圈X 的 BoxJs 中；ntfy 推送频道为你自己配置的私有频道，请注意勿泄露频道名。
+- 脚本 Cookie 仅存储在你本机圈X 的 BoxJs 中，不会上传到任何外部服务器。
 
 ## 致谢
 

