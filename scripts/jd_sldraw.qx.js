@@ -1,7 +1,7 @@
 /*
  * SL任务抽奖合集 (jd_sldraw.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 09:26:54 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-21 09:57:46 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 1 1 1 1 *
@@ -545,10 +545,14 @@ __qxDefine('./function/proxy.js', function () {
 
 // ---------- 其他全局兼容 ----------
 if (typeof __QX_G.global === 'undefined') __QX_G.global = __QX_G;
-// 跨平台模板遗留全局：脚本 QX 分支里用 jsonformat/jsonFormat(str||"[]") 解析 BoxJs 的 JSON 值，等价 JSON.parse
+// 跨平台模板遗留全局：脚本里用 jsonformat/jsonFormat/jsonfomat(拼写错误) 解析 BoxJs 的 JSON 值，等价 JSON.parse
+// 不同脚本拼写不一，全部注册为别名
 if (typeof __QX_G.jsonformat === 'undefined') {
-  __QX_G.jsonformat = function (s) { return JSON.parse(String(s || '[]')); };
-  __QX_G.jsonFormat = __QX_G.jsonformat;  // 兼容大小写
+  var jsonformat = function (s) { return JSON.parse(String(s || '[]')); };
+  __QX_G.jsonformat = jsonformat;
+  __QX_G.jsonFormat = jsonformat;   // 驼峰
+  __QX_G.jsonfomat = jsonformat;    // 拼写错误（少 r）
+  __QX_G.jsonFomat = jsonformat;    // 拼写错误 + 驼峰
 }
 var __dirname = '/';
 var __filename = 'jd_dwapp.js';
