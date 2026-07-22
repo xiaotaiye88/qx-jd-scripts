@@ -1,15 +1,13 @@
 /**
- * 京东 Cookie + Wskey 抓取 (Quantumult X) - 频率控制版
+ * 京东 Cookie + Wskey 抓取 (Quantumult X) - 去重 + 推送锁版
  *
  * 圈X 重写: ^https?://api\.m\.jd\.com/ → script-request-header
- * 频率: 同账号每分钟最多推送1次
+ * 去重: Cookie/Wskey 内容没变就不推；同账号 10 秒推送锁挡住一次操作的并发请求
  * 附加: 抓到的 pt_key+pt_pin 自动 upsert 到 BoxJs 键 CookiesJD，供任务脚本读取
  *
  * 推送配置: 在 BoxJs 设置 JD_NTFY_TOPIC（如 "mytopic"），脚本会推送到 https://ntfy.sh/mytopic
  *          不配置则仅 BoxJs 本地存储，不外推
  */
-
-const RATE_LIMIT_MS = 60000;
 
 // 从 BoxJs 读取 ntfy topic（不配置则不推送）
 function getNtfyUrl() {
@@ -94,31 +92,43 @@ var ckLine = "", wsLine = "", wp = "";
 
 if (pin && ptKey) {
   var fullCk = "pt_key=" + ptKey + ";pt_pin=" + pin + ";";
-  syncCookiesJD(pin, fullCk);
-  var lastCk = parseInt(pget("jd_ck_" + pin));
-  if (nowMs() - lastCk > RATE_LIMIT_MS) {
-    pset(String(nowMs()), "jd_ck_" + pin);
+  syncCookiesJD(pin, fullCk);  // BoxJs 始终同步最新 Cookie（不受推送锁影响）
+  // 内容去重 + 推送锁：Cookie 没变就不推；同账号 10 秒内只推 1 次（挡住一次操作的并发请求）
+  var ckSig = ptKey;
+  var lastCkSig = pget("jd_cksig_" + pin);
+  var now1 = nowMs();
+  var ckLock = parseInt(pget("jd_cklock_" + pin)) || 0;
+  if (lastCkSig !== ckSig && now1 - ckLock > 10000) {
+    pset(String(now1), "jd_cklock_" + pin);  // 先抢锁，后续并发请求读到新锁即跳过
+    pset(ckSig, "jd_cksig_" + pin);
     ckLine = fullCk;
     needPushCk = true;
     doNotify("JD Cookie", pin, ptKey.substring(0, 30) + "...");
-    console.log("[JD-CK] 推送中: " + pin);
+    console.log("[JD-CK] Cookie 变化, 推送: " + pin);
+  } else if (lastCkSig === ckSig) {
+    console.log("[JD-CK] Cookie 未变化, 跳过: " + pin);
   } else {
-    console.log("[JD-CK] 频率限制, " + pin);
+    console.log("[JD-CK] 推送锁内, 跳过: " + pin);
   }
 }
 
 if (wskey) {
   wp = pin || "unknown";
-  var wskeyKey = "jd_ws_" + wp + "_" + wskey.substring(0, 16);
-  var lastWs = parseInt(pget(wskeyKey));
-  if (nowMs() - lastWs > RATE_LIMIT_MS) {
-    pset(String(nowMs()), wskeyKey);
+  var wsSig = wskey.substring(0, 16);
+  var lastWsSig = pget("jd_wssig_" + wp);
+  var now2 = nowMs();
+  var wsLock = parseInt(pget("jd_wslock_" + wp)) || 0;
+  if (lastWsSig !== wsSig && now2 - wsLock > 10000) {
+    pset(String(now2), "jd_wslock_" + wp);
+    pset(wsSig, "jd_wssig_" + wp);
     wsLine = "pin=" + wp + ";wskey=" + wskey + ";";
     needPushWs = true;
     doNotify("JD WSKEY", wp, "wskey=" + wskey.substring(0, 30) + "...");
-    console.log("[JD-WS] 推送中: " + wp);
+    console.log("[JD-WS] Wskey 变化, 推送: " + wp);
+  } else if (lastWsSig === wsSig) {
+    console.log("[JD-WS] Wskey 未变化, 跳过: " + wp);
   } else {
-    console.log("[JD-WS] 频率限制, " + wp);
+    console.log("[JD-WS] 推送锁内, 跳过: " + wp);
   }
 }
 
