@@ -252,17 +252,25 @@ function genToken(wskey) {
     var body = "body=" + encodeURIComponent(JSON.stringify({ to: "https://plogin.m.jd.com/jd-mlogin/static/html/appjmp_blank.html" }));
     console.log("[WS转换] genToken 请求中...");
     httpPost(url, body, "application/x-www-form-urlencoded;", wskey).then(function (r) {
-      if (r.err) { console.log("[WS转换] genToken 网络错误: " + r.err); resolve(""); return; }
+      if (r.err) { console.log("[WS转换] genToken 网络错误: " + r.err); resolve({}); return; }
       try {
         var j = JSON.parse(r.body);
-        if (j && j.tokenKey) { console.log("[WS转换] genToken 成功"); resolve(j.tokenKey); }
-        else { console.log("[WS转换] genToken 返回无 tokenKey: " + r.body.slice(0, 100)); resolve(""); }
-      } catch (e) { console.log("[WS转换] genToken 解析失败: " + r.body.slice(0, 100)); resolve(""); }
+        if (j && j.tokenKey) {
+          console.log("[WS转换] genToken 成功");
+          // 返回 tokenKey + genToken 响应的 Set-Cookie（Python 的 requests.Session 自动携带这些 cookie 到 appjmp）
+          var extraCk = "";
+          var hdrs = r.headers || {};
+          var sc = hdrs["Set-Cookie"] || hdrs["set-cookie"] || "";
+          if (Array.isArray(sc)) sc = sc.join("; ");
+          if (sc) { extraCk = sc.replace(/;[^=]*?(?=(?:[^;]*$)|(?:[^=]*;))/g, function(m){return m.indexOf('=')>0?m:'';}); }
+          resolve({ tokenKey: j.tokenKey, cookies: extraCk });
+        } else { console.log("[WS转换] genToken 返回无 tokenKey: " + r.body.slice(0, 100)); resolve({}); }
+      } catch (e) { console.log("[WS转换] genToken 解析失败: " + r.body.slice(0, 100)); resolve({}); }
     });
   });
 }
 
-function appjmp(tokenKey, wskey) {
+function appjmp(tokenKey, wskey, extraCookies) {
   return new Promise(function (resolve) {
     var done = false;
     var timer = setTimeout(function () { if (!done) { done = true; console.log("[WS转换] appjmp 超时(20s)"); resolve(""); } }, 20000);
@@ -277,10 +285,21 @@ function appjmp(tokenKey, wskey) {
       return "";
     }
 
-    // 需带 wskey cookie + UA 头（否则京东返回设备绑定页）
-    var wskeyCookie = wskey || "";
+    // 合并 cookie：wskey + genToken 的 session cookie（Python requests.Session 自动带上的）
+    var allCk = wskey || "";
+    if (extraCookies) {
+      // 只取 extraCookies 中没有在 wskey 里出现过的键
+      var ckParts = allCk.split(/;\s*/);
+      var ckNames = {};
+      for (var ci = 0; ci < ckParts.length; ci++) { var eq = ckParts[ci].indexOf("="); if (eq > 0) ckNames[ckParts[ci].substring(0, eq)] = true; }
+      var extraParts = extraCookies.split(/;\s*/);
+      for (var ei = 0; ei < extraParts.length; ei++) {
+        var eq2 = extraParts[ei].indexOf("=");
+        if (eq2 > 0 && !ckNames.hasOwnProperty(extraParts[ei].substring(0, eq2))) { allCk += "; " + extraParts[ei]; }
+      }
+    }
     var ua = "jdapp;android;11.2.8;10.0.4;network/wifi;Mozilla/5.0 (Linux; Android 10; MI 9) AppleWebKit/537.36";
-    var reqHeaders = { "Cookie": wskeyCookie, "User-Agent": ua, "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9" };
+    var reqHeaders = { "Cookie": allCk, "User-Agent": ua, "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9" };
 
     var tokenEnc = encodeURIComponent(tokenKey);
     var toEnc = encodeURIComponent("https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page");
@@ -331,14 +350,13 @@ function appjmp(tokenKey, wskey) {
     var pm = ws.match(/pin=([^;]+)/);
     if (pm) pin = decodeURIComponent(pm[1]);
     console.log("[WS转换] [" + (i + 1) + "/" + wsList.length + "] 处理: " + (pin || "?"));
-    var tokenKey = await genToken(ws);
-    if (!tokenKey) {
-      // wskey 可能过期
+    var gt = await genToken(ws);
+    if (!gt || !gt.tokenKey) {
       if (pin) skip.push(pin);
       else skip.push("账号" + (i + 1));
       continue;
     }
-    var newCk = await appjmp(tokenKey, ws);
+    var newCk = await appjmp(gt.tokenKey, ws, gt.cookies || "");
     if (!newCk) {
       if (pin) fail.push(pin);
       else fail.push("账号" + (i + 1));
