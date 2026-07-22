@@ -264,31 +264,68 @@ function appjmp(tokenKey) {
   return new Promise(function (resolve) {
     var url = "https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=" + encodeURIComponent(tokenKey) + "&to=" + encodeURIComponent("https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page") + "&client_type=android&appid=879&appup_type=1";
     console.log("[WS转换] appjmp 请求中...");
-    // appjmp 返回 302，需要从 Location header 或 Set-Cookie 拿 pt_key
-    httpGet(url).then(function (r) {
-      if (r.err) { console.log("[WS转换] appjmp 网络错误: " + r.err); resolve(""); return; }
-      // 从 body 或 head 解析 cookies
-      var body = r.body || "";
+    var done = false;
+    function finish(ck) { if (done) return; done = true; resolve(ck); }
+
+    // 尝试从 headers/cookies 提取 pt_key+pt_pin
+    function extractCookie(hdrs, body) {
+      var setC = "";
+      if (hdrs) { setC = hdrs["Set-Cookie"] || hdrs["set-cookie"] || ""; }
+      if (Array.isArray(setC)) setC = setC.join("; ");
       var ptKey = "", ptPin = "";
-      var ptk = body.match(/pt_key=([^;&]+)/);
-      if (ptk) ptKey = ptk[1];
-      var ptp = body.match(/pt_pin=([^;&]+)/);
-      if (ptp) ptPin = ptp[1];
-      if (ptKey && ptPin) { resolve("pt_key=" + ptKey + ";pt_pin=" + ptPin + ";"); return; }
-      // 有时在 headers 的 set-cookie 里
-      var hdrs = r.headers || {};
-      var sc = hdrs["Set-Cookie"] || hdrs["set-cookie"] || "";
-      if (Array.isArray(sc)) sc = sc.join("; ");
-      if (sc) {
-        var sck = sc.match(/pt_key=([^;]+)/);
+      if (setC) {
+        var sck = setC.match(/pt_key=([^;]+)/);
         if (sck) ptKey = sck[1];
-        var scp = sc.match(/pt_pin=([^;]+)/);
+        var scp = setC.match(/pt_pin=([^;]+)/);
         if (scp) ptPin = scp[1];
+        if (ptKey && ptPin) return "pt_key=" + ptKey + ";pt_pin=" + ptPin + ";";
       }
-      if (ptKey && ptPin) { resolve("pt_key=" + ptKey + ";pt_pin=" + ptPin + ";"); return; }
-      console.log("[WS转换] appjmp 未能提取 cookie, body长度=" + body.length + ", 头=" + JSON.stringify(hdrs).slice(0, 200));
-      resolve("");
-    });
+      // body 兜底
+      if (body) {
+        var bsk = body.match(/pt_key=([^;&]+)/);
+        var bsp = body.match(/pt_pin=([^;&]+)/);
+        if (bsk && bsp) return "pt_key=" + bsk[1] + ";pt_pin=" + bsp[1] + ";";
+      }
+      return "";
+    }
+
+    // 方式1: $httpClient.get，尝试 redirection=false（圈X 部分版本支持）
+    try {
+      if (typeof $httpClient !== "undefined" && $httpClient.get) {
+        var httpOpts = { url: url };
+        Object.defineProperty ? (Object.defineProperty(httpOpts, 'redirection', { value: false }), Object.defineProperty(httpOpts, 'autoRedirect', { value: false })) : (httpOpts.redirection = false, httpOpts.autoRedirect = false);
+        $httpClient.get(httpOpts, function (err, resp, data) {
+          if (err) { console.log("[WS转换] $httpClient err: " + err); finish(""); return; }
+          if (resp && resp.statusCode >= 300 && resp.statusCode < 400) {
+            console.log("[WS转换] appjmp 收到 " + resp.statusCode + " 重定向");
+          }
+          var ck = extractCookie(resp ? resp.headers : null, data);
+          if (ck) { finish(ck); return; }
+          console.log("[WS转换] appjmp 失败: status=" + (resp ? resp.statusCode : "?") + " body=" + (data ? data.length : 0) + "b");
+          finish("");
+        });
+        return;
+      }
+    } catch (_) {}
+
+    // 方式2: $task.fetch，自带头信息解析
+    try {
+      if (typeof $task !== "undefined") {
+        $task.fetch({ url: url, method: "GET" }).then(
+          function (r) {
+            var ck = extractCookie(r ? r.headers : null, r ? r.body : null);
+            if (ck) { finish(ck); return; }
+            console.log("[WS转换] appjmp 失败: status=" + r.statusCode + " body=" + (r.body ? r.body.length : 0) + "b");
+            finish("");
+          },
+          function (e) { console.log("[WS转换] $task.fetch err: " + e); finish(""); }
+        );
+        return;
+      }
+    } catch (_) {}
+
+    console.log("[WS转换] appjmp 无可用 HTTP API");
+    finish("");
   });
 }
 
