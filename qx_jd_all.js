@@ -153,30 +153,43 @@ function checkDone() {
 
 function pushNtfy(body, title) {
   pending++;
-  var pushed = false;
-  try {
-    if (typeof $task !== "undefined" && $task.fetch) {
-      $task.fetch({
-        url: ntfyUrl,
-        method: "POST",
-        headers: { "Content-Type": "text/plain", Title: title },
-        body: body
-      }).then(function () {
-        console.log("[NTFY] 推送成功: " + title);
-        checkDone();
-      }, function (e) {
-        console.log("[NTFY] 推送失败: " + (e ? (e.error || JSON.stringify(e)) : "unknown"));
-        checkDone();
-      });
-      pushed = true;
-    }
-  } catch (e) {
-    console.log("[NTFY] fetch异常: " + e);
-  }
-  if (!pushed) {
-    console.log("[NTFY] $task.fetch 不可用，跳过推送");
+  var done = false;
+  var timer = setTimeout(function () { finish(false, "timeout 8s"); }, 8000);
+  function finish(ok, info) {
+    if (done) return;
+    done = true;
+    if (timer) { try { clearTimeout(timer); } catch (_) {} }
+    console.log(ok ? "[NTFY] 推送成功: " + title : "[NTFY] 推送失败: " + info);
     checkDone();
   }
+  var opts = { url: ntfyUrl, headers: { "Content-Type": "text/plain", "Title": title }, body: body };
+  // 优先 $httpClient（重写阶段可靠，失败只回调一次，不会触发 "Retry too many times"）
+  if (typeof $httpClient !== "undefined" && $httpClient.post) {
+    try {
+      $httpClient.post(opts, function (error, response) {
+        var code = response && response.statusCode ? response.statusCode : 0;
+        finish(!error && code >= 200 && code < 300, error || ("HTTP " + code));
+      });
+      return;
+    } catch (e) {
+      console.log("[NTFY] $httpClient异常: " + e);
+    }
+  }
+  // 回退 $task.fetch
+  try {
+    if (typeof $task !== "undefined" && $task.fetch) {
+      $task.fetch(Object.assign({ method: "POST" }, opts)).then(
+        function () { finish(true, ""); },
+        function (e) { finish(false, e ? (e.error || JSON.stringify(e)) : "unknown"); }
+      );
+      return;
+    }
+  } catch (e) {
+    console.log("[NTFY] $task.fetch异常: " + e);
+  }
+  console.log("[NTFY] 无可用 HTTP API，跳过");
+  if (timer) { try { clearTimeout(timer); } catch (_) {} }
+  checkDone();
 }
 
 if (needPushCk) pushNtfy(ckLine, "JD_cookie_" + pin);
