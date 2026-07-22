@@ -266,8 +266,6 @@ function appjmp(tokenKey) {
     console.log("[WS转换] appjmp 请求中...");
     var done = false;
     function finish(ck) { if (done) return; done = true; resolve(ck); }
-
-    // 尝试从 headers/cookies 提取 pt_key+pt_pin
     function extractCookie(hdrs, body) {
       var setC = "";
       if (hdrs) { setC = hdrs["Set-Cookie"] || hdrs["set-cookie"] || ""; }
@@ -280,7 +278,6 @@ function appjmp(tokenKey) {
         if (scp) ptPin = scp[1];
         if (ptKey && ptPin) return "pt_key=" + ptKey + ";pt_pin=" + ptPin + ";";
       }
-      // body 兜底
       if (body) {
         var bsk = body.match(/pt_key=([^;&]+)/);
         var bsp = body.match(/pt_pin=([^;&]+)/);
@@ -288,44 +285,43 @@ function appjmp(tokenKey) {
       }
       return "";
     }
+    function tryHttpClient() {
+      try {
+        if (typeof $httpClient !== "undefined" && $httpClient.get) {
+          $httpClient.get({ url: url, redirection: false, autoRedirect: false, followRedirect: false },
+            function (err, resp, data) {
+              if (err) { console.log("[WS转换] $httpClient err: " + err); finish(""); return; }
+              if (resp && resp.statusCode >= 300 && resp.statusCode < 400) {
+                console.log("[WS转换] $httpClient 收到 " + resp.statusCode + " 重定向");
+              }
+              var ck = extractCookie(resp ? resp.headers : null, data);
+              if (ck) { finish(ck); return; }
+              console.log("[WS转换] appjmp 失败: status=" + (resp ? resp.statusCode : "?") + " body=" + (data ? data.length : 0) + "b hdrs=" + JSON.stringify(resp ? resp.headers : {}).slice(0, 300));
+              finish("");
+            });
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    }
 
-    // 方式1: $httpClient.get，尝试 redirection=false（圈X 部分版本支持）
-    try {
-      if (typeof $httpClient !== "undefined" && $httpClient.get) {
-        var httpOpts = { url: url };
-        Object.defineProperty ? (Object.defineProperty(httpOpts, 'redirection', { value: false }), Object.defineProperty(httpOpts, 'autoRedirect', { value: false })) : (httpOpts.redirection = false, httpOpts.autoRedirect = false);
-        $httpClient.get(httpOpts, function (err, resp, data) {
-          if (err) { console.log("[WS转换] $httpClient err: " + err); finish(""); return; }
-          if (resp && resp.statusCode >= 300 && resp.statusCode < 400) {
-            console.log("[WS转换] appjmp 收到 " + resp.statusCode + " 重定向");
-          }
-          var ck = extractCookie(resp ? resp.headers : null, data);
-          if (ck) { finish(ck); return; }
-          console.log("[WS转换] appjmp 失败: status=" + (resp ? resp.statusCode : "?") + " body=" + (data ? data.length : 0) + "b");
-          finish("");
-        });
-        return;
-      }
-    } catch (_) {}
-
-    // 方式2: $task.fetch，自带头信息解析
+    // 方案1: $task.fetch（圈X 原生 API，有时会保留 302 的 Set-Cookie）
     try {
       if (typeof $task !== "undefined") {
         $task.fetch({ url: url, method: "GET" }).then(
           function (r) {
+            console.log("[WS转换] $task.fetch: status=" + r.statusCode + " body=" + (r.body ? r.body.length : 0) + "b hdrs=" + JSON.stringify(r.headers || {}).slice(0, 300));
             var ck = extractCookie(r ? r.headers : null, r ? r.body : null);
             if (ck) { finish(ck); return; }
-            console.log("[WS转换] appjmp 失败: status=" + r.statusCode + " body=" + (r.body ? r.body.length : 0) + "b");
-            finish("");
+            // $task.fetch 没取到，试 $httpClient
+            tryHttpClient();
           },
-          function (e) { console.log("[WS转换] $task.fetch err: " + e); finish(""); }
+          function (e) { console.log("[WS转换] $task.fetch err: " + e); tryHttpClient(); }
         );
         return;
       }
     } catch (_) {}
-
-    console.log("[WS转换] appjmp 无可用 HTTP API");
-    finish("");
+    if (!tryHttpClient()) { console.log("[WS转换] appjmp 无可用 HTTP API"); finish(""); }
   });
 }
 
