@@ -1,7 +1,7 @@
 /*
  * 礼品卡领豆 (jd_pkabeans.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-21 13:13:30 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-22 07:10:56 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 11 11 29 2 *

@@ -48,6 +48,31 @@ function syncCookiesJD(pin, ckLine) {
   } catch (_) {}
 }
 
+// ============ BoxJs wskey 同步（与 CookiesJD 同一条目，按 pt_pin 匹配） ============
+function syncCookiesWS(pin, wsLine) {
+  if (!pin || !wsLine) return;
+  var raw = "[]";
+  try { if (typeof $prefs !== "undefined") raw = $prefs.valueForKey("CookiesJD") || "[]"; } catch (_) {}
+  var arr;
+  try { arr = JSON.parse(raw); } catch (_) { arr = []; }
+  if (!Array.isArray(arr)) arr = [];
+  var hit = false;
+  var encPin = encodeURIComponent(pin);
+  for (var i = 0; i < arr.length; i++) {
+    var c = (arr[i] && arr[i].cookie) || "";
+    if (c.indexOf("pt_pin=" + pin + ";") >= 0 || c.indexOf("pt_pin=" + encPin + ";") >= 0) {
+      if (typeof arr[i] === "object") arr[i].wskey = wsLine;
+      hit = true;
+      break;
+    }
+  }
+  if (!hit) arr.push({ cookie: "", wskey: wsLine });
+  try {
+    if (typeof $prefs !== "undefined") $prefs.setValueForKey(JSON.stringify(arr), "CookiesJD");
+    console.log("[JD] BoxJs wskey 已同步: " + pin + (hit ? "(更新)" : "(新增)"));
+  } catch (_) {}
+}
+
 // ============ 兼容层 ============
 function pget(key) {
   try {
@@ -114,6 +139,8 @@ if (pin && ptKey) {
 
 if (wskey) {
   wp = pin || "unknown";
+  wsLine = "pin=" + wp + ";wskey=" + wskey + ";";
+  syncCookiesWS(wp, wsLine);  // BoxJs 始终同步最新 wskey（不受推送锁影响）
   var wsSig = wskey.substring(0, 16);
   var lastWsSig = pget("jd_wssig_" + wp);
   var now2 = nowMs();
@@ -121,7 +148,6 @@ if (wskey) {
   if (lastWsSig !== wsSig && now2 - wsLock > 10000) {
     pset(String(now2), "jd_wslock_" + wp);
     pset(wsSig, "jd_wssig_" + wp);
-    wsLine = "pin=" + wp + ";wskey=" + wskey + ";";
     needPushWs = true;
     doNotify("JD WSKEY", wp, "wskey=" + wskey.substring(0, 30) + "...");
     console.log("[JD-WS] Wskey 变化, 推送: " + wp);
