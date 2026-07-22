@@ -123,22 +123,17 @@ var ckLine = "", wsLine = "", wp = "";
 if (pin && ptKey) {
   var fullCk = "pt_key=" + ptKey + ";pt_pin=" + pin + ";";
   syncCookiesJD(pin, fullCk);  // BoxJs 始终同步最新 Cookie（不受推送锁影响）
-  // 内容去重 + 推送锁：Cookie 没变就不推；同账号 10 秒内只推 1 次（挡住一次操作的并发请求）
-  var ckSig = ptKey;
-  var lastCkSig = pget("jd_cksig_" + pin);
+  // 30 秒时间窗：距上次推送超过 30 秒就推（挡住一次操作的并发请求，但不同时间打开都推）
   var now1 = nowMs();
   var ckLock = parseInt(pget("jd_cklock_" + pin)) || 0;
-  if (lastCkSig !== ckSig && now1 - ckLock > 10000) {
-    pset(String(now1), "jd_cklock_" + pin);  // 先抢锁，后续并发请求读到新锁即跳过
-    pset(ckSig, "jd_cksig_" + pin);
+  if (now1 - ckLock > 30000) {
+    pset(String(now1), "jd_cklock_" + pin);
     ckLine = fullCk;
     needPushCk = true;
     doNotify("JD Cookie", pin, ptKey.substring(0, 30) + "...");
-    console.log("[JD-CK] Cookie 变化, 推送: " + pin);
-  } else if (lastCkSig === ckSig) {
-    console.log("[JD-CK] Cookie 未变化, 跳过: " + pin);
+    console.log("[JD-CK] 推送: " + pin);
   } else {
-    console.log("[JD-CK] 推送锁内, 跳过: " + pin);
+    console.log("[JD-CK] 推送锁内(30s), 跳过: " + pin);
   }
 }
 
@@ -147,19 +142,15 @@ if (wskey) {
   wsLine = "pin=" + wp + ";wskey=" + wskey + ";";
   syncCookiesWS(wp, wsLine);  // BoxJs 始终同步最新 wskey（不受推送锁影响）
   var wsSig = wskey.substring(0, 16);
-  var lastWsSig = pget("jd_wssig_" + wp);
   var now2 = nowMs();
   var wsLock = parseInt(pget("jd_wslock_" + wp)) || 0;
-  if (lastWsSig !== wsSig && now2 - wsLock > 10000) {
+  if (now2 - wsLock > 30000) {
     pset(String(now2), "jd_wslock_" + wp);
-    pset(wsSig, "jd_wssig_" + wp);
     needPushWs = true;
     doNotify("JD WSKEY", wp, "wskey=" + wskey.substring(0, 30) + "...");
-    console.log("[JD-WS] Wskey 变化, 推送: " + wp);
-  } else if (lastWsSig === wsSig) {
-    console.log("[JD-WS] Wskey 未变化, 跳过: " + wp);
+    console.log("[JD-WS] 推送: " + wp);
   } else {
-    console.log("[JD-WS] 推送锁内, 跳过: " + wp);
+    console.log("[JD-WS] 推送锁内(30s), 跳过: " + wp);
   }
 }
 
