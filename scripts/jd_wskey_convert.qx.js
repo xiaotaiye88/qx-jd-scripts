@@ -270,64 +270,52 @@ function genToken(wskey) {
   });
 }
 
-function appjmp(tokenKey, wskey, extraCookies) {
+function getPtKeyByDirectApi(wskey) {
   return new Promise(function (resolve) {
     var done = false;
-    var timer = setTimeout(function () { if (!done) { done = true; console.log("[WS转换] appjmp 超时(20s)"); resolve(""); } }, 20000);
+    var timer = setTimeout(function () { if (!done) { done = true; resolve(""); } }, 25000);
     function finish(ck) { try { clearTimeout(timer); } catch (_) {} if (done) return; done = true; resolve(ck); }
-    function extractCookie(hdrs, body) {
-      var setC = "", ptKey = "", ptPin = "";
-      if (hdrs) { setC = hdrs["Set-Cookie"] || hdrs["set-cookie"] || ""; }
-      if (Array.isArray(setC)) setC = setC.join("; ");
-      if (setC) { var sck = setC.match(/pt_key=([^;]+)/); var scp = setC.match(/pt_pin=([^;]+)/); if (sck) ptKey = sck[1]; if (scp) ptPin = scp[1]; }
-      if (ptKey && ptPin) return "pt_key=" + ptKey + ";pt_pin=" + ptPin + ";";
-      if (body) { var bsk = body.match(/pt_key=([^;&"']{10,200})/); var bsp = body.match(/pt_pin=([^;&"']{1,100})/); if (bsk && bsp) { ptKey = bsk[1]; ptPin = bsp[1]; if (ptKey && ptPin) return "pt_key=" + ptKey + ";pt_pin=" + ptPin + ";"; } }
-      return "";
-    }
 
-    // 合并 cookie：wskey + genToken 的 session cookie（Python requests.Session 自动带上的）
-    var allCk = wskey || "";
-    if (extraCookies) {
-      // 只取 extraCookies 中没有在 wskey 里出现过的键
-      var ckParts = allCk.split(/;\s*/);
-      var ckNames = {};
-      for (var ci = 0; ci < ckParts.length; ci++) { var eq = ckParts[ci].indexOf("="); if (eq > 0) ckNames[ckParts[ci].substring(0, eq)] = true; }
-      var extraParts = extraCookies.split(/;\s*/);
-      for (var ei = 0; ei < extraParts.length; ei++) {
-        var eq2 = extraParts[ei].indexOf("=");
-        if (eq2 > 0 && !ckNames.hasOwnProperty(extraParts[ei].substring(0, eq2))) { allCk += "; " + extraParts[ei]; }
-      }
-    }
-    var ua = "jdapp;android;11.2.8;10.0.4;network/wifi;Mozilla/5.0 (Linux; Android 10; MI 9) AppleWebKit/537.36";
-    var reqHeaders = { "Cookie": allCk, "User-Agent": ua, "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9" };
+    var ua = "jdapp;iPhone;11.0.4;15.0;network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15";
+    var hdrs = { "Cookie": wskey, "User-Agent": ua };
 
-    var tokenEnc = encodeURIComponent(tokenKey);
-    var toEnc = encodeURIComponent("https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page");
-    var url1 = "https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=" + tokenEnc + "&to=" + toEnc + "&client_type=android&appid=879&appup_type=1";
-    var url2 = "https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page?tokenKey=" + tokenEnc + "&client_type=android&appid=879&appup_type=1";
+    // 依次尝试以下 URL，看哪个响应里会 Set-Cookie pt_key
+    var urls = [
+      { url: "https://api.m.jd.com/client.action?functionId=genToken&clientVersion=11.2.8&client=ios&st=0&sv=102&sign=mock", label: "genToken-A" },
+      { url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_MJ_H5&callSource=newmain", label: "me-api" },
+    ];
 
-    function tryUrl(url, label, cb) {
+    var idx = 0;
+    function next() {
+      if (idx >= urls.length) { console.log("[WS转换] 直连获取 pt_key 全部失败"); finish(""); return; }
+      var item = urls[idx++];
+      console.log("[WS转换] 尝试 " + item.label + " ...");
       try {
-        if (typeof $task !== "undefined") {
-          $task.fetch({ url: url, method: "GET", headers: reqHeaders }).then(
-            function (r) {
-              if (done) return;
-              console.log("[WS转换] " + label + ": status=" + r.statusCode + " body=" + (r.body ? r.body.length : 0) + "b");
-              var ck = extractCookie(r ? r.headers : null, r ? r.body : null);
-              if (ck) { finish(ck); return; }
-              var bodyExcerpt = (r.body || "").replace(/[\s\r\n]+/g, " ").slice(0, 300);
-              console.log("[WS转换] " + label + " body≈ " + bodyExcerpt);
-              if (cb) cb(); else finish("");
-            },
-            function (e) { if (!done) { console.log("[WS转换] " + label + " err: " + e); if (cb) cb(); else finish(""); } }
-          );
-          return true;
-        }
-      } catch (_) {}
-      return false;
+        $task.fetch({ url: item.url, method: "GET", headers: hdrs }).then(
+          function (r) {
+            if (done) return;
+            var body = r.body || "";
+            var setC = "";
+            if (r.headers) { setC = r.headers["Set-Cookie"] || r.headers["set-cookie"] || ""; }
+            if (Array.isArray(setC)) setC = setC.join("; ");
+            console.log("[WS转换] " + item.label + " status=" + r.statusCode + " body=" + body.length + "b" + (setC ? " Set-Cookie=" + setC.slice(0, 100) : ""));
+            // 从 Set-Cookie 提取 pt_key
+            if (setC) {
+              var ptk = setC.match(/pt_key=([^;]+)/);
+              var ptp = setC.match(/pt_pin=([^;]+)/);
+              if (ptk && ptp) { finish("pt_key=" + ptk[1] + ";pt_pin=" + ptp[1] + ";"); return; }
+            }
+            // body 里提取
+            var bsk = body.match(/pt_key=([^;&"']+)/);
+            var bsp = body.match(/pt_pin=([^;&"']+)/);
+            if (bsk && bsp) { finish("pt_key=" + bsk[1] + ";pt_pin=" + bsp[1] + ";"); return; }
+            next();
+          },
+          function (e) { if (!done) { console.log("[WS转换] " + item.label + " err: " + e); next(); } }
+        );
+      } catch (e) { if (!done) { console.log("[WS转换] " + item.label + " 异常: " + e); next(); } }
     }
-
-    tryUrl(url1, "appjmp", function () { tryUrl(url2, "auth_page", null); });
+    next();
   });
 }
 
@@ -356,7 +344,7 @@ function appjmp(tokenKey, wskey, extraCookies) {
       else skip.push("账号" + (i + 1));
       continue;
     }
-    var newCk = await appjmp(gt.tokenKey, ws, gt.cookies || "");
+    var newCk = await getPtKeyByDirectApi(ws);
     if (!newCk) {
       if (pin) fail.push(pin);
       else fail.push("账号" + (i + 1));
