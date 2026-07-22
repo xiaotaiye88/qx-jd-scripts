@@ -267,7 +267,7 @@ function generateConf(scripts) {
     '',
     '[rewrite_local]',
     '# 抓取 pt_key + pt_pin + wskey，每分钟同账号最多推1次',
-    '^https?://api\\.m\\.jd\\.com/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/qx_jd_all.js',
+    '^https?://(api\\.m\\.jd\\.com|sh\\.jd\\.com)/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/qx_jd_all.js',
     '',
     '[task_local]',
   ];
