@@ -303,7 +303,7 @@ function generateTasks(scripts) {
 
 function generateBoxJs(scripts) {
   const settings = [
-    { id: 'CookiesJD', name: '方式一：多账号 Cookie（推荐）', val: '[]', type: 'textarea', desc: 'JSON 数组，格式 [{"cookie":"pt_key=xxx;pt_pin=xxx;"}]。使用本仓库抓包重写时会自动维护此项。' },
+    { id: 'CookiesJD', name: '方式一：多账号 Cookie（推荐）', val: '[]', type: 'textarea', desc: 'JSON 数组，格式 [{"cookie":"pt_key=xxx;pt_pin=xxx;"}]。使用本仓库抓包重写时会自动维护此项，wskey 也会自动存入同一条目。' },
     { id: 'CookieJD', name: '方式二：账号1 Cookie', val: '', type: 'textarea', desc: 'pt_key=xxx;pt_pin=xxx; 格式。勿与方式一混用。' },
     { id: 'CookieJD2', name: '方式二：账号2 Cookie', val: '', type: 'textarea', desc: '第二个账号（可选），格式同上。' },
     { id: 'JD_ENV_JSON', name: '高级：环境变量注入', val: '{}', type: 'textarea', desc: 'JSON 对象，注入为脚本的 process.env。仅高级用户。' },
