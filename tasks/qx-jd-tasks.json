@@ -57,6 +57,7 @@
     "11 9,16 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xqmh.qx.js, tag=新奇盲盒, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png, enabled=true",
     "38 7,19 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xsjx.qx.js, tag=限时京喜, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jingxi.png, enabled=true",
     "20 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_yssign.qx.js, tag=ys每日签到, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png, enabled=true",
-    "30 7 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ckcheck_qx.js, tag=CK检测, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true"
+    "30 7 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ckcheck_qx.js, tag=CK检测, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true",
+    "57 21,9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wskey_convert.qx.js, tag=WS转换, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true"
   ]
 }

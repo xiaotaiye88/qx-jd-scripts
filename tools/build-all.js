@@ -98,6 +98,12 @@ const NATIVE_SCRIPTS = [
     desc: '检测所有京东 Cookie 有效性，失效账号及时通知（圈X 原生版，替代青龙的 jd_CheckCK）',
     cron: '30 7 * * *',
   },
+  {
+    file: 'jd_wskey_convert.qx.js',
+    name: 'WS转换',
+    desc: '读取 BoxJs 中存储的 wskey，自动转换为 pt_key 更新 CookiesJD（替代青龙的 jd_wsck.py）',
+    cron: '57 21,9 * * *',
+  },
 ];
 
 function readCached(name) {
