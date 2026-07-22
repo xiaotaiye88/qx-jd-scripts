@@ -262,66 +262,53 @@ function genToken(wskey) {
 
 function appjmp(tokenKey) {
   return new Promise(function (resolve) {
-    var url = "https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=" + encodeURIComponent(tokenKey) + "&to=" + encodeURIComponent("https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page") + "&client_type=android&appid=879&appup_type=1";
-    console.log("[WS转换] appjmp 请求中...");
     var done = false;
-    function finish(ck) { if (done) return; done = true; resolve(ck); }
+    var timer = setTimeout(function () { if (!done) { done = true; console.log("[WS转换] appjmp 超时(20s)"); resolve(""); } }, 20000);
+    function finish(ck) { try { clearTimeout(timer); } catch (_) {} if (done) return; done = true; resolve(ck); }
     function extractCookie(hdrs, body) {
-      var setC = "";
+      var setC = "", ptKey = "", ptPin = "";
       if (hdrs) { setC = hdrs["Set-Cookie"] || hdrs["set-cookie"] || ""; }
       if (Array.isArray(setC)) setC = setC.join("; ");
-      var ptKey = "", ptPin = "";
-      if (setC) {
-        var sck = setC.match(/pt_key=([^;]+)/);
-        if (sck) ptKey = sck[1];
-        var scp = setC.match(/pt_pin=([^;]+)/);
-        if (scp) ptPin = scp[1];
-        if (ptKey && ptPin) return "pt_key=" + ptKey + ";pt_pin=" + ptPin + ";";
-      }
-      if (body) {
-        var bsk = body.match(/pt_key=([^;&]+)/);
-        var bsp = body.match(/pt_pin=([^;&]+)/);
-        if (bsk && bsp) return "pt_key=" + bsk[1] + ";pt_pin=" + bsp[1] + ";";
-      }
+      if (setC) { var sck = setC.match(/pt_key=([^;]+)/); var scp = setC.match(/pt_pin=([^;]+)/); if (sck) ptKey = sck[1]; if (scp) ptPin = scp[1]; }
+      if (ptKey && ptPin) return "pt_key=" + ptKey + ";pt_pin=" + ptPin + ";";
+      if (body) { var bsk = body.match(/pt_key=([^;&"']{10,200})/); var bsp = body.match(/pt_pin=([^;&"']{1,100})/); if (bsk && bsp) { ptKey = bsk[1]; ptPin = bsp[1]; if (ptKey && ptPin) return "pt_key=" + ptKey + ";pt_pin=" + ptPin + ";"; } }
       return "";
     }
-    function tryHttpClient() {
+
+    // URL1: appjmp（标准流程，圈X 会跟随 302 丢掉 Set-Cookie）
+    // URL2: 直接请求 302 的目标页（绕过 appjmp 的 302，直接拿 pt_key）
+    var url1 = "https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=" + encodeURIComponent(tokenKey) + "&to=" + encodeURIComponent("https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page") + "&client_type=android&appid=879&appup_type=1";
+    var url2 = "https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page?tokenKey=" + encodeURIComponent(tokenKey) + "&client_type=android&appid=879&appup_type=1";
+
+    // 先试 appjmp
+    console.log("[WS转换] appjmp 请求中...");
+    function tryUrl(url, label, cb) {
       try {
-        if (typeof $httpClient !== "undefined" && $httpClient.get) {
-          $httpClient.get({ url: url, redirection: false, autoRedirect: false, followRedirect: false },
-            function (err, resp, data) {
-              if (err) { console.log("[WS转换] $httpClient err: " + err); finish(""); return; }
-              if (resp && resp.statusCode >= 300 && resp.statusCode < 400) {
-                console.log("[WS转换] $httpClient 收到 " + resp.statusCode + " 重定向");
-              }
-              var ck = extractCookie(resp ? resp.headers : null, data);
+        if (typeof $task !== "undefined") {
+          $task.fetch({ url: url, method: "GET" }).then(
+            function (r) {
+              if (done) return;
+              console.log("[WS转换] " + label + ": status=" + r.statusCode + " body=" + (r.body ? r.body.length : 0) + "b");
+              var ck = extractCookie(r ? r.headers : null, r ? r.body : null);
               if (ck) { finish(ck); return; }
-              console.log("[WS转换] appjmp 失败: status=" + (resp ? resp.statusCode : "?") + " body=" + (data ? data.length : 0) + "b hdrs=" + JSON.stringify(resp ? resp.headers : {}).slice(0, 300));
-              finish("");
-            });
+              // 打印 body 前 300 字节帮助判断
+              var bodyExcerpt = (r.body || "").replace(/[\s\r\n]+/g, " ").slice(0, 300);
+              console.log("[WS转换] " + label + " body≈ " + bodyExcerpt);
+              if (cb) cb();
+              else finish("");
+            },
+            function (e) { if (!done) { console.log("[WS转换] " + label + " err: " + e); if (cb) cb(); else finish(""); } }
+          );
           return true;
         }
       } catch (_) {}
       return false;
     }
 
-    // 方案1: $task.fetch（圈X 原生 API，有时会保留 302 的 Set-Cookie）
-    try {
-      if (typeof $task !== "undefined") {
-        $task.fetch({ url: url, method: "GET" }).then(
-          function (r) {
-            console.log("[WS转换] $task.fetch: status=" + r.statusCode + " body=" + (r.body ? r.body.length : 0) + "b hdrs=" + JSON.stringify(r.headers || {}).slice(0, 300));
-            var ck = extractCookie(r ? r.headers : null, r ? r.body : null);
-            if (ck) { finish(ck); return; }
-            // $task.fetch 没取到，试 $httpClient
-            tryHttpClient();
-          },
-          function (e) { console.log("[WS转换] $task.fetch err: " + e); tryHttpClient(); }
-        );
-        return;
-      }
-    } catch (_) {}
-    if (!tryHttpClient()) { console.log("[WS转换] appjmp 无可用 HTTP API"); finish(""); }
+    // 先试 appjmp，失败后试直接请求 auth_page
+    tryUrl(url1, "appjmp", function () {
+      tryUrl(url2, "auth_page", null);
+    });
   });
 }
 
