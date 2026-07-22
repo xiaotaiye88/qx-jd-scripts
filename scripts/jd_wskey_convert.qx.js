@@ -164,22 +164,31 @@ function loadWsList() {
   return arr.filter(function (it) { return it && it.wskey && it.wskey.indexOf("wskey=") > 0; });
 }
 
-function updateCookie(pin, newCk) {
+function updateCookie(pin, newCk, wsLine) {
   var raw = prefsRead("CookiesJD");
   var arr;
   try { arr = JSON.parse(raw); } catch (_) { arr = []; }
   if (!Array.isArray(arr)) arr = [];
   var hit = false, i = 0;
   var encPin = encodeURIComponent(pin);
+  // 提取 wskey 值用于模糊匹配
+  var wsKeyVal = (wsLine || "").match(/wskey=([^;]+)/);
+  var wsVal = wsKeyVal ? wsKeyVal[1] : "";
   for (; i < arr.length; i++) {
     var c = (arr[i] && arr[i].cookie) || "";
-    if (c.indexOf("pt_pin=" + pin + ";") >= 0 || c.indexOf("pt_pin=" + encPin + ";") >= 0) {
+    var ew = (arr[i] && arr[i].wskey) || "";
+    // 匹配1: 按 pt_pin
+    var byPin = c.indexOf("pt_pin=" + pin + ";") >= 0 || c.indexOf("pt_pin=" + encPin + ";") >= 0;
+    // 匹配2: 按 wskey 值（既包含已有条目也有 wskey，也匹配刚存的无 pt_key 条目）
+    var byWs = wsVal && ew.indexOf(wsVal) >= 0;
+    if (byPin || byWs) {
       arr[i].cookie = newCk;
+      if (!arr[i].wskey) arr[i].wskey = wsLine || "";
       hit = true;
       break;
     }
   }
-  if (!hit) arr.push({ cookie: newCk, wskey: "" });
+  if (!hit) arr.push({ cookie: newCk, wskey: wsLine || "" });
   if (prefsWrite("CookiesJD", JSON.stringify(arr))) {
     console.log("[WS转换] CookiesJD 已更新: " + pin);
     return true;
@@ -316,7 +325,7 @@ function appjmp(tokenKey) {
       continue;
     }
     // 更新 BoxJs
-    updateCookie(pin, newCk);
+    updateCookie(pin, newCk, item.wskey || "");
     success.push(pin || ("账号" + (i + 1)));
     console.log("[WS转换] ✅ " + pin + " 转换成功");
   }

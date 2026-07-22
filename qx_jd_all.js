@@ -48,28 +48,33 @@ function syncCookiesJD(pin, ckLine) {
   } catch (_) {}
 }
 
-// ============ BoxJs wskey 同步（与 CookiesJD 同一条目，按 pt_pin 匹配） ============
+// ============ BoxJs wskey 同步（与 CookiesJD 同一条目，识别方式：pin → wskey 值） ============
 function syncCookiesWS(pin, wsLine) {
-  if (!pin || !wsLine) return;
+  if (!wsLine) return;
   var raw = "[]";
   try { if (typeof $prefs !== "undefined") raw = $prefs.valueForKey("CookiesJD") || "[]"; } catch (_) {}
   var arr;
   try { arr = JSON.parse(raw); } catch (_) { arr = []; }
   if (!Array.isArray(arr)) arr = [];
-  var hit = false;
-  var encPin = encodeURIComponent(pin);
-  for (var i = 0; i < arr.length; i++) {
+  var wsVal = (wsLine.match(/wskey=([^;]+)/) || [])[1] || "";
+  var hit = false, i = 0;
+  var encPin = encodeURIComponent(pin || "");
+  for (; i < arr.length; i++) {
     var c = (arr[i] && arr[i].cookie) || "";
-    if (c.indexOf("pt_pin=" + pin + ";") >= 0 || c.indexOf("pt_pin=" + encPin + ";") >= 0) {
+    var ew = (arr[i] && arr[i].wskey) || "";
+    // 匹配方式1: 按 pt_pin 匹配已有条目
+    var byPin = pin && (c.indexOf("pt_pin=" + pin + ";") >= 0 || c.indexOf("pt_pin=" + encPin + ";") >= 0);
+    // 匹配方式2: 按 wskey 值匹配（即使 pin 为空也能合到同一账号）
+    var byWs = wsVal && ew.indexOf(wsVal) >= 0;
+    if (byPin || byWs) {
       if (typeof arr[i] === "object") arr[i].wskey = wsLine;
-      hit = true;
-      break;
+      hit = true; break;
     }
   }
   if (!hit) arr.push({ cookie: "", wskey: wsLine });
   try {
     if (typeof $prefs !== "undefined") $prefs.setValueForKey(JSON.stringify(arr), "CookiesJD");
-    console.log("[JD] BoxJs wskey 已同步: " + pin + (hit ? "(更新)" : "(新增)"));
+    console.log("[JD] BoxJs wskey 已同步: " + (pin || "?") + (hit ? "(更新)" : "(新增)"));
   } catch (_) {}
 }
 
