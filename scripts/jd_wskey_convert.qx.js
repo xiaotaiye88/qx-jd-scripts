@@ -220,9 +220,11 @@ function httpGet(url) {
   });
 }
 
+  var JD_UA = "jdapp;android;11.2.8;10.0.4;network/wifi;Mozilla/5.0 (Linux; Android 10; MI 9) AppleWebKit/537.36";
+
 function httpPost(url, body, contentType, cookie) {
   return new Promise(function (resolve) {
-    var opts = { url: url, method: "POST", headers: {} };
+    var opts = { url: url, method: "POST", headers: { "User-Agent": JD_UA, "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9" } };
     if (cookie) opts.headers["Cookie"] = cookie;
     if (contentType) opts.headers["Content-Type"] = contentType;
     if (body) opts.body = body;
@@ -260,7 +262,7 @@ function genToken(wskey) {
   });
 }
 
-function appjmp(tokenKey) {
+function appjmp(tokenKey, wskey) {
   return new Promise(function (resolve) {
     var done = false;
     var timer = setTimeout(function () { if (!done) { done = true; console.log("[WS转换] appjmp 超时(20s)"); resolve(""); } }, 20000);
@@ -275,27 +277,28 @@ function appjmp(tokenKey) {
       return "";
     }
 
-    // URL1: appjmp（标准流程，圈X 会跟随 302 丢掉 Set-Cookie）
-    // URL2: 直接请求 302 的目标页（绕过 appjmp 的 302，直接拿 pt_key）
-    var url1 = "https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=" + encodeURIComponent(tokenKey) + "&to=" + encodeURIComponent("https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page") + "&client_type=android&appid=879&appup_type=1";
-    var url2 = "https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page?tokenKey=" + encodeURIComponent(tokenKey) + "&client_type=android&appid=879&appup_type=1";
+    // 需带 wskey cookie + UA 头（否则京东返回设备绑定页）
+    var wskeyCookie = wskey || "";
+    var ua = "jdapp;android;11.2.8;10.0.4;network/wifi;Mozilla/5.0 (Linux; Android 10; MI 9) AppleWebKit/537.36";
+    var reqHeaders = { "Cookie": wskeyCookie, "User-Agent": ua, "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9" };
 
-    // 先试 appjmp
-    console.log("[WS转换] appjmp 请求中...");
+    var tokenEnc = encodeURIComponent(tokenKey);
+    var toEnc = encodeURIComponent("https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page");
+    var url1 = "https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=" + tokenEnc + "&to=" + toEnc + "&client_type=android&appid=879&appup_type=1";
+    var url2 = "https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page?tokenKey=" + tokenEnc + "&client_type=android&appid=879&appup_type=1";
+
     function tryUrl(url, label, cb) {
       try {
         if (typeof $task !== "undefined") {
-          $task.fetch({ url: url, method: "GET" }).then(
+          $task.fetch({ url: url, method: "GET", headers: reqHeaders }).then(
             function (r) {
               if (done) return;
               console.log("[WS转换] " + label + ": status=" + r.statusCode + " body=" + (r.body ? r.body.length : 0) + "b");
               var ck = extractCookie(r ? r.headers : null, r ? r.body : null);
               if (ck) { finish(ck); return; }
-              // 打印 body 前 300 字节帮助判断
               var bodyExcerpt = (r.body || "").replace(/[\s\r\n]+/g, " ").slice(0, 300);
               console.log("[WS转换] " + label + " body≈ " + bodyExcerpt);
-              if (cb) cb();
-              else finish("");
+              if (cb) cb(); else finish("");
             },
             function (e) { if (!done) { console.log("[WS转换] " + label + " err: " + e); if (cb) cb(); else finish(""); } }
           );
@@ -305,10 +308,7 @@ function appjmp(tokenKey) {
       return false;
     }
 
-    // 先试 appjmp，失败后试直接请求 auth_page
-    tryUrl(url1, "appjmp", function () {
-      tryUrl(url2, "auth_page", null);
-    });
+    tryUrl(url1, "appjmp", function () { tryUrl(url2, "auth_page", null); });
   });
 }
 
@@ -338,7 +338,7 @@ function appjmp(tokenKey) {
       else skip.push("账号" + (i + 1));
       continue;
     }
-    var newCk = await appjmp(tokenKey);
+    var newCk = await appjmp(tokenKey, ws);
     if (!newCk) {
       if (pin) fail.push(pin);
       else fail.push("账号" + (i + 1));
