@@ -3,7 +3,12 @@
 // 让青龙面板(Node.js)的京东脚本能在 Quantumult X 的 JavaScriptCore 环境运行。
 // 提供：CommonJS require 注册表、process/path/Buffer 垫片、
 //       got/axios 子集（基于 $task.fetch）、https/proxy 等桩模块。
+//
+// 调试模式：BoxJs 设置 JD_DEBUG_HTTP = "true" 后，每个 HTTP 请求都会在日志中显示
+//           URL + 状态码 + 耗时 + body 大小，方便对比 QX vs QL 的 API 调用差异。
 // ============================================================================
+
+try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD_DEBUG_HTTP'); if (__tmpDbg === 'true') { __QX_DEBUG_HTTP = true; } } } catch (_) {}
 
 var __QX_G = (typeof globalThis !== 'undefined') ? globalThis : this;
 
@@ -401,7 +406,20 @@ function __qxFetch(reqOpts) {
     };
     if (reqOpts.body !== undefined && reqOpts.body !== null) o.body = String(reqOpts.body);
     if (reqOpts.timeout) o.timeout = reqOpts.timeout;
+    // 调试模式：记录每个请求的 URL + 状态码，方便定位 QX vs QL 差异
+    if (typeof __QX_DEBUG_HTTP !== 'undefined' && __QX_DEBUG_HTTP) {
+      var shortUrl = (o.url || '').replace(/[?&]sign=[^&]+/,'?sign=...').replace(/[?&]body=[^&]+/,'?body=...').replace(/https?:\/\/[^\/]+\//,'/');
+      console.log('[QX-HTTP] ' + o.method + ' ' + shortUrl);
+      var t0 = Date.now ? Date.now() : 0;
+    }
+    var __debugFlag = (typeof __QX_DEBUG_HTTP !== 'undefined' && __QX_DEBUG_HTTP);
+    var __shortUrl = __debugFlag ? (o.url || '').replace(/[?&]sign=[^&]+/,'?sign=...').replace(/[?&]body=[^&]+/,'?body=...').replace(/https?:\/\/[^\/]+\//,'/') : '';
+    var __t0 = __debugFlag ? (Date.now ? Date.now() : 0) : 0;
     $task.fetch(o).then(function (resp) {
+      if (__debugFlag) {
+        var ms = (Date.now ? Date.now() : 0) - __t0;
+        console.log('[QX-HTTP] ' + resp.statusCode + ' ' + __shortUrl + ' (' + ms + 'ms body=' + (resp.body ? resp.body.length : 0) + 'b)');
+      }
       resolve({
         statusCode: resp.statusCode || resp.status || 0,
         headers: resp.headers || {},
@@ -409,6 +427,7 @@ function __qxFetch(reqOpts) {
         url: o.url
       });
     }, function (err) {
+      if (__debugFlag) console.log('[QX-HTTP] ERR ' + __shortUrl + ': ' + (err ? (err.error || String(err)) : '?'));
       reject(new Error((err && err.error) ? err.error : String(err)));
     });
   });
