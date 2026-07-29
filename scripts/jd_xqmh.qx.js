@@ -1,7 +1,7 @@
 /*
  * 新奇盲盒 (jd_xqmh.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-29 08:21:51 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-29 08:26:14 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 11 9,16 * * *
@@ -637,29 +637,24 @@ if (typeof __QX_G.crypto === 'undefined') {
       }
       var method = (opts.method || 'GET').toUpperCase();
       if (typeof cb === 'function') {
-        var body = '', ended = false;
-        var resObj = {
-          statusCode: 0, headers: {},
-          on: function (evt, fn) {
-            if (evt === 'data') this._onData = fn;
-            if (evt === 'end') this._onEnd = fn;
-            if (evt === 'error') this._onError = fn;
-            if (ended && evt === 'end') fn();
-            return this;
-          },
-          _feed: function (data) { body += data; if (this._onData) this._onData(data); },
-          _done: function () { ended = true; if (this._onEnd) this._onEnd(); },
-          _err: function (e) { if (this._onError) this._onError(e); }
-        };
-        __qxFetch({ url: opts.url, method: method, headers: opts.headers || {}, body: opts._body || undefined, timeout: opts.timeout })
-          .then(function (resp) { resObj.statusCode = resp.statusCode; resObj.headers = resp.headers; if (resp.body) resObj._feed(resp.body); resObj._done(); },
-                function (err) { resObj._err(err); resObj._done(); });
         var reqObj = {
           write: function (data) { opts._body = (opts._body || '') + String(data); },
           end: function (data) { if (data) this.write(data); },
           on: function (evt, fn) { if (evt === 'error') opts._onReqError = fn; return this; }
         };
-        setTimeout(function () { cb(resObj); }, 0);
+        // 先通过 setImmediate 让 req.write/req.end 有机会在 fetch 前执行
+        setTimeout(function () {
+          __qxFetch({ url: opts.url, method: method, headers: opts.headers || {}, body: opts._body || undefined, timeout: opts.timeout })
+            .then(function (resp) {
+              var resObj = { statusCode: resp.statusCode, headers: resp.headers, body: resp.body || '', ended: false };
+              resObj.on = function (evt, fn) { if (evt === 'data') { if (resObj.body) fn(resObj.body); } else if (evt === 'end') { fn(); } else if (evt === 'error') { /* noop */ } return this; };
+              cb(resObj);
+            }, function (err) {
+              var resObj = { statusCode: 0, headers: {}, body: '', ended: true };
+              resObj.on = function (evt, fn) { if (evt === 'error') fn(err); else if (evt === 'end') fn(); return this; };
+              cb(resObj);
+            });
+        }, 10);
         return reqObj;
       }
       return __qxFetch({ url: opts.url, method: method, headers: opts.headers || {}, body: opts._body || undefined, timeout: opts.timeout });
