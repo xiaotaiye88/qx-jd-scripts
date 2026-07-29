@@ -10,6 +10,8 @@
 
 try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD_DEBUG_HTTP'); if (__tmpDbg === 'true') { var __QX_DEBUG_HTTP = true; } } } catch (_) {}
 var __QX_DEBUG_HTTP = true;
+var __qx_reqLog = [];
+function __qx_logReq(name) { __qx_reqLog.push(name); if (__qx_reqLog.length > 300) __qx_reqLog.shift(); }
 
 var __QX_G = (typeof globalThis !== 'undefined') ? globalThis : this;
 
@@ -50,6 +52,7 @@ function __qxPermissiveStub(name) {
 var __qxThrowOnRequire = {}; // 暂空，保留扩展位
 
 function require(name) {
+  __qx_logReq(name);
   if (name in __qxModules) return __qxModules[name];
   if (__qxThrowOnRequire[name]) {
     console.log('[qx-shim] 原生模块不可用(抛错触发降级): ' + name);
@@ -70,6 +73,9 @@ function require(name) {
   __qxModules[name] = __qxPermissiveStub(name);
   return __qxModules[name];
 }
+// require.resolve 垫片（Node.js 特有 API，部分模块用它判断环境）
+__qxDefine.__resolve = function (name) { return '/function/' + name.replace(/^\.\//, ''); };
+require.resolve = __qxDefine.__resolve;
 
 // ---------- process 垫片 ----------
 // env 默认为空，脚本内置默认值会生效；可通过 BoxJs 键 JD_ENV_JSON（JSON 对象）注入环境变量。
