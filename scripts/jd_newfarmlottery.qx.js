@@ -1,7 +1,7 @@
 /*
  * 新农场幸运转盘 (jd_newfarmlottery.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-29 08:13:53 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-29 08:21:51 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 53 7,15 * * *
@@ -19,8 +19,6 @@
 // ============================================================================
 
 try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD_DEBUG_HTTP'); if (__tmpDbg === 'true') { var __QX_DEBUG_HTTP = true; } } } catch (_) {}
-// 调试模式临时开启：阅读每个 HTTP 请求的 URL + 状态码 + 耗时，贴日志后回滚
-var __QX_DEBUG_HTTP = true;
 
 var __QX_G = (typeof globalThis !== 'undefined') ? globalThis : this;
 
@@ -623,17 +621,54 @@ if (typeof __QX_G.crypto === 'undefined') {
   };
 }
 
-// ---------- https 桩（Agent 可被 new，request 不支持） ----------
-__qxDefine('https', function () {
-  function Agent(opts) { this.options = opts || {}; }
-  Agent.prototype.destroy = function () {};
-  return {
-    Agent: Agent,
-    request: function () { throw new Error('[qx-shim] https.request 不支持，请走 $task.fetch'); },
-    get: function () { throw new Error('[qx-shim] https.get 不支持，请走 $task.fetch'); },
-    globalAgent: new Agent({})
-  };
-});
+// ---------- http/https 委托给 $task.fetch ----------
+(function () {
+  function makeHttp(modName) {
+    function Agent(opts) { this.options = opts || {}; }
+    Agent.prototype.destroy = function () {};
+    function httpRequest(opts, cb) {
+      if (typeof opts === 'string') opts = { url: opts };
+      if (opts.hostname || opts.host) {
+        var proto = modName + '://';
+        var host = opts.hostname || opts.host;
+        var port = opts.port || (modName === 'https' ? 443 : 80);
+        var path = opts.path || '/';
+        opts.url = proto + host + (port !== (modName === 'https' ? 443 : 80) ? ':' + port : '') + path;
+      }
+      var method = (opts.method || 'GET').toUpperCase();
+      if (typeof cb === 'function') {
+        var body = '', ended = false;
+        var resObj = {
+          statusCode: 0, headers: {},
+          on: function (evt, fn) {
+            if (evt === 'data') this._onData = fn;
+            if (evt === 'end') this._onEnd = fn;
+            if (evt === 'error') this._onError = fn;
+            if (ended && evt === 'end') fn();
+            return this;
+          },
+          _feed: function (data) { body += data; if (this._onData) this._onData(data); },
+          _done: function () { ended = true; if (this._onEnd) this._onEnd(); },
+          _err: function (e) { if (this._onError) this._onError(e); }
+        };
+        __qxFetch({ url: opts.url, method: method, headers: opts.headers || {}, body: opts._body || undefined, timeout: opts.timeout })
+          .then(function (resp) { resObj.statusCode = resp.statusCode; resObj.headers = resp.headers; if (resp.body) resObj._feed(resp.body); resObj._done(); },
+                function (err) { resObj._err(err); resObj._done(); });
+        var reqObj = {
+          write: function (data) { opts._body = (opts._body || '') + String(data); },
+          end: function (data) { if (data) this.write(data); },
+          on: function (evt, fn) { if (evt === 'error') opts._onReqError = fn; return this; }
+        };
+        setTimeout(function () { cb(resObj); }, 0);
+        return reqObj;
+      }
+      return __qxFetch({ url: opts.url, method: method, headers: opts.headers || {}, body: opts._body || undefined, timeout: opts.timeout });
+    }
+    return { Agent: Agent, request: httpRequest, get: function (u, cb) { var o = typeof u === 'string' ? { url: u } : Object.assign({}, u); o.method = 'GET'; return httpRequest(o, cb); }, globalAgent: new Agent({}) };
+  }
+  __qxDefine('https', function () { return makeHttp('https'); });
+  __qxDefine('http', function () { return makeHttp('http'); });
+})();
 
 // ---------- https-proxy-agent 桩（QX 网络代理由系统配置负责） ----------
 __qxDefine('https-proxy-agent', function () {
