@@ -9,6 +9,7 @@
 // ============================================================================
 
 try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD_DEBUG_HTTP'); if (__tmpDbg === 'true') { var __QX_DEBUG_HTTP = true; } } } catch (_) {}
+var __QX_DEBUG_HTTP = true;
 
 var __QX_G = (typeof globalThis !== 'undefined') ? globalThis : this;
 
@@ -471,8 +472,17 @@ __qxDefine('got', function () {
       if (opts.responseType === 'json' || opts.resolveBodyOnly) {
         try { resp.body = JSON.parse(resp.body); } catch (e) { /* 保留原文 */ }
       }
+      if (typeof __QX_DEBUG_HTTP !== 'undefined' && __QX_DEBUG_HTTP) {
+        var rbo = opts.resolveBodyOnly ? ' bodyOnly' : '';
+        console.log('[qx-got] ' + resp.statusCode + ' ' + (opts.method||'GET') + ' ' + (reqUrl||'').replace(/https?:\/\/[^\/]+\//,'/').substring(0,80) + rbo + ' respType=' + (typeof resp.body).substring(0,7));
+      }
       // 真实 got 库：resolveBodyOnly 只返回 body，不返回整个 response 对象
       return opts.resolveBodyOnly ? resp.body : resp;
+    }, function (err) {
+      if (typeof __QX_DEBUG_HTTP !== 'undefined' && __QX_DEBUG_HTTP) {
+        console.log('[qx-got] ERR ' + (opts.method||'GET') + ' ' + (reqUrl||'').replace(/https?:\/\/[^\/]+\//,'/').substring(0,80) + ': ' + err);
+      }
+      throw err;
     });
   }
   ['get', 'post', 'put', 'patch', 'delete', 'head'].forEach(function (m) {
