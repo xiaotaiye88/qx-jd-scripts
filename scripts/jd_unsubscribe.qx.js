@@ -1,7 +1,7 @@
 /*
  * 批量取关店铺和商品 (jd_unsubscribe.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-29 09:04:49 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-29 09:10:26 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 2 2 29 2 *
@@ -37,6 +37,15 @@ try {
       var fm = u.match(/functionId=([^&]+)/);
       if (fm) fid = ' [' + fm[1] + ']';
       console.log('[QX-FETCH] ' + m + ' ' + shortU + fid);
+      // 对 403 的写操作接口（apStartTaskTime 等）转储完整请求头，定位风控原因
+      if (u.indexOf('apStartTaskTime') >= 0 || u.indexOf('apTaskFinish') >= 0 || u.indexOf('apDoTask') >= 0) {
+        try {
+          var hdrs = opts.headers || {};
+          var hk = Object.keys(hdrs);
+          console.log('[QX-FETCH-HDR] ' + fid + ' headers(' + hk.length + '): ' + JSON.stringify(hdrs).substring(0, 600));
+          console.log('[QX-FETCH-HDR] body: ' + String(opts.body || '').substring(0, 300));
+        } catch (_) {}
+      }
       var t0 = Date.now ? Date.now() : 0;
       return __origFetch(opts).then(function (resp) {
         var ms = (Date.now ? Date.now() : 0) - t0;
