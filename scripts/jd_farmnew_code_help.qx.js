@@ -1,7 +1,7 @@
 /*
  * 新农场助力码助力 (jd_farmnew_code_help.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-29 08:57:48 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-29 09:04:49 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 22 2 29 2 *
@@ -22,6 +22,36 @@ try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD
 var __QX_DEBUG_HTTP = true;
 var __qx_reqLog = [];
 function __qx_logReq(name) { __qx_reqLog.push(name); if (__qx_reqLog.length > 300) __qx_reqLog.shift(); }
+
+// ★ 全局拦截 $task.fetch —— Env 类在 QX 模式下直接调它，绕过所有垫片
+try {
+  if (typeof $task !== 'undefined' && $task.fetch && !$task.__qxHooked) {
+    var __origFetch = $task.fetch.bind($task);
+    $task.fetch = function (opts) {
+      var u = (opts && opts.url) || '?';
+      var m = (opts && opts.method) || 'GET';
+      var shortU = u.replace(/[?&]sign=[^&]+/g, '?sign=...').replace(/[?&]body=[^&]{20,}/g, '?body=...');
+      shortU = shortU.replace(/https?:\/\/[^\/]+\//, '/').substring(0, 100);
+      // 提取 functionId（如果有）
+      var fid = '';
+      var fm = u.match(/functionId=([^&]+)/);
+      if (fm) fid = ' [' + fm[1] + ']';
+      console.log('[QX-FETCH] ' + m + ' ' + shortU + fid);
+      var t0 = Date.now ? Date.now() : 0;
+      return __origFetch(opts).then(function (resp) {
+        var ms = (Date.now ? Date.now() : 0) - t0;
+        var code = resp.statusCode || resp.status || 0;
+        var blen = resp.body ? resp.body.length : 0;
+        console.log('[QX-FETCH] ' + code + ' ' + shortU + fid + ' (' + ms + 'ms body=' + blen + 'b)');
+        return resp;
+      }, function (err) {
+        console.log('[QX-FETCH] ERR ' + shortU + fid + ': ' + (err && err.error ? err.error : err));
+        throw err;
+      });
+    };
+    $task.__qxHooked = true;
+  }
+} catch (_) {}
 
 var __QX_G = (typeof globalThis !== 'undefined') ? globalThis : this;
 
