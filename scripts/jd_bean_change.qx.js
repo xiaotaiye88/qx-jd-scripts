@@ -1,7 +1,7 @@
 /*
  * 京东资产统计 (jd_bean_change.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-29 08:38:16 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-29 08:45:58 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 28 8,21 * * *
@@ -631,6 +631,61 @@ if (typeof __QX_G.crypto === 'undefined') {
     randomUUID: function () { return require('crypto').randomUUID(); }
   };
 }
+
+// ---------- big-integer 垫片（Dylan 签名需要大整数运算）----------
+__qxDefine('big-integer', function () {
+  var BigIntWrap = function (v) {
+    if (v instanceof BigIntWrap) return v;
+    var n;
+    if (typeof v === 'bigint') n = v;
+    else if (v !== null && v !== undefined && v.constructor === BigIntWrap) n = v._n;
+    else if (typeof v === 'string') n = BigInt(v);
+    else n = BigInt(Number(v) || 0);
+    if (!(this instanceof BigIntWrap)) return new BigIntWrap(v);
+    this._n = n;
+  };
+  var p = BigIntWrap.prototype;
+  p.add = function (b) { return new BigIntWrap(this._n + new BigIntWrap(b)._n); };
+  p.subtract = function (b) { return new BigIntWrap(this._n - new BigIntWrap(b)._n); };
+  p.multiply = function (b) { return new BigIntWrap(this._n * new BigIntWrap(b)._n); };
+  p.divide = function (b) { return new BigIntWrap(this._n / new BigIntWrap(b)._n); };
+  p.mod = function (b) { return new BigIntWrap(this._n % new BigIntWrap(b)._n); };
+  p.remainder = function (b) { return this.mod(b); };
+  p.modPow = function (exp, mod) {
+    var e = new BigIntWrap(exp)._n, m = new BigIntWrap(mod)._n, r = new BigIntWrap(1)._n, ba = this._n % m;
+    while (e > 0n) { if (e & 1n) r = (r * ba) % m; ba = (ba * ba) % m; e >>= 1n; }
+    return new BigIntWrap(r);
+  };
+  p.pow = function (e) {
+    var r = 1n, x = this._n, p = new BigIntWrap(e)._n;
+    while (p > 0n) { if (p & 1n) r *= x; x *= x; p >>= 1n; }
+    return new BigIntWrap(r);
+  };
+  p.compare = function (b) { var n = new BigIntWrap(b)._n; return this._n < n ? -1 : this._n > n ? 1 : 0; };
+  p.compareTo = p.compare;
+  p.equals = function (b) { return this._n === new BigIntWrap(b)._n; };
+  p.greater = function (b) { return this._n > new BigIntWrap(b)._n; };
+  p.lesser = function (b) { return this._n < new BigIntWrap(b)._n; };
+  p.greaterOrEquals = function (b) { return this._n >= new BigIntWrap(b)._n; };
+  p.lesserOrEquals = function (b) { return this._n <= new BigIntWrap(b)._n; };
+  p.and = function (b) { return new BigIntWrap(this._n & new BigIntWrap(b)._n); };
+  p.or = function (b) { return new BigIntWrap(this._n | new BigIntWrap(b)._n); };
+  p.xor = function (b) { return new BigIntWrap(this._n ^ new BigIntWrap(b)._n); };
+  p.shiftLeft = function (n) { return new BigIntWrap(this._n << BigInt(Number(n) || 0)); };
+  p.shiftRight = function (n) { return new BigIntWrap(this._n >> BigInt(Number(n) || 0)); };
+  p.not = function () { return new BigIntWrap(~this._n); };
+  p.negate = function () { return new BigIntWrap(-this._n); };
+  p.abs = function () { return new BigIntWrap(this._n < 0n ? -this._n : this._n); };
+  p.isZero = function () { return this._n === 0n; };
+  p.isPositive = function () { return this._n > 0n; };
+  p.isNegative = function () { return this._n < 0n; };
+  p.isEven = function () { return this._n % 2n === 0n; };
+  p.isOdd = function () { return !this.isEven(); };
+  p.valueOf = function () { return this._n; };
+  p.toString = function (radix) { return this._n.toString(Number(radix) || 10); };
+  p.toJSNumber = function () { return Number(this._n); };
+  return BigIntWrap;
+});
 
 // ---------- http/https 委托给 $task.fetch ----------
 (function () {
