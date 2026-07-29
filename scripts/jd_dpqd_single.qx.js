@@ -1,7 +1,7 @@
 /*
  * 单个店铺签到 (jd_dpqd_single.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-27 09:31:45 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-29 08:13:53 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 7 7 29 2 *
@@ -18,7 +18,9 @@
 //           URL + 状态码 + 耗时 + body 大小，方便对比 QX vs QL 的 API 调用差异。
 // ============================================================================
 
-try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD_DEBUG_HTTP'); if (__tmpDbg === 'true') { __QX_DEBUG_HTTP = true; } } } catch (_) {}
+try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD_DEBUG_HTTP'); if (__tmpDbg === 'true') { var __QX_DEBUG_HTTP = true; } } } catch (_) {}
+// 调试模式临时开启：阅读每个 HTTP 请求的 URL + 状态码 + 耗时，贴日志后回滚
+var __QX_DEBUG_HTTP = true;
 
 var __QX_G = (typeof globalThis !== 'undefined') ? globalThis : this;
 
