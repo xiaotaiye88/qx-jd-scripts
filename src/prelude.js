@@ -471,7 +471,8 @@ __qxDefine('got', function () {
       if (opts.responseType === 'json' || opts.resolveBodyOnly) {
         try { resp.body = JSON.parse(resp.body); } catch (e) { /* 保留原文 */ }
       }
-      return resp;
+      // 真实 got 库：resolveBodyOnly 只返回 body，不返回整个 response 对象
+      return opts.resolveBodyOnly ? resp.body : resp;
     });
   }
   ['get', 'post', 'put', 'patch', 'delete', 'head'].forEach(function (m) {

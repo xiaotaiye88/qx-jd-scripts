@@ -1,7 +1,7 @@
 /*
  * 新奇盲盒 (jd_xqmh.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-29 08:26:14 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-29 08:30:09 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 11 9,16 * * *
@@ -481,7 +481,8 @@ __qxDefine('got', function () {
       if (opts.responseType === 'json' || opts.resolveBodyOnly) {
         try { resp.body = JSON.parse(resp.body); } catch (e) { /* 保留原文 */ }
       }
-      return resp;
+      // 真实 got 库：resolveBodyOnly 只返回 body，不返回整个 response 对象
+      return opts.resolveBodyOnly ? resp.body : resp;
     });
   }
   ['get', 'post', 'put', 'patch', 'delete', 'head'].forEach(function (m) {
