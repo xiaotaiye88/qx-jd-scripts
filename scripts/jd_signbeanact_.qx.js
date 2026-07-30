@@ -1,7 +1,7 @@
 /*
  * 天天领豆 (jd_signbeanact_.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-30 10:44:33 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-30 11:10:21 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 2 6,16 * * *
@@ -481,13 +481,7 @@ __qxDefine('got', function () {
       body: body,
       timeout: opts.timeout ? (typeof opts.timeout === 'object' ? opts.timeout.request : opts.timeout) : undefined
     }).then(function (resp) {
-      // 智能 JSON 解析：responseType=json 或 resolveBodyOnly 时自动 parse
-      // 注意：不要启发式解析（Content-Type 或首尾 {}[]），因为部分 API 响应在 QX 中
-      // 可能是非标准格式（如数字/布尔/纯文本），启发式解析会把原始字符串变成对象，
-      // 导致 Dylan 框架的 JSON.parse() 二次解析失败。
-      if (opts.responseType === 'json' || opts.resolveBodyOnly) {
-        try { resp.body = JSON.parse(resp.body); } catch (e) { /* 保留原文 */ }
-      }
+      // 不自动 JSON.parse — Dylan 框架永远自己调 JSON.parse(resp.body)
       if (typeof __QX_DEBUG_HTTP !== 'undefined' && __QX_DEBUG_HTTP) {
         var rbo = opts.resolveBodyOnly ? ' bodyOnly' : '';
         console.log('[qx-got] ' + resp.statusCode + ' ' + (opts.method||'GET') + ' ' + (reqUrl||'').replace(/https?:\/\/[^\/]+\//,'/').substring(0,80) + rbo + ' respType=' + (typeof resp.body).substring(0,7));
