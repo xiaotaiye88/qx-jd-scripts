@@ -464,7 +464,6 @@ __qxDefine('got', function () {
       body = typeof opts.body === 'string' ? opts.body : (opts.body && opts.body._b ? opts.body.toString() : String(opts.body));
     }
     if (opts.cookieJar) console.log('[qx-shim] got: cookieJar 被忽略（QX 由系统管理 Cookie）');
-_responseType = opts.responseType || '';
     return __qxFetch({
       url: reqUrl,
       method: opts.method || 'GET',
@@ -477,7 +476,7 @@ _responseType = opts.responseType || '';
       // 2) resolveBodyOnly
       // 3) Content-Type 含 application/json
       // 4) 响应以 { 或 [ 开头（启发式）
-      if (_responseType === 'json' || opts.resolveBodyOnly) {
+      if (opts.responseType === 'json' || opts.resolveBodyOnly) {
         try { resp.body = JSON.parse(resp.body); } catch (e) { /* 保留原文 */ }
       } else if (typeof resp.body === 'string') {
         var ct = (resp.headers['content-type'] || resp.headers['Content-Type'] || '').toLowerCase();

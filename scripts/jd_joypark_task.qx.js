@@ -1,7 +1,7 @@
 /*
  * 汪汪庄园任务 (jd_joypark_task.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-30 09:44:10 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-30 09:52:50 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 38 8,13 * * *
@@ -474,7 +474,6 @@ __qxDefine('got', function () {
       body = typeof opts.body === 'string' ? opts.body : (opts.body && opts.body._b ? opts.body.toString() : String(opts.body));
     }
     if (opts.cookieJar) console.log('[qx-shim] got: cookieJar 被忽略（QX 由系统管理 Cookie）');
-_responseType = opts.responseType || '';
     return __qxFetch({
       url: reqUrl,
       method: opts.method || 'GET',
@@ -487,7 +486,7 @@ _responseType = opts.responseType || '';
       // 2) resolveBodyOnly
       // 3) Content-Type 含 application/json
       // 4) 响应以 { 或 [ 开头（启发式）
-      if (_responseType === 'json' || opts.resolveBodyOnly) {
+      if (opts.responseType === 'json' || opts.resolveBodyOnly) {
         try { resp.body = JSON.parse(resp.body); } catch (e) { /* 保留原文 */ }
       } else if (typeof resp.body === 'string') {
         var ct = (resp.headers['content-type'] || resp.headers['Content-Type'] || '').toLowerCase();
