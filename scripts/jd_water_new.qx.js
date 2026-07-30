@@ -1,7 +1,7 @@
 /*
  * 新农场浇水 (jd_water_new.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-29 09:21:43 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-30 09:44:10 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 15 1 29 2 *
@@ -474,6 +474,7 @@ __qxDefine('got', function () {
       body = typeof opts.body === 'string' ? opts.body : (opts.body && opts.body._b ? opts.body.toString() : String(opts.body));
     }
     if (opts.cookieJar) console.log('[qx-shim] got: cookieJar 被忽略（QX 由系统管理 Cookie）');
+_responseType = opts.responseType || '';
     return __qxFetch({
       url: reqUrl,
       method: opts.method || 'GET',
@@ -481,8 +482,23 @@ __qxDefine('got', function () {
       body: body,
       timeout: opts.timeout ? (typeof opts.timeout === 'object' ? opts.timeout.request : opts.timeout) : undefined
     }).then(function (resp) {
-      if (opts.responseType === 'json' || opts.resolveBodyOnly) {
+      // 智能 JSON 解析：以下任一条件触发自动解析
+      // 1) responseType === 'json'
+      // 2) resolveBodyOnly
+      // 3) Content-Type 含 application/json
+      // 4) 响应以 { 或 [ 开头（启发式）
+      if (_responseType === 'json' || opts.resolveBodyOnly) {
         try { resp.body = JSON.parse(resp.body); } catch (e) { /* 保留原文 */ }
+      } else if (typeof resp.body === 'string') {
+        var ct = (resp.headers['content-type'] || resp.headers['Content-Type'] || '').toLowerCase();
+        if (ct.indexOf('application/json') >= 0 || ct.indexOf('text/json') >= 0) {
+          try { resp.body = JSON.parse(resp.body); } catch (e) {}
+        } else {
+          var trimmed = resp.body.trim();
+          if ((trimmed.charAt(0) === '{' || trimmed.charAt(0) === '[') && (trimmed.charAt(trimmed.length-1) === '}' || trimmed.charAt(trimmed.length-1) === ']')) {
+            try { resp.body = JSON.parse(trimmed); } catch (e) {}
+          }
+        }
       }
       if (typeof __QX_DEBUG_HTTP !== 'undefined' && __QX_DEBUG_HTTP) {
         var rbo = opts.resolveBodyOnly ? ' bodyOnly' : '';
@@ -506,9 +522,19 @@ __qxDefine('got', function () {
   got.extend = function (defaults) {
     defaults = defaults || {};
     var extended = function (url, opts) {
-      var merged = { headers: Object.assign({}, defaults.headers, (opts && opts.headers) || {}) };
-      if (defaults.prefixUrl && typeof url === 'string' && url.indexOf('http') !== 0) url = defaults.prefixUrl + url;
-      return got(url, Object.assign({}, defaults, opts || {}, merged));
+      opts = opts || {};
+      var mergedHeaders = {};
+      for (var k in (defaults.headers || {})) mergedHeaders[k.toLowerCase()] = defaults.headers[k];
+      for (var k in (opts.headers || {})) mergedHeaders[k.toLowerCase()] = opts.headers[k];
+      var mergedOpts = {};
+      for (var k in defaults) { if (k !== 'headers') mergedOpts[k] = defaults[k]; }
+      for (var k in opts) { if (k !== 'headers') mergedOpts[k] = opts[k]; }
+      mergedOpts.headers = mergedHeaders;
+      if (defaults.prefixUrl && typeof url === 'string' && url.indexOf('http') !== 0) {
+        var sep = (defaults.prefixUrl.charAt(defaults.prefixUrl.length - 1) !== '/' && url.charAt(0) !== '/') ? '/' : '';
+        url = defaults.prefixUrl + sep + url;
+      }
+      return got(url, mergedOpts);
     };
     ['get', 'post', 'put', 'patch', 'delete', 'head'].forEach(function (m) {
       extended[m] = function (url, opts) { opts = opts || {}; opts.method = m.toUpperCase(); return extended(url, opts); };
@@ -553,10 +579,17 @@ __qxDefine('axios', function () {
       config = config || {};
       var merged = Object.assign({}, defaults, config);
       merged.headers = Object.assign({}, defaults.headers || {}, config.headers || {});
-      if (defaults.baseURL && config.url && config.url.indexOf('http') !== 0) merged.url = defaults.baseURL + config.url;
+      if (defaults.baseURL && config.url && config.url.indexOf('http') !== 0) {
+        var sep = (defaults.baseURL.charAt(defaults.baseURL.length - 1) !== '/' && config.url.charAt(0) !== '/') ? '/' : '';
+        merged.url = defaults.baseURL + sep + config.url;
+      }
       return axios(merged);
     };
-    inst.get = axios.get; inst.post = axios.post; inst.put = axios.put; inst.delete = axios.delete;
+    // 重要：实例方法必须走 inst() 自身的合并逻辑（baseURL + 默认 headers）
+    inst.get = function (u, c) { return inst(typeof u === 'object' ? u : Object.assign(c || {}, { url: u, method: 'GET' })); };
+    inst.post = function (u, data, c) { c = c || {}; c.url = u; c.method = 'POST'; c.data = data; return inst(c); };
+    inst.put = function (u, data, c) { c = c || {}; c.url = u; c.method = 'PUT'; c.data = data; return inst(c); };
+    inst.delete = function (u, c) { c = c || {}; c.url = u; c.method = 'DELETE'; return inst(c); };
     inst.create = axios.create;
     inst.interceptors = { request: { use: function () {} }, response: { use: function () {} } };
     inst.defaults = defaults;
