@@ -1,7 +1,7 @@
 /*
  * 秒送签到 (jd_msSign.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-07-30 11:10:21 由 tools/build-all.js 自动生成
+ * 构建: 2026-07-31 05:57:39 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 38 4,16 * * *
@@ -404,6 +404,60 @@ __qxDefine('moment', function () {
     });
   }
 });
+
+// ---------- apTaskList 响应清洗：剔除 JD 服务端下发的畸形任务 ----------
+// 实测京东"种豆得豆"的 apTaskList 会下发 taskItemList[].pipeExt.itemId 为
+// "null<时间戳>" 的占位任务（BROWSE_RTB「为你优选」）。脚本照单发起
+// apStartTaskTime 时被服务端风控 403（空 body 的网关级拦截），日志表现为
+// "apStartTaskTime 执行任务异常 / 开始任务fail undefined"。
+// 已对照验证：修正 itemId、剥离 h5st 后依然 403 —— 该任务服务端根本无法执行，
+// 任何客户端构造都过不去。因此在响应层直接剔除，让脚本跳过，不再白打一次 403。
+function __qxSanitizeTaskList(txt) {
+  try {
+    var j = JSON.parse(txt);
+    var data = j && j.data ? j.data : null;
+    var result = Array.isArray(data) ? data : (data && Array.isArray(data.result) ? data.result : null);
+    if (!result) return txt;
+    var before = result.length;
+    var kept = [];
+    for (var i = 0; i < result.length; i++) {
+      var t = result[i];
+      var bad = false;
+      if (t && Array.isArray(t.taskItemList)) {
+        for (var k = 0; k < t.taskItemList.length; k++) {
+          var it = t.taskItemList[k];
+          var pid = it && it.pipeExt ? it.pipeExt.itemId : undefined;
+          if (typeof pid === 'string' && pid.indexOf('null') === 0) { bad = true; break; }
+        }
+      }
+      if (!bad) kept.push(t);
+    }
+    if (kept.length === before) return txt;
+    console.log('[qx-shim] apTaskList 清洗: 剔除 ' + (before - kept.length) + ' 个畸形任务（pipeExt.itemId="null..."，服务端风控无法执行）');
+    if (Array.isArray(data)) {
+      j.data = kept;
+    } else {
+      data.result = kept;
+    }
+    return JSON.stringify(j);
+  } catch (e) { return txt; }
+}
+
+// Dylan 框架的 QX 分支会直接调用 $task.fetch（不走上面 __qxFetch 的 http 桩路径），
+// 因此在原生 $task.fetch 外面再包一层，对 apTaskList 响应做同样的清洗。
+(function () {
+  if (typeof $task === 'undefined' || !$task.fetch) return;
+  var __origTaskFetch = $task.fetch.bind($task);
+  $task.fetch = function (o) {
+    return __origTaskFetch(o).then(function (resp) {
+      if (o && o.url && String(o.url).indexOf('funcitionId=apTaskList') >= 0 && resp && resp.body !== undefined) {
+        var cleaned = __qxSanitizeTaskList(resp.body);
+        if (cleaned !== resp.body) resp.body = cleaned;
+      }
+      return resp;
+    });
+  };
+})();
 
 // ---------- $task.fetch 适配：把响应包装成类 Node 形态 ----------
 function __qxFetch(reqOpts) {
