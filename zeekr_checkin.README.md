@@ -3,7 +3,7 @@
 基于抓包 + H5 前端 JS 逆向的圈x 自动签到脚本，支持：
 - ✅ 每日签到状态查询（Z-Green 签到）
 - ✅ **多账号**（按 JWT `jti` 去重，循环执行，汇总通知）
-- ✅ 任务奖励查询（步行 3000 步等，展示可领取项）
+- ✅ 任务奖励**自动领取**（任务达成 → 碎片自动入账 → 脚本收集即领取）
 - ✅ 能量碎片自动收集（Z-Green 碎片，实测 batchApply 成功）
 - ✅ Token 自动抓取（打开 App 即存入 BoxJs）
 - ✅ 结果推送通知
@@ -26,7 +26,7 @@ x_ca_sign = SHA1( [签名密钥, x_ca_nonce, x_ca_timestamp].sort().join('') )
 - `GET /zeekrlife-app-user/v1/user/info/home` — 用户信息（昵称/积分等）
 - `POST /zeekrlife-mp-mkt/open/v1/taskProgress/taskMsg` — 任务列表（活动 medal_compose_task_manage）
 - `POST /zeekrlife-mp-val/v1/carEnergy/getUncollectedBallsPageNew` — 待收集能量球/碎片查询
-- `POST /zeekrlife-mp-mkt/toc/v1/apply/batchApply` — **能量碎片收集**（实测成功）：
+- `POST /zeekrlife-mp-mkt/toc/v1/apply/batchApply` — **能量碎片收集（即自动领取奖励）**（实测成功）：
   ```
   { "applyCmdList": [{
       "record": "<eventCode>",
@@ -36,9 +36,10 @@ x_ca_sign = SHA1( [签名密钥, x_ca_nonce, x_ca_timestamp].sort().join('') )
   ```
   `record/payContent/applyExt` 均来自 `getUncollectedBallsPageNew` 响应。纯碳能量（WALK/驾车，eventCode 为空）不走此接口，需 App 内收取。
 
-> ⚠️ **待补抓包**：每日签到动作与任务奖励领取的精确载荷依赖活动编码，抓包日志中未捕获到
-> （抓包当天已签到、碎片已领）。当前脚本仅查询+提示，不发送错误请求。
-> 补抓包方法：签到前打开 App → Z-Green 页面 → 点「每日签到」和「领取」，停留 1-2 分钟，发 HAR 即可。
+> 💡 **奖励自动领取机制**：签到/任务条件达成后，奖励碎片会**自动进入「待收集」列表**（抓包实测：
+> 碎片 `sourceId` 为「signup-2026-08-04」（签到）和「步行3000步」（任务）），
+> 因此脚本收集碎片（batchApply）**即等于自动领取奖励**，无需单独的「领取」接口。
+> 唯一前提是任务条件真实达成（如当日步数 ≥3000），脚本负责把已达成任务的奖励收走。
 
 ## 快速开始（推荐：一键资源订阅）
 
@@ -107,6 +108,8 @@ hostname = api-gw-toc.zeekrlife.com
 ⚡ 待收集碳能量 2 项（WALK/驾车，App 内收取，脚本不处理）
 ⚡ 碎片收集成功 2 项
 ```
+
+（任务达成时：`🎁 任务奖励已达成: 步行3000步（碎片已自动入账，下方收集即领取）`）
 
 ## 注意事项
 

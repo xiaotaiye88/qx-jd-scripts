@@ -8,13 +8,16 @@
  *   3. 收集能量碎片（/carEnergy/getUncollectedBallsPageNew + /apply/batchApply）
  *   4. 完整结果推送到通知
  *
- * 说明（2026-08 实测修正）：
+ * 说明（2026-08 实测确认）：
+ *   - 奖励发放机制：签到/任务条件达成后，奖励碎片自动进入「待收集」列表
+ *     （HAR 实测 uncollectedVal 含 sourceId=「signup-2026-08-04」签到碎片、「步行3000步」任务碎片），
+ *     因此收集碎片 = 自动领取奖励，无独立「领取」接口。
  *   - 能量碎片（EASY_DEBRIS 等有 eventCode 的项）走 POST /apply/batchApply，
  *     body: {applyCmdList:[{record:eventCode, payContent:{bubbleAssetsId:id}, applyExt:{origin:sourceId}}]}
- *     实测可成功收集（4→2 项）。
+ *     实测可成功收集（4→2 项，碎片全部收掉）。
+ *   - 「每日签到」任务描述 = 每日进入 Z-Green 页面可得碎片，进页面即自动签到，
+ *     脚本通过 taskGet 查询状态（taskStatus=true 即已签，当天只跑一次不会重复）。
  *   - 纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）不走此通道，需 App 内收取。
- *   - 每日签到动作与任务奖励领取的精确载荷依赖活动编码，HAR 未抓到，
- *     待用户补抓包后填入（当前仅提示，不发送错误请求）。
  *
  * 使用方法：
  *   [task_local]
@@ -378,7 +381,7 @@ async function runAccount(acc) {
     lines.push(`⚠️ 签到状态查询失败: ${st.msg || JSON.stringify(st).slice(0, 80)}`);
   }
 
-  // 2. 任务列表（展示可领取项；任务奖励领取的精确载荷待补抓包确认）
+  // 2. 任务列表（展示进度；奖励碎片会在条件达成后自动进入「待收集」，由步骤 3 收集即领取）
   const tasks = await getTasks(token);
   if (tasks.success && tasks.data && tasks.data.taskReachMsgList) {
     const list = tasks.data.taskReachMsgList || [];
@@ -386,7 +389,7 @@ async function runAccount(acc) {
     if (!done.length) {
       lines.push(`🎁 任务奖励: 无可领取（${list.length} 个任务）`);
     } else {
-      lines.push(`🎁 待领取任务: ${done.map(t => t.name).join('、')}（脚本提示，领取动作待补抓包）`);
+      lines.push(`🎁 任务奖励已达成: ${done.map(t => t.name).join('、')}（碎片已自动入账，下方收集即领取）`);
     }
   }
 
