@@ -1,10 +1,10 @@
 # 极氪 (ZeekrLife) 自动签到 - Quantumult X
 
 基于抓包 + H5 前端 JS 逆向的圈x 自动签到脚本，支持：
-- ✅ 每日自动签到（连续签到）
+- ✅ 每日签到状态查询（Z-Green 签到）
 - ✅ **多账号**（按 JWT `jti` 去重，循环执行，汇总通知）
-- ✅ 任务奖励自动领取（步行 3000 步等，达标即领）
-- ✅ 能量球一键收集（车能量）
+- ✅ 任务奖励查询（步行 3000 步等，展示可领取项）
+- ✅ 能量碎片自动收集（Z-Green 碎片，实测 batchApply 成功）
 - ✅ Token 自动抓取（打开 App 即存入 BoxJs）
 - ✅ 结果推送通知
 
@@ -21,13 +21,24 @@ x_ca_sign = SHA1( [签名密钥, x_ca_nonce, x_ca_timestamp].sort().join('') )
 签名密钥存在前端混淆 JS 中（AES-GCM + 位运算解密出一段 DER 格式 RSA 公钥，充当服务端签名密钥的"公钥段"），
 以 `app_code: toc_h5_green_zeekrapp`（H5 免签通道）请求原生网关接口即可通过校验。
 
-**接口清单**：
-- `GET /zeekrlife-app-user/v1/user/info/home` — 签到状态查询（signStatus / signInNumber）
-- `GET /zeekrlife-mp-sic/v1/signin/create` — 每日签到
+**接口清单**（2026-08 实测验证）：
+- `GET /zeekrlife-mp-sic/v1/signinzgreen/toc/taskGet` — 签到状态查询（每日签到任务 `taskStatus=true` 即已签）
+- `GET /zeekrlife-app-user/v1/user/info/home` — 用户信息（昵称/积分等）
 - `POST /zeekrlife-mp-mkt/open/v1/taskProgress/taskMsg` — 任务列表（活动 medal_compose_task_manage）
-- `POST /zeekrlife-mp-mkt/v1/taskProgress/take` — 任务奖励领取
-- `POST /zeekrlife-mp-val/v1/carEnergy/getUncollectedBallsPageNew` — 待收集能量球查询
-- `POST /zeekrlife-mp-val/v1/carEnergy/collectedAllEnergy` — 能量球一键收集
+- `POST /zeekrlife-mp-val/v1/carEnergy/getUncollectedBallsPageNew` — 待收集能量球/碎片查询
+- `POST /zeekrlife-mp-mkt/toc/v1/apply/batchApply` — **能量碎片收集**（实测成功）：
+  ```
+  { "applyCmdList": [{
+      "record": "<eventCode>",
+      "payContent": { "bubbleAssetsId": "<碎片id>" },
+      "applyExt": { "origin": "<sourceId>" }
+  }] }
+  ```
+  `record/payContent/applyExt` 均来自 `getUncollectedBallsPageNew` 响应。纯碳能量（WALK/驾车，eventCode 为空）不走此接口，需 App 内收取。
+
+> ⚠️ **待补抓包**：每日签到动作与任务奖励领取的精确载荷依赖活动编码，抓包日志中未捕获到
+> （抓包当天已签到、碎片已领）。当前脚本仅查询+提示，不发送错误请求。
+> 补抓包方法：签到前打开 App → Z-Green 页面 → 点「每日签到」和「领取」，停留 1-2 分钟，发 HAR 即可。
 
 ## 快速开始（推荐：一键资源订阅）
 
@@ -91,9 +102,10 @@ hostname = api-gw-toc.zeekrlife.com
 
 ```
 👤 小太爷88
-✅ 今日已签到（连续 2 天）
-🎁 任务奖励: 今日无可领取（4 个任务）
-⚡ 能量球: 已全部收集
+✅ 今日已签到
+🎁 任务奖励: 无可领取（4 个任务）
+⚡ 待收集碳能量 2 项（WALK/驾车，App 内收取，脚本不处理）
+⚡ 碎片收集成功 2 项
 ```
 
 ## 注意事项
@@ -102,4 +114,5 @@ hostname = api-gw-toc.zeekrlife.com
 2. 频繁签到（同一天多次）不会获得更多奖励，且可能触发风控
 3. 如遇 `code` 非 000000，请检查 Token 是否失效
 4. 签名密钥存在于前端公开 JS 中（混淆），属公开信息；**Token 属个人凭证，仅存储在你本机 BoxJs**
-5. 不同 App 版本接口可能变化，脚本基于 2026-08 抓包验证
+5. 能量碎片由脚本自动收集；纯碳能量球需 App 内手动收取（有效期内）
+6. 不同 App 版本接口可能变化，脚本基于 2026-08 抓包验证

@@ -3,11 +3,18 @@
  *  极氪 (ZeekrLife) 自动签到 - Quantumult X
  * ================================================
  * 功能：
- *   1. 每日自动签到（/signin/create）
- *   2. 查询签到状态（/user/info/home）
- *   3. 领取签到/任务奖励（/taskProgress/taskMsg + take）
- *   4. 收集未领取能量球/碎片（/carEnergy/*）
- *   5. 完整结果推送到通知
+ *   1. 查询签到状态（/signinzgreen/toc/taskGet，每日签到任务 taskStatus=true 即已签）
+ *   2. 查询任务奖励（/taskProgress/taskMsg，展示可领取项）
+ *   3. 收集能量碎片（/carEnergy/getUncollectedBallsPageNew + /apply/batchApply）
+ *   4. 完整结果推送到通知
+ *
+ * 说明（2026-08 实测修正）：
+ *   - 能量碎片（EASY_DEBRIS 等有 eventCode 的项）走 POST /apply/batchApply，
+ *     body: {applyCmdList:[{record:eventCode, payContent:{bubbleAssetsId:id}, applyExt:{origin:sourceId}}]}
+ *     实测可成功收集（4→2 项）。
+ *   - 纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）不走此通道，需 App 内收取。
+ *   - 每日签到动作与任务奖励领取的精确载荷依赖活动编码，HAR 未抓到，
+ *     待用户补抓包后填入（当前仅提示，不发送错误请求）。
  *
  * 使用方法：
  *   [task_local]
@@ -304,9 +311,17 @@ function request(method, url, body, token, verbose = false) {
 
 // ---------- 核心功能 ----------
 // 各函数接受 token 参数，由 main() 按账号传入
-async function doSignin(token) {
-  // 签到动作（GET，方法已确认；H5 端即直接调用无参数）
-  return request('GET', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-sic/v1/signin/create', undefined, token, true);
+// 签到状态（H5 Z-Green 页：/signinzgreen/toc/taskGet，每日签到任务 taskStatus=true 即已签）
+async function getSigninStatus(token) {
+  return request('GET', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-sic/v1/signinzgreen/toc/taskGet', undefined, token);
+}
+
+// 已确认接口：能量碎片/活动奖励收集 = POST /zeekrlife-mp-mkt/toc/v1/apply/batchApply
+// 载荷结构（来自 H5 前端 JS index-94ba24e9.js，与 getUncollected 响应对应）：
+//   { applyCmdList: [{ record: 活动编码, payContent: { bubbleAssetsId }, applyExt: { origin } }] }
+async function batchApply(token, cmdList) {
+  return request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-mkt/toc/v1/apply/batchApply',
+    { applyCmdList: cmdList }, token, true);
 }
 
 async function getHomeStatus(token) {
@@ -320,30 +335,29 @@ async function getTasks(token) {
     { activityRecord: 'medal_compose_task_manage', optional: { fetchTaskTakeAndReachTimesInfo: true } }, token);
 }
 
-async function takeTask(token, taskTemplateId, activityId) {
-  // 领取任务奖励（POST，参数与 taskMsg 响应对应）
-  return request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-mkt/v1/taskProgress/take',
-    { activityRecord: 'medal_compose_task_manage', taskTemplateId, activityId }, token, true);
-}
-
 async function getUncollected(token, accountId) {
   // 待收集能量球/碎片（POST）
   return request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-val/v1/carEnergy/getUncollectedBallsPageNew',
     { accountId }, token);
 }
 
-async function collectAll(token, accountId, uncollectedList) {
-  // 一键收集能量球/碎片（POST，HAR 未抓到该动作，参数按 getUncollected 响应对应；
-  // 先用 {accountId} 试，若服务端拒绝（系统异常）再补 ids 重试）
-  const ids = Array.isArray(uncollectedList)
-    ? uncollectedList.map(x => (x && x.id) || null).filter(Boolean)
-    : [];
-  const first = await request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-val/v1/carEnergy/collectedAllEnergy',
-    { accountId }, token, true);
-  if (first.success || !ids.length) return first;
-  const retry = await request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-val/v1/carEnergy/collectedAllEnergy',
-    { accountId, ids }, token, true);
-  return retry;
+// 收集能量碎片（EASY_DEBRIS 等有 eventCode 的活动碎片走 batchApply；纯碳能量 WALK/TRAVEL 不走此通道）
+async function collectDebris(token, uncollectedList) {
+  const items = (uncollectedList || []).filter(x => x && x.eventCode);
+  if (!items.length) return { success: false, msg: '无可收集碎片', code: '' };
+  const cmdList = items.map(e => ({
+    record: e.eventCode,
+    payContent: { bubbleAssetsId: e.id },
+    applyExt: { origin: e.sourceId }
+  }));
+  const r = await batchApply(token, cmdList);
+  if (r.success && r.data) {
+    const arr = Array.isArray(r.data) ? r.data : [r.data];
+    const ok = arr.filter(x => x && x.success === true).length;
+    const fail = arr.filter(x => x && x.success === false);
+    return { ...r, _okCount: ok, _failCount: fail.length, _failMsgs: fail.map(x => x.msg) };
+  }
+  return r;
 }
 
 // 单账号全流程
@@ -353,63 +367,52 @@ async function runAccount(acc) {
   const lines = [];
   lines.push(`👤 ${name}`);
 
-  // 1. 查签到状态
-  const home = await getHomeStatus(token);
+  // 1. 查签到状态（H5 Z-Green taskGet：每日签到任务 taskStatus=true 即今日已签）
+  const st = await getSigninStatus(token);
   let already = false;
-  if (home.success && home.data) {
-    if (home.data.signStatus) {
-      already = true;
-      lines.push(`✅ 今日已签到（连续 ${home.data.signInNumber || 0} 天）`);
-    } else {
-      lines.push(`📝 今日未签到，执行签到`);
-    }
+  if (st.success && Array.isArray(st.data)) {
+    const daily = st.data.find(t => t && t.taskName && t.taskName.indexOf('签到') !== -1);
+    already = !!(daily && daily.taskStatus);
+    lines.push(already ? `✅ 今日已签到` : `📝 今日未签到`);
   } else {
-    lines.push(`⚠️ 签到状态查询失败: ${home.msg || JSON.stringify(home).slice(0, 80)}`);
+    lines.push(`⚠️ 签到状态查询失败: ${st.msg || JSON.stringify(st).slice(0, 80)}`);
   }
 
-  // 2. 签到（今日未签才执行）
-  if (!already) {
-    const r = await doSignin(token);
-    if (r.success) lines.push('✅ 签到成功');
-    else lines.push(`⚠️ 签到返回: ${r.msg || JSON.stringify(r).slice(0, 80)}`);
-    // 签到后再查一次状态确认
-    const home2 = await getHomeStatus(token);
-    if (home2.success && home2.data) {
-      lines.push(`📅 连续签到 ${home2.data.signInNumber || 0} 天`);
-    }
-  }
-
-  // 3. 任务奖励
+  // 2. 任务列表（展示可领取项；任务奖励领取的精确载荷待补抓包确认）
   const tasks = await getTasks(token);
   if (tasks.success && tasks.data && tasks.data.taskReachMsgList) {
     const list = tasks.data.taskReachMsgList || [];
-    // 可领取 = 已完成（currentComplete >= maxCompleteLimit）且尚未领取（take===false）
-    const canTake = list.filter(t => t.taskTakeDTO && t.taskTakeDTO.take === false && t.taskTakeDTO.currentComplete >= t.taskTakeDTO.maxCompleteLimit);
-    if (!canTake.length) {
-      lines.push(`🎁 任务奖励: 今日无可领取（${list.length} 个任务）`);
+    const done = list.filter(t => t.taskTakeDTO && t.taskTakeDTO.currentComplete >= t.taskTakeDTO.maxCompleteLimit && !t.taskTakeDTO.take);
+    if (!done.length) {
+      lines.push(`🎁 任务奖励: 无可领取（${list.length} 个任务）`);
     } else {
-      for (const t of canTake) {
-        lines.push(`🎁 待领取「${t.name}」（taskTemplateId=${t.taskTemplateId}）`);
-        const tr = await takeTask(token, t.taskTemplateId, tasks.data.activityId);
-        if (tr.success) lines.push(`  ✅ 已领取`);
-        else lines.push(`  ⚠️ 领取失败: ${tr.msg || JSON.stringify(tr).slice(0, 80)}`);
-        await $.wait(1500);
-      }
+      lines.push(`🎁 待领取任务: ${done.map(t => t.name).join('、')}（脚本提示，领取动作待补抓包）`);
     }
-  } else {
-    lines.push('⚠️ 任务列表获取失败');
   }
 
-  // 4. 能量球收集
+  // 3. 收集能量碎片（EASY_DEBRIS 等活动碎片，实测 batchApply 成功）
   const id = getTokenId(token);
   if (id) {
     const uc = await getUncollected(token, id);
     if (uc.success && uc.data && uc.data.uncollectedVal && uc.data.uncollectedVal.length) {
-      const n = uc.data.uncollectedVal.length;
-      lines.push(`⚡ 待收集能量: ${n} 项，尝试一键收集`);
-      const ca = await collectAll(token, id, uc.data.uncollectedVal);
-      if (ca.success) lines.push(`⚡ 收集成功: ${JSON.stringify(ca.data || {}).slice(0, 100)}`);
-      else lines.push(`⚠️ 收集失败: ${ca.msg || JSON.stringify(ca).slice(0, 80)}`);
+      const debris = uc.data.uncollectedVal.filter(x => x && x.eventCode);
+      const carbon = uc.data.uncollectedVal.filter(x => !(x && x.eventCode));
+      if (!debris.length && !carbon.length) {
+        lines.push('⚡ 能量球: 已全部收集');
+      } else {
+        if (carbon.length) lines.push(`⚡ 待收集碳能量 ${carbon.length} 项（WALK/驾车，App 内收取，脚本不处理）`);
+        if (debris.length) {
+          const cd = await collectDebris(token, debris);
+          if (cd.success) {
+            const ok = cd._okCount || 0;
+            const failMsgs = (cd._failMsgs || []).filter(m => m && m.indexOf('已核销') === -1);
+            lines.push(ok ? `⚡ 碎片收集成功 ${ok} 项` : `⚡ 碎片无可收集`);
+            if (failMsgs.length) lines.push(`  ⚠️ ${failMsgs.join('；')}`);
+          } else {
+            lines.push(`⚠️ 碎片收集失败: ${cd.msg || JSON.stringify(cd).slice(0, 80)}`);
+          }
+        }
+      }
     } else {
       lines.push('⚡ 能量球: 已全部收集');
     }
