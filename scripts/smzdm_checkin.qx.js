@@ -445,7 +445,7 @@ async function main() {
 
 // 圈x 环境下从 rewrite 抓取 Cookie 的处理
 // 以 script-request-header 运行：任何 user-api.smzdm.com 请求都会经过这里（不限于 /checkin）
-// 注意：这里直接调用全局 API（$prefs/$notification/$done），不经过 Env 类，
+// 注意：这里直接调用全局 API（$prefs/$notify/$done），不经过 Env 类，
 // 避免 Env 的环境检测差异导致 setdata/通知静默失效（不报错、无提示）
 if (typeof $request !== 'undefined' && $request.url && $request.url.indexOf('user-api.smzdm.com') !== -1) {
   // 这是 Cookie 抓取模式
@@ -464,7 +464,9 @@ if (typeof $request !== 'undefined' && $request.url && $request.url.indexOf('use
       } else {
         console.log('[SMZDM] 无可用的存储 API，Cookie 未持久化');
       }
-      if (typeof $notification !== 'undefined' && $notification.post) {
+      if (typeof $notify !== 'undefined') {
+        $notify('什么值得买签到', '✅ Cookie 已保存', '已写入 ' + cookie.length + ' 字符，可以注释掉抓取规则了');
+      } else if (typeof $notification !== 'undefined' && $notification.post) {
         $notification.post('什么值得买签到', '✅ Cookie 已保存', '已写入 ' + cookie.length + ' 字符，可以注释掉抓取规则了');
       }
     } catch (e) {
@@ -537,8 +539,9 @@ function Env(name) {
       this.logs.push(msg);
     }
     msg(title = this.name, subtitle = '', body = '') {
-      if (isQuanX) $notification.post(title, subtitle, body);
-      else if (isSurge) $notification.post(title, subtitle, body);
+      // 兼容圈x 各版本：$notify 优先（Chavy 通用），$notification.post 兜底
+      if (typeof $notify !== 'undefined') $notify(title, subtitle, body);
+      else if (typeof $notification !== 'undefined' && $notification.post) $notification.post(title, subtitle, body);
       else if (isNode) this.log(`${title} ${subtitle} ${body}`);
     }
     done(value = {}) {
