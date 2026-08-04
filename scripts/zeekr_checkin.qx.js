@@ -12,9 +12,11 @@
  *   - 奖励发放机制：签到/任务条件达成后，奖励碎片自动进入「待收集」列表
  *     （HAR 实测 uncollectedVal 含 sourceId=「signup-2026-08-04」签到碎片、「步行3000步」任务碎片），
  *     因此收集碎片 = 自动领取奖励，无独立「领取」接口。
- *   - 能量碎片（EASY_DEBRIS 等有 eventCode 的项）走 POST /apply/batchApply，
- *     body: {applyCmdList:[{record:eventCode, payContent:{bubbleAssetsId:id}, applyExt:{origin:sourceId}}]}
- *     实测可成功收集。
+ *   - 能量碎片按类型分两条收集通道：
+ *     · 任务碎片（EASY_DEBRIS/DIFFICULT_DEBRIS，减碳2000g等）走 POST /apply/batchApply，
+ *       body: {applyCmdList:[{record:eventCode, payContent:{bubbleAssetsId:id}, applyExt:{origin:sourceId}}]}，实测成功。
+ *     · 能量达标碎片（ENERGY_STANDARDS，eventCode=z_green_active 等）走 POST /carEnergy/collectIntegralZeekrBalls，
+ *       body: {energyIds:[id]}，实测成功（batchApply 对它报「未查询到相关活动」）。
  *   - 纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）走 POST /carEnergy/collectedAllEnergy，
  *     body: { energyIds: [id] }（逐个收集；字段名是 energyIds，不是 accountId/ids）。
  *     实测成功（H5 前端 JS index-94ba24e9.js 的 te 函数确认）。
@@ -381,6 +383,22 @@ async function collectCarbon(token, energyItems) {
   return { success: true, _okCount: okList.length, _failCount: failList.length, _failMsgs: failList.map(x => x.r.msg || JSON.stringify(x.r).slice(0, 60)) };
 }
 
+// 收集能量达标碎片（ENERGY_STANDARDS 等，eventCode 非空但不是 batchApply 活动编码，如 z_green_active）：
+// H5 前端 JS（index-94ba24e9.js 的 te 函数）：非 WALK/TRAVEL 走 collectIntegralZeekrBalls
+// body: { energyIds: [id] }（实测可收集 z_green_active，无需 riskToken）
+async function collectIntegral(token, energyItems) {
+  const items = (energyItems || []).filter(x => x && x.eventCode);
+  const okList = [], failList = [];
+  for (const it of items) {
+    const r = await request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-val/v1/carEnergy/collectIntegralZeekrBalls',
+      { energyIds: [it.id] }, token, false);
+    if (r.success) okList.push(it);
+    else failList.push({ it, r });
+    await $.wait(800);
+  }
+  return { success: true, _okCount: okList.length, _failCount: failList.length, _failMsgs: failList.map(x => x.r.msg || JSON.stringify(x.r).slice(0, 60)) };
+}
+
 // 单账号全流程
 async function runAccount(acc) {
   const token = acc.token;
@@ -411,18 +429,23 @@ async function runAccount(acc) {
     }
   }
 
-  // 3. 收集能量碎片 + 碳能量球（碎片走 batchApply，碳能量走 collectedAllEnergy）
+  // 3. 收集能量碎片 + 碳能量球（碎片分两类：任务碎片 batchApply，达标碎片 collectIntegralZeekrBalls；碳能量 collectedAllEnergy）
   const id = getTokenId(token);
   if (id) {
     const uc = await getUncollected(token, id);
     if (uc.success && uc.data && uc.data.uncollectedVal && uc.data.uncollectedVal.length) {
-      const debris = uc.data.uncollectedVal.filter(x => x && x.eventCode);
+      // 分类：
+      // - EASY_DEBRIS/DIFFICULT_DEBRIS 任务碎片 → batchApply（活动编码存在）
+      // - ENERGY_STANDARDS 等达标碎片（z_green_active）→ collectIntegralZeekrBalls
+      // - WALK/TRAVEL_MILEAGE 碳能量 → collectedAllEnergy
+      const easy = uc.data.uncollectedVal.filter(x => x && x.eventCode && (x.sceneCode === 'EASY_DEBRIS' || x.sceneCode === 'DIFFICULT_DEBRIS'));
+      const integral = uc.data.uncollectedVal.filter(x => x && x.eventCode && !easy.includes(x));
       const carbon = uc.data.uncollectedVal.filter(x => x && !x.eventCode && (x.sceneCode === 'WALK' || x.sceneCode === 'TRAVEL_MILEAGE'));
-      if (!debris.length && !carbon.length) {
+      if (!easy.length && !integral.length && !carbon.length) {
         lines.push('⚡ 能量球: 已全部收集');
       } else {
-        if (debris.length) {
-          const cd = await collectDebris(token, debris);
+        if (easy.length) {
+          const cd = await collectDebris(token, easy);
           if (cd.success) {
             const ok = cd._okCount || 0;
             const failMsgs = (cd._failMsgs || []).filter(m => m && m.indexOf('已核销') === -1);
@@ -431,6 +454,13 @@ async function runAccount(acc) {
           } else {
             lines.push(`⚠️ 碎片收集失败: ${cd.msg || JSON.stringify(cd).slice(0, 80)}`);
           }
+        }
+        if (integral.length) {
+          const ci = await collectIntegral(token, integral);
+          const ok = ci._okCount || 0;
+          const failMsgs = (ci._failMsgs || []).filter(m => m && m.indexOf('已核销') === -1);
+          lines.push(ok ? `⚡ 达标碎片收取成功 ${ok} 项` : `⚡ 达标碎片无可收取`);
+          if (failMsgs.length) lines.push(`  ⚠️ ${failMsgs.join('；')}`);
         }
         if (carbon.length) {
           const cc = await collectCarbon(token, carbon);

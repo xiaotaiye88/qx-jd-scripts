@@ -4,7 +4,7 @@
 - ✅ 每日签到状态查询（Z-Green 签到）
 - ✅ **多账号**（按 JWT `jti` 去重，循环执行，汇总通知）
 - ✅ 任务奖励**自动领取**（任务达成 → 碎片自动入账 → 脚本收集即领取）
-- ✅ 能量碎片自动收集（Z-Green 碎片，实测 batchApply 成功）
+- ✅ 能量碎片自动收集（任务碎片 batchApply + 能量达标碎片 collectIntegralZeekrBalls，均实测成功）
 - ✅ **碳能量球自动收取**（WALK/驾车，实测 collectedAllEnergy 成功）
 - ✅ Token 自动抓取（打开 App 即存入 BoxJs）
 - ✅ 结果推送通知
@@ -36,6 +36,14 @@ x_ca_sign = SHA1( [签名密钥, x_ca_nonce, x_ca_timestamp].sort().join('') )
   }] }
   ```
   `record/payContent/applyExt` 均来自 `getUncollectedBallsPageNew` 响应。
+  **注意**：batchApply 仅适用于任务碎片（EASY_DEBRIS/DIFFICULT_DEBRIS 等）；
+  对能量达标碎片（ENERGY_STANDARDS，eventCode=z_green_active）会返回「未查询到相关活动！」，须用下方接口。
+- `POST /zeekrlife-mp-val/v1/carEnergy/collectIntegralZeekrBalls` — **能量达标碎片收取**（ENERGY_STANDARDS 等，实测成功）：
+  ```
+  { "energyIds": ["<碎片id>"] }
+  ```
+  逐个收集。针对 `eventCode` 非空但不是 batchApply 活动编码的碎片（如 `z_green_active`），
+  逆向自 H5 前端 `index-94ba24e9.js` 收取函数 `te()` 的非 WALK/TRAVEL 分支（无需 riskToken）。
 - `POST /zeekrlife-mp-val/v1/carEnergy/collectedAllEnergy` — **碳能量球收取**（WALK/驾车，实测成功）：
   ```
   { "energyIds": ["<球id>"] }
@@ -124,5 +132,5 @@ hostname = api-gw-toc.zeekrlife.com
 2. 频繁签到（同一天多次）不会获得更多奖励，且可能触发风控
 3. 如遇 `code` 非 000000，请检查 Token 是否失效
 4. 签名密钥存在于前端公开 JS 中（混淆），属公开信息；**Token 属个人凭证，仅存储在你本机 BoxJs**
-5. 能量碎片 + 碳能量球由脚本自动收集/收取（碎片走 batchApply，碳能量走 collectedAllEnergy）
+5. 能量碎片 + 碳能量球由脚本自动收集/收取（任务碎片走 batchApply，达标碎片走 collectIntegralZeekrBalls，碳能量走 collectedAllEnergy）
 6. 不同 App 版本接口可能变化，脚本基于 2026-08 抓包验证
