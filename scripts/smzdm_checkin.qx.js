@@ -231,7 +231,9 @@ function urlEncodeParams(params) {
 }
 
 // ---------- 网络请求 ----------
-function request(url, params, headers = {}) {
+// verbose=false（默认）：成功只打一行摘要「接口 error_code=xx 耗时」，失败才打完整参数+响应
+// verbose=true：每次都打完整参数和响应（调试用）
+function request(url, params, headers = {}, verbose = false) {
   return new Promise((resolve, reject) => {
     const body = urlEncodeParams(params);
     const reqHeaders = {
@@ -245,8 +247,26 @@ function request(url, params, headers = {}) {
       'Cookie': $.getdata(COOKIE_KEY) || '',
       ...headers
     };
-    $.log(`[请求] POST ${url}`);
-    $.log(`[参数] ${body}`);
+    const apiName = url.split('/').pop();
+    const t0 = Date.now();
+    if (verbose) $.log(`[请求] POST ${url}\n[参数] ${body}`);
+
+    const handleBody = (respBody) => {
+      const cost = Date.now() - t0;
+      try {
+        const json = JSON.parse(respBody);
+        const code = json.error_code;
+        if (verbose || code !== '0') {
+          $.log(`[响应 ${apiName}] error_code=${code} ${respBody.slice(0, 200)}`);
+        } else {
+          $.log(`[${apiName}] OK (${cost}ms)`);
+        }
+        resolve(json);
+      } catch (e) {
+        $.log(`[响应 ${apiName}] 解析失败: ${respBody.slice(0, 200)}`);
+        resolve({ error_code: '-1', error_msg: '响应解析失败', raw: respBody });
+      }
+    };
 
     // 圈x ($task) / Surge-Loon ($httpClient) / Node 兼容
     if (typeof $task !== 'undefined') {
@@ -256,24 +276,12 @@ function request(url, params, headers = {}) {
         method: 'POST',
         headers: reqHeaders,
         body
-      }).then(resp => {
-        $.log(`[响应] ${resp.body}`);
-        try {
-          resolve(JSON.parse(resp.body));
-        } catch (e) {
-          resolve({ error_code: '-1', error_msg: '响应解析失败', raw: resp.body });
-        }
-      }).catch(err => reject(err));
+      }).then(resp => handleBody(resp.body)).catch(err => reject(err));
     } else if (typeof $httpClient !== 'undefined') {
       // Surge / Loon
       $httpClient.post({ url, headers: reqHeaders, body }, (err, resp, data) => {
         if (err) { reject(err); return; }
-        $.log(`[响应] ${data}`);
-        try {
-          resolve(JSON.parse(data));
-        } catch (e) {
-          resolve({ error_code: '-1', error_msg: '响应解析失败', raw: data });
-        }
+        handleBody(data);
       });
     } else {
       // Node.js 测试环境
@@ -289,14 +297,7 @@ function request(url, params, headers = {}) {
       }, (res) => {
         let data = '';
         res.on('data', c => data += c);
-        res.on('end', () => {
-          $.log(`[响应] ${data}`);
-          try {
-            resolve(JSON.parse(data));
-          } catch (e) {
-            resolve({ error_code: '-1', error_msg: '响应解析失败', raw: data });
-          }
-        });
+        res.on('end', () => handleBody(data));
       });
       req.on('error', err => reject(err));
       req.write(body);
@@ -307,7 +308,7 @@ function request(url, params, headers = {}) {
 
 // ---------- 核心功能 ----------
 async function checkin() {
-  $.log('========== 开始签到 ==========');
+  $.log('▶ 签到');
   const cookie = $.getdata(COOKIE_KEY);
   if (!cookie) {
     $.log('❌ 未找到 Cookie！请先打开什么值得买 App 触发抓取');
@@ -345,7 +346,7 @@ async function checkin() {
 }
 
 async function allReward() {
-  $.log('\n========== 查询签到奖励 ==========');
+  $.log('▶ 查询签到奖励');
   const params = buildParams({});
   const result = await request('https://user-api.smzdm.com/checkin/all_reward', params);
   if (result.error_code === '0' && result.data && result.data.normal_reward) {
@@ -361,7 +362,7 @@ async function allReward() {
 }
 
 async function extraReward() {
-  $.log('\n========== 检查额外奖励 ==========');
+  $.log('▶ 检查额外奖励');
   // 先查签到视图，看是否有连续签到奖励
   const viewParams = buildParams({});
   const view = await request('https://user-api.smzdm.com/checkin/show_view_v2', viewParams);
@@ -385,7 +386,7 @@ async function extraReward() {
 }
 
 async function getVipInfo() {
-  $.log('\n========== 会员信息 ==========');
+  $.log('▶ 会员信息');
   const params = buildParams({});
   const result = await request('https://user-api.smzdm.com/vip', params);
   if (result.error_code === '0' && result.data && result.data.vip) {
@@ -433,7 +434,7 @@ async function main() {
     }
 
     $.msg('什么值得买签到', '✅ 完成', msg);
-    $.log(`\n========== 全部完成 ==========\n${msg}`);
+    $.log(msg);
   } catch (e) {
     $.log('❌ 异常:', e.message, e.stack);
     $.msg('什么值得买签到', '❌ 异常', e.message);
