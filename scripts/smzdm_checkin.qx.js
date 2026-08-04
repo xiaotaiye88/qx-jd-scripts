@@ -11,28 +11,28 @@
  *
  * 使用方法：
  *   [task_local]
- *   30 9 * * * https://raw.githubusercontent.com/<你的仓库>/smzdm_checkin.js, tag=什么值得买签到, img-url=https://raw.githubusercontent.com/<你的仓库>/smzdm.png, enabled=true
+ *   30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js, tag=什么值得买签到, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png, enabled=true
  *
  *   [rewrite_local]
- *   ^https?:\/\/user-api\.smzdm\.com\/checkin url script-response-body https://raw.githubusercontent.com/<你的仓库>/smzdm_checkin.js
- *   (抓取 Cookie 用，抓到后可注释)
+ *   ^https?:\/\/user-api\.smzdm\.com\/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js
+ *   (抓取 Cookie 用，任何 user-api.smzdm.com 请求都会触发，抓到后可注释)
  *
  * Cookie 获取方法：
  *   1. 打开圈x，MITM 开启 user-api.smzdm.com
- *   2. 打开什么值得买 App，进入「我的」-「签到」
- *   3. 等待通知提示「Cookie 写入成功」
+ *   2. 打开什么值得买 App 随便逛逛（任意接口请求即可触发抓取，不限于签到页）
+ *   3. 等待通知提示「Cookie 已保存」
  *
  * 数据来源：
- *   签名算法由抓包数据反推验证（key: zok5JtAq3$QixaA%mncn*jGWlEpSL3E1）
+ *   签名算法由抓包数据反推验证（key 见 SIGN_KEY 常量）
  *   checkin 请求实测可复现 sign
  *
  * ================================================
  */
 
 // ================= 配置区 =================
-// Cookie（点击签到后自动写入，也可手动粘贴）
+// Cookie（打开 App 后自动写入 BoxJs，也可在 BoxJs 中手动粘贴）
 // 需要的关键字段：sess=xxx; smzdm_id=xxx; device_s=xxx;
-// 用圈x [rewrite_local] 抓取时自动保存到 $prefs
+// 抓取规则见脚本头部说明，抓到后自动保存到 $prefs（BoxJs 键名 smzdm_cookie）
 const COOKIE_KEY = 'smzdm_cookie';
 
 // ==============================================
@@ -216,7 +216,6 @@ function getSign(params) {
   const keys = Object.keys(params).filter(k => params[k] !== '' && params[k] != null).sort();
   const str = keys.map(k => `${k}=${String(params[k]).replace(/\s+/g, '')}`).join('&');
   const signStr = `${str}&key=${SIGN_KEY}`;
-  $.log(`[签名串] ${signStr}`);
   return md5(signStr).toUpperCase();
 }
 
@@ -311,23 +310,34 @@ async function checkin() {
   $.log('========== 开始签到 ==========');
   const cookie = $.getdata(COOKIE_KEY);
   if (!cookie) {
-    $.log('❌ 未找到 Cookie！请先点击签到抓取 Cookie');
+    $.log('❌ 未找到 Cookie！请先打开什么值得买 App 触发抓取');
     return false;
   }
   $.log(`✅ Cookie 已加载: ${cookie.length} 字符`);
+  // 提示 Cookie 抓取时间（sess 一般 30 天有效）
+  try {
+    const ts = parseInt($.getdata(COOKIE_KEY + '_ts')) || 0;
+    if (ts > 0) {
+      const days = Math.floor((Date.now() - ts) / 86400000);
+      if (days > 20) $.log(`⚠️ Cookie 已使用 ${days} 天，接近 30 天有效期，建议重新抓取`);
+      else $.log(`📅 Cookie 已使用 ${days} 天`);
+    }
+  } catch (e) {}
 
   // 1. 签到
   const params = buildParams({});
   const result = await request('https://user-api.smzdm.com/checkin', params);
-  
+
   if (result.error_code === '0') {
+    // 接口对「已签到」也返回 error_code=0，需靠 error_msg 区分
+    if (result.error_msg === '已签到' || (result.error_msg && result.error_msg.indexOf('已签到') !== -1)) {
+      $.log('ℹ️ 今天已经签过到了');
+      return null;
+    }
     const d = result.data;
     $.log(`✅ 签到成功！连续 ${d.daily_num} 天`);
     $.log(`🏅 金币: ${d.cgold} | 碎银: ${d.pre_re_silver} | 经验: ${d.cexperience} | 补签卡: ${d.cards}`);
     return d;
-  } else if (result.error_msg === '已签到') {
-    $.log('ℹ️ 今天已经签过到了');
-    return null;
   } else {
     $.log(`❌ 签到失败: ${result.error_msg || JSON.stringify(result)}`);
     return false;
@@ -433,16 +443,20 @@ async function main() {
 }
 
 // 圈x 环境下从 rewrite 抓取 Cookie 的处理
-// 当作为 script-response-body 运行时，$request 是请求对象
-if (typeof $request !== 'undefined' && $request.url && $request.url.includes('user-api.smzdm.com')) {
+// 以 script-request-header 运行：任何 user-api.smzdm.com 请求都会经过这里（不限于 /checkin）
+if (typeof $request !== 'undefined' && $request.url && $request.url.indexOf('user-api.smzdm.com') !== -1) {
   // 这是 Cookie 抓取模式
-  const cookie = $request.headers && ($request.headers.Cookie || $request.headers.cookie);
-  if (cookie) {
+  const cookie = ($request.headers && ($request.headers.Cookie || $request.headers.cookie)) || '';
+  if (!cookie || (cookie.indexOf('sess=') === -1 && cookie.indexOf('smzdm_id=') === -1)) {
+    $.log('[SMZDM] 未抓到有效 Cookie（缺 sess/smzdm_id），跳过');
+    $.done({});
+  } else {
     $.setdata(cookie, COOKIE_KEY);
+    $.setdata(String(Date.now()), COOKIE_KEY + '_ts');
     $.msg('什么值得买签到', '✅ Cookie 已保存', `已写入 ${cookie.length} 字符，可以注释掉抓取规则了`);
-    $.log(`✅ Cookie 已保存: ${cookie.slice(0, 50)}...`);
+    $.log(`[SMZDM] Cookie 已保存: ${cookie.slice(0, 50)}...`);
+    $.done({});
   }
-  $.done();
 } else {
   // 定时任务模式
   main();

@@ -8,6 +8,7 @@
 |------|------|------|
 | Cookie/Wskey 抓取 | rewrite 重写 | 打开京东 App 时自动抓取 `pt_key`+`pt_pin`+`wskey`，同步 BoxJs 本地存储（可选 ntfy 外推）|
 | 积分换话费 | task 定时任务 | 京东「首页-赚话费」自动签到做任务，移植自 [6dylan6/jdpro](https://github.com/6dylan6/jdpro) 的 `jd_dwapp.js`（青龙版），经打包管线转换为圈X 单文件脚本 |
+| 什么值得买签到 | rewrite + task | 打开什么值得买 App 自动抓取 Cookie 存 BoxJs，每天定时签到 + 领连续奖励 + 查会员信息。签名算法由抓包反推验证，见 [smzdm_checkin.README.md](smzdm_checkin.README.md) |
 
 ## 快速开始
 
@@ -53,16 +54,18 @@ https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/qx-jd.b
 ## 仓库结构
 
 ```
-├── jd_scripts.conf          # 圈X 资源订阅（rewrite + task + mitm）
+├── jd_scripts.conf          # 圈X 资源订阅（京东 rewrite + task + mitm）
+├── smzdm_scripts.conf       # 圈X 资源订阅（什么值得买签到）
 ├── qx_jd_all.js             # Cookie/Wskey 抓取（频率控制 + BoxJs 同步 + 可选 ntfy）
 ├── qx_jd_cookie.js          # 旧版 Cookie 抓取（保留）
 ├── qx_jd_wskey.js           # 旧版 Wskey 抓取（保留）
 ├── boxjs/
-│   └── qx-jd.boxjs.json     # BoxJs 订阅
+│   └── qx-jd.boxjs.json     # BoxJs 订阅（含什么值得买签到配置）
 ├── tasks/
 │   └── qx-jd-tasks.json     # 圈X 任务画廊订阅（fmz200 同款格式）
 ├── scripts/
-│   └── jd_dwapp.qx.js       # 积分换话费打包产物（自动生成，勿手改）
+│   ├── jd_dwapp.qx.js       # 积分换话费打包产物（自动生成，勿手改）
+│   └── smzdm_checkin.qx.js  # 什么值得买签到（抓 Cookie + 定时签到合一）
 ├── src/
 │   └── prelude.js           # 圈X 兼容层（CommonJS/process/crypto/got/axios 垫片）
 └── tools/
