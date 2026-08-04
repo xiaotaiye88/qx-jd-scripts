@@ -5,7 +5,7 @@
  * 功能：
  *   1. 查询签到状态（/signinzgreen/toc/taskGet，每日签到任务 taskStatus=true 即已签）
  *   2. 查询任务奖励（/taskProgress/taskMsg，展示可领取项）
- *   3. 收集能量碎片（/carEnergy/getUncollectedBallsPageNew + /apply/batchApply）
+ *   3. 自动收集：能量碎片（batchApply）+ 碳能量球（collectedAllEnergy）
  *   4. 完整结果推送到通知
  *
  * 说明（2026-08 实测确认）：
@@ -14,10 +14,12 @@
  *     因此收集碎片 = 自动领取奖励，无独立「领取」接口。
  *   - 能量碎片（EASY_DEBRIS 等有 eventCode 的项）走 POST /apply/batchApply，
  *     body: {applyCmdList:[{record:eventCode, payContent:{bubbleAssetsId:id}, applyExt:{origin:sourceId}}]}
- *     实测可成功收集（4→2 项，碎片全部收掉）。
+ *     实测可成功收集。
+ *   - 纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）走 POST /carEnergy/collectedAllEnergy，
+ *     body: { energyIds: [id] }（逐个收集；字段名是 energyIds，不是 accountId/ids）。
+ *     实测成功（H5 前端 JS index-94ba24e9.js 的 te 函数确认）。
  *   - 「每日签到」任务描述 = 每日进入 Z-Green 页面可得碎片，进页面即自动签到，
  *     脚本通过 taskGet 查询状态（taskStatus=true 即已签，当天只跑一次不会重复）。
- *   - 纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）不走此通道，需 App 内收取。
  *
  * 使用方法：
  *   [task_local]
@@ -363,6 +365,22 @@ async function collectDebris(token, uncollectedList) {
   return r;
 }
 
+// 收集纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）：
+// H5 前端 JS（index-94ba24e9.js 的 te 函数）：WALK/TRAVEL_MILEAGE 走 collectedAllEnergy，
+// body: { energyIds: [id] }（逐个收集；注意字段名是 energyIds，不是 accountId/ids）
+async function collectCarbon(token, energyItems) {
+  const items = (energyItems || []).filter(x => x && (x.sceneCode === 'WALK' || x.sceneCode === 'TRAVEL_MILEAGE'));
+  const okList = [], failList = [];
+  for (const it of items) {
+    const r = await request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-val/v1/carEnergy/collectedAllEnergy',
+      { energyIds: [it.id] }, token, false);
+    if (r.success) okList.push(it);
+    else failList.push({ it, r });
+    await $.wait(800);
+  }
+  return { success: true, _okCount: okList.length, _failCount: failList.length, _failMsgs: failList.map(x => x.r.msg || JSON.stringify(x.r).slice(0, 60)) };
+}
+
 // 单账号全流程
 async function runAccount(acc) {
   const token = acc.token;
@@ -393,17 +411,16 @@ async function runAccount(acc) {
     }
   }
 
-  // 3. 收集能量碎片（EASY_DEBRIS 等活动碎片，实测 batchApply 成功）
+  // 3. 收集能量碎片 + 碳能量球（碎片走 batchApply，碳能量走 collectedAllEnergy）
   const id = getTokenId(token);
   if (id) {
     const uc = await getUncollected(token, id);
     if (uc.success && uc.data && uc.data.uncollectedVal && uc.data.uncollectedVal.length) {
       const debris = uc.data.uncollectedVal.filter(x => x && x.eventCode);
-      const carbon = uc.data.uncollectedVal.filter(x => !(x && x.eventCode));
+      const carbon = uc.data.uncollectedVal.filter(x => x && !x.eventCode && (x.sceneCode === 'WALK' || x.sceneCode === 'TRAVEL_MILEAGE'));
       if (!debris.length && !carbon.length) {
         lines.push('⚡ 能量球: 已全部收集');
       } else {
-        if (carbon.length) lines.push(`⚡ 待收集碳能量 ${carbon.length} 项（WALK/驾车，App 内收取，脚本不处理）`);
         if (debris.length) {
           const cd = await collectDebris(token, debris);
           if (cd.success) {
@@ -414,6 +431,13 @@ async function runAccount(acc) {
           } else {
             lines.push(`⚠️ 碎片收集失败: ${cd.msg || JSON.stringify(cd).slice(0, 80)}`);
           }
+        }
+        if (carbon.length) {
+          const cc = await collectCarbon(token, carbon);
+          const ok = cc._okCount || 0;
+          const failMsgs = (cc._failMsgs || []).filter(m => m && m.indexOf('已核销') === -1);
+          lines.push(ok ? `⚡ 碳能量收取成功 ${ok} 项` : `⚡ 碳能量无可收取`);
+          if (failMsgs.length) lines.push(`  ⚠️ ${failMsgs.join('；')}`);
         }
       }
     } else {

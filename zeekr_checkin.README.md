@@ -5,6 +5,7 @@
 - ✅ **多账号**（按 JWT `jti` 去重，循环执行，汇总通知）
 - ✅ 任务奖励**自动领取**（任务达成 → 碎片自动入账 → 脚本收集即领取）
 - ✅ 能量碎片自动收集（Z-Green 碎片，实测 batchApply 成功）
+- ✅ **碳能量球自动收取**（WALK/驾车，实测 collectedAllEnergy 成功）
 - ✅ Token 自动抓取（打开 App 即存入 BoxJs）
 - ✅ 结果推送通知
 
@@ -34,7 +35,13 @@ x_ca_sign = SHA1( [签名密钥, x_ca_nonce, x_ca_timestamp].sort().join('') )
       "applyExt": { "origin": "<sourceId>" }
   }] }
   ```
-  `record/payContent/applyExt` 均来自 `getUncollectedBallsPageNew` 响应。纯碳能量（WALK/驾车，eventCode 为空）不走此接口，需 App 内收取。
+  `record/payContent/applyExt` 均来自 `getUncollectedBallsPageNew` 响应。
+- `POST /zeekrlife-mp-val/v1/carEnergy/collectedAllEnergy` — **碳能量球收取**（WALK/驾车，实测成功）：
+  ```
+  { "energyIds": ["<球id>"] }
+  ```
+  逐个收集。**注意字段名是 `energyIds`**（数组），不是 `accountId`/`ids`（此前用错字段会返回 999999「登录信息与数据不一致」）。
+  该接口逆向自 H5 前端 `index-94ba24e9.js` 的收取函数（WALK/TRAVEL_MILEAGE 分支）。
 
 > 💡 **奖励自动领取机制**：签到/任务条件达成后，奖励碎片会**自动进入「待收集」列表**（抓包实测：
 > 碎片 `sourceId` 为「signup-2026-08-04」（签到）和「步行3000步」（任务）），
@@ -105,8 +112,8 @@ hostname = api-gw-toc.zeekrlife.com
 👤 小太爷88
 ✅ 今日已签到
 🎁 任务奖励: 无可领取（4 个任务）
-⚡ 待收集碳能量 2 项（WALK/驾车，App 内收取，脚本不处理）
 ⚡ 碎片收集成功 2 项
+⚡ 碳能量收取成功 1 项
 ```
 
 （任务达成时：`🎁 任务奖励已达成: 步行3000步（碎片已自动入账，下方收集即领取）`）
@@ -117,5 +124,5 @@ hostname = api-gw-toc.zeekrlife.com
 2. 频繁签到（同一天多次）不会获得更多奖励，且可能触发风控
 3. 如遇 `code` 非 000000，请检查 Token 是否失效
 4. 签名密钥存在于前端公开 JS 中（混淆），属公开信息；**Token 属个人凭证，仅存储在你本机 BoxJs**
-5. 能量碎片由脚本自动收集；纯碳能量球需 App 内手动收取（有效期内）
+5. 能量碎片 + 碳能量球由脚本自动收集/收取（碎片走 batchApply，碳能量走 collectedAllEnergy）
 6. 不同 App 版本接口可能变化，脚本基于 2026-08 抓包验证
