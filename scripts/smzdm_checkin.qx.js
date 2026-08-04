@@ -444,19 +444,33 @@ async function main() {
 
 // 圈x 环境下从 rewrite 抓取 Cookie 的处理
 // 以 script-request-header 运行：任何 user-api.smzdm.com 请求都会经过这里（不限于 /checkin）
+// 注意：这里直接调用全局 API（$prefs/$notification/$done），不经过 Env 类，
+// 避免 Env 的环境检测差异导致 setdata/通知静默失效（不报错、无提示）
 if (typeof $request !== 'undefined' && $request.url && $request.url.indexOf('user-api.smzdm.com') !== -1) {
   // 这是 Cookie 抓取模式
   const cookie = ($request.headers && ($request.headers.Cookie || $request.headers.cookie)) || '';
   if (!cookie || (cookie.indexOf('sess=') === -1 && cookie.indexOf('smzdm_id=') === -1)) {
-    $.log('[SMZDM] 未抓到有效 Cookie（缺 sess/smzdm_id），跳过');
-    $.done({});
+    console.log('[SMZDM] 未抓到有效 Cookie（缺 sess/smzdm_id），跳过');
   } else {
-    $.setdata(cookie, COOKIE_KEY);
-    $.setdata(String(Date.now()), COOKIE_KEY + '_ts');
-    $.msg('什么值得买签到', '✅ Cookie 已保存', `已写入 ${cookie.length} 字符，可以注释掉抓取规则了`);
-    $.log(`[SMZDM] Cookie 已保存: ${cookie.slice(0, 50)}...`);
-    $.done({});
+    try {
+      if (typeof $prefs !== 'undefined' && $prefs.setValueForKey) {
+        $prefs.setValueForKey(cookie, COOKIE_KEY);
+        $prefs.setValueForKey(String(Date.now()), COOKIE_KEY + '_ts');
+        console.log('[SMZDM] Cookie 已写入 BoxJs: ' + cookie.slice(0, 50) + '...');
+      } else if (typeof $persistentStore !== 'undefined' && $persistentStore.write) {
+        $persistentStore.write(cookie, COOKIE_KEY);
+        console.log('[SMZDM] Cookie 已写入 persistentStore: ' + cookie.slice(0, 50) + '...');
+      } else {
+        console.log('[SMZDM] 无可用的存储 API，Cookie 未持久化');
+      }
+      if (typeof $notification !== 'undefined' && $notification.post) {
+        $notification.post('什么值得买签到', '✅ Cookie 已保存', '已写入 ' + cookie.length + ' 字符，可以注释掉抓取规则了');
+      }
+    } catch (e) {
+      console.log('[SMZDM] Cookie 处理异常: ' + e);
+    }
   }
+  if (typeof $done !== 'undefined') $done({});
 } else {
   // 定时任务模式
   main();
