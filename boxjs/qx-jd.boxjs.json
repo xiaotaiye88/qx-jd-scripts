@@ -3318,15 +3318,23 @@
       "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js",
       "keys": [
         "smzdm_cookie",
-        "smzdm_cookie_ts"
+        "smzdm_cookie_ts",
+        "smzdm_cookies"
       ],
       "settings": [
         {
+          "id": "smzdm_cookies",
+          "name": "多账号 Cookie（推荐，自动维护）",
+          "val": "[]",
+          "type": "textarea",
+          "desc": "JSON 数组，格式 [{\"cookie\":\"sess=xxx;smzdm_id=xxx;device_s=xxx;\",\"name\":\"昵称\"}]。打开 App 抓包时按 smzdm_id 自动去重合并，签到脚本会循环所有账号。"
+        },
+        {
           "id": "smzdm_cookie",
-          "name": "SMZDM Cookie（自动抓取，可手动编辑）",
+          "name": "单账号 Cookie（旧版兼容，自动维护）",
           "val": "",
           "type": "textarea",
-          "desc": "打开什么值得买 App 任意页面后自动写入。需含 sess=xxx;smzdm_id=xxx;device_s=xxx;。手动填写格式同 Cookie 请求头。一般 30 天有效，过期重新打开 App 即可刷新。"
+          "desc": "只存最近抓取的 1 个账号（与 smzdm_cookies 最后一项一致）。从旧版升级的账号会自动迁移到 smzdm_cookies。"
         },
         {
           "id": "smzdm_cookie_ts",

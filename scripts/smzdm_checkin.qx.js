@@ -32,11 +32,61 @@
 // ================= 配置区 =================
 // Cookie（打开 App 后自动写入 BoxJs，也可在 BoxJs 中手动粘贴）
 // 需要的关键字段：sess=xxx; smzdm_id=xxx; device_s=xxx;
-// 抓取规则见脚本头部说明，抓到后自动保存到 $prefs（BoxJs 键名 smzdm_cookie）
-const COOKIE_KEY = 'smzdm_cookie';
+// 抓取规则见脚本头部说明，抓到后自动保存到 $prefs
+const COOKIE_KEY = 'smzdm_cookie';   // 单键 Cookie（旧版兼容 + 最近一个账号）
+const COOKIES_KEY = 'smzdm_cookies'; // 多账号 JSON 数组 [{"cookie":"...","name":"..."}]
 
 // ==============================================
 const $ = new Env('什么值得买签到');
+
+// ---------- 多账号 Cookie 管理 ----------
+// 取账号标识：Cookie 里的 smzdm_id（稳定且唯一），没有则用整个 Cookie 去重
+function getAccountId(cookie) {
+  const m = (cookie.match(/(?:^|;\s*)smzdm_id=([^;]+)/) || [])[1] || '';
+  return m;
+}
+// 取显示名：优先 nickname（可能 URL 编码），否则用 smzdm_id，再退化为长度
+function getAccountName(cookie) {
+  const m = (cookie.match(/(?:^|;\s*)nickname=([^;]+)/) || [])[1] || '';
+  if (m) { try { return decodeURIComponent(m); } catch (e) { return m; } }
+  const id = getAccountId(cookie);
+  return id ? ('账号' + id) : ('账号_' + cookie.length);
+}
+// 读取全部账号（多键优先，空则迁移旧版单键）
+function readCookieList() {
+  let list = [];
+  try {
+    const raw = $.getdata(COOKIES_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) list = parsed.filter(x => x && x.cookie);
+    }
+  } catch (e) {}
+  if (!list.length) {
+    const legacy = $.getdata(COOKIE_KEY);
+    if (legacy) {
+      list = [{ cookie: legacy, name: getAccountName(legacy), ts: 0 }];
+      saveCookieList(list);
+    }
+  }
+  return list;
+}
+// 写回全部账号；单键保持为最近一个（向后兼容）
+function saveCookieList(list) {
+  $.setdata(JSON.stringify(list), COOKIES_KEY);
+  if (list.length) $.setdata(list[list.length - 1].cookie, COOKIE_KEY);
+}
+// 抓包写入时合并：按 smzdm_id / 完整 Cookie 去重后追加
+function mergeCookie(cookie) {
+  const id = getAccountId(cookie);
+  const list = readCookieList().filter(a => {
+    if (id) return getAccountId(a.cookie) !== id;
+    return a.cookie !== cookie;
+  });
+  list.push({ cookie, name: getAccountName(cookie), ts: Date.now() });
+  saveCookieList(list);
+  return list;
+}
 
 // 版本信息（对应你的抓包 iPhone 11.1.8）
 const APP_VERSION = '11.1.8';
@@ -233,7 +283,7 @@ function urlEncodeParams(params) {
 // ---------- 网络请求 ----------
 // verbose=false（默认）：成功只打一行摘要「接口 error_code=xx 耗时」，失败才打完整参数+响应
 // verbose=true：每次都打完整参数和响应（调试用）
-function request(url, params, headers = {}, verbose = false) {
+function request(url, params, headers = {}, verbose = false, cookie) {
   return new Promise((resolve, reject) => {
     const body = urlEncodeParams(params);
     const reqHeaders = {
@@ -244,7 +294,7 @@ function request(url, params, headers = {}, verbose = false) {
       // 注意：不要加 Accept-Encoding: gzip，否则圈x $task 收到的是压缩数据无法解析
       'Connection': 'keep-alive',
       'request_key': getRandomRequestKey(),
-      'Cookie': $.getdata(COOKIE_KEY) || '',
+      'Cookie': cookie || $.getdata(COOKIE_KEY) || '',
       ...headers
     };
     const apiName = url.split('/').pop();
@@ -307,14 +357,15 @@ function request(url, params, headers = {}, verbose = false) {
 }
 
 // ---------- 核心功能 ----------
-async function checkin() {
+// 各函数接受 cookie 参数，由 main() 按账号传入；不传则读单键（兼容）
+async function checkin(cookie) {
   $.log('▶ 签到');
-  const cookie = $.getdata(COOKIE_KEY);
-  if (!cookie) {
+  const ck = cookie || $.getdata(COOKIE_KEY);
+  if (!ck) {
     $.log('❌ 未找到 Cookie！请先打开什么值得买 App 触发抓取');
     return false;
   }
-  $.log(`✅ Cookie 已加载: ${cookie.length} 字符`);
+  $.log(`✅ Cookie 已加载: ${ck.length} 字符`);
   // 提示 Cookie 抓取时间（sess 一般 30 天有效）
   try {
     const ts = parseInt($.getdata(COOKIE_KEY + '_ts')) || 0;
@@ -327,7 +378,7 @@ async function checkin() {
 
   // 1. 签到
   const params = buildParams({});
-  const result = await request('https://user-api.smzdm.com/checkin', params);
+  const result = await request('https://user-api.smzdm.com/checkin', params, {}, false, ck);
 
   if (result.error_code === '0') {
     // 接口对「已签到」也返回 error_code=0，需靠 error_msg 区分
@@ -345,10 +396,10 @@ async function checkin() {
   }
 }
 
-async function allReward() {
+async function allReward(cookie) {
   $.log('▶ 查询签到奖励');
   const params = buildParams({});
-  const result = await request('https://user-api.smzdm.com/checkin/all_reward', params);
+  const result = await request('https://user-api.smzdm.com/checkin/all_reward', params, {}, false, cookie);
   if (result.error_code === '0' && result.data && result.data.normal_reward) {
     const nr = result.data.normal_reward;
     const reward = nr.reward_add || {};
@@ -361,11 +412,11 @@ async function allReward() {
   return null;
 }
 
-async function extraReward() {
+async function extraReward(cookie) {
   $.log('▶ 检查额外奖励');
   // 先查签到视图，看是否有连续签到奖励
   const viewParams = buildParams({});
-  const view = await request('https://user-api.smzdm.com/checkin/show_view_v2', viewParams);
+  const view = await request('https://user-api.smzdm.com/checkin/show_view_v2', viewParams, {}, false, cookie);
   let canExtra = false;
   if (view.error_code === '0' && view.data && view.data.rows) {
     const row = view.data.rows.find(r => r.cell_type === '18001');
@@ -380,15 +431,15 @@ async function extraReward() {
   }
   // 领取额外奖励
   const params = buildParams({});
-  const result = await request('https://user-api.smzdm.com/checkin/extra_reward', params);
+  const result = await request('https://user-api.smzdm.com/checkin/extra_reward', params, {}, false, cookie);
   $.log(`🎁 额外奖励: ${JSON.stringify(result.data || result)}`);
   return result.data;
 }
 
-async function getVipInfo() {
+async function getVipInfo(cookie) {
   $.log('▶ 会员信息');
   const params = buildParams({});
-  const result = await request('https://user-api.smzdm.com/vip', params);
+  const result = await request('https://user-api.smzdm.com/vip', params, {}, false, cookie);
   if (result.error_code === '0' && result.data && result.data.vip) {
     const v = result.data.vip;
     $.log(`👑 值会员等级: ${v.exp_level} | 经验: ${v.exp_current}/${v.exp_current_level}`);
@@ -399,42 +450,62 @@ async function getVipInfo() {
 }
 
 // ---------- 主流程 ----------
+// 单个账号：签到 + 奖励 + 额外奖励 + 会员，返回该账号的汇总文本
+async function runAccount(acc, tag) {
+  let msg = tag;
+  const checkinResult = await checkin(acc.cookie);
+  if (checkinResult === false) {
+    msg += '❌ 签到失败：Cookie 无效或接口异常\n';
+    return msg;
+  }
+  if (checkinResult) {
+    msg += `✅ 签到成功！连续 ${checkinResult.daily_num} 天\n`;
+    msg += `🏅 金币: ${checkinResult.cgold} | 碎银: ${checkinResult.pre_re_silver} | 补签卡: ${checkinResult.cards}\n`;
+  } else {
+    msg += 'ℹ️ 今天已签到过\n';
+  }
+
+  await new Promise(r => setTimeout(r, 2000));
+  const reward = await allReward(acc.cookie);
+  if (reward) {
+    msg += `🎁 ${reward.reward_add && reward.reward_add.title}: ${reward.reward_add && reward.reward_add.content}\n`;
+  }
+
+  await new Promise(r => setTimeout(r, 2000));
+  const extra = await extraReward(acc.cookie);
+  if (extra) {
+    msg += `🎁 额外: ${JSON.stringify(extra)}\n`;
+  }
+
+  await new Promise(r => setTimeout(r, 2000));
+  const vip = await getVipInfo(acc.cookie);
+  if (vip) {
+    msg += `👑 值会员: ${vip.exp_level} (${vip.exp_current}/${vip.exp_current_level})`;
+  }
+  return msg;
+}
+
 async function main() {
-  let msg = '';
+  const accounts = readCookieList();
+  if (!accounts.length) {
+    $.log('❌ 未找到 Cookie！请先打开什么值得买 App 触发抓取');
+    $.msg('什么值得买签到', '❌ 失败', '未找到 Cookie，请先打开 App 抓取');
+    $.done();
+    return;
+  }
+  const multi = accounts.length > 1;
+  $.log(`📚 共 ${accounts.length} 个账号`);
+  const lines = [];
   try {
-    const checkinResult = await checkin();
-    if (checkinResult === false) {
-      msg = '❌ 签到失败：Cookie 无效或接口异常';
-      $.msg('什么值得买签到', '❌ 失败', msg);
-      return;
+    for (let i = 0; i < accounts.length; i++) {
+      const acc = accounts[i];
+      const tag = multi ? `【${acc.name || getAccountName(acc.cookie)}】\n` : '';
+      lines.push(await runAccount(acc, tag));
+      if (i < accounts.length - 1) await new Promise(r => setTimeout(r, 2000));
     }
-    if (checkinResult) {
-      msg += `✅ 签到成功！连续 ${checkinResult.daily_num} 天\n`;
-      msg += `🏅 金币: ${checkinResult.cgold} | 碎银: ${checkinResult.pre_re_silver} | 补签卡: ${checkinResult.cards}\n`;
-    } else {
-      msg += 'ℹ️ 今天已签到过\n';
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-    const reward = await allReward();
-    if (reward) {
-      msg += `🎁 ${reward.reward_add && reward.reward_add.title}: ${reward.reward_add && reward.reward_add.content}\n`;
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-    const extra = await extraReward();
-    if (extra) {
-      msg += `🎁 额外: ${JSON.stringify(extra)}\n`;
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-    const vip = await getVipInfo();
-    if (vip) {
-      msg += `👑 值会员: ${vip.exp_level} (${vip.exp_current}/${vip.exp_current_level})`;
-    }
-
-    $.msg('什么值得买签到', '✅ 完成', msg);
-    $.log(msg);
+    const summary = lines.join('\n');
+    $.msg('什么值得买签到', multi ? `✅ 完成 (${accounts.length} 个账号)` : '✅ 完成', summary);
+    $.log(summary);
   } catch (e) {
     $.log('❌ 异常:', e.message, e.stack);
     $.msg('什么值得买签到', '❌ 异常', e.message);
@@ -454,20 +525,13 @@ if (typeof $request !== 'undefined' && $request.url && $request.url.indexOf('use
     console.log('[SMZDM] 未抓到有效 Cookie（缺 sess/smzdm_id），跳过');
   } else {
     try {
-      if (typeof $prefs !== 'undefined' && $prefs.setValueForKey) {
-        $prefs.setValueForKey(cookie, COOKIE_KEY);
-        $prefs.setValueForKey(String(Date.now()), COOKIE_KEY + '_ts');
-        console.log('[SMZDM] Cookie 已写入 BoxJs: ' + cookie.slice(0, 50) + '...');
-      } else if (typeof $persistentStore !== 'undefined' && $persistentStore.write) {
-        $persistentStore.write(cookie, COOKIE_KEY);
-        console.log('[SMZDM] Cookie 已写入 persistentStore: ' + cookie.slice(0, 50) + '...');
-      } else {
-        console.log('[SMZDM] 无可用的存储 API，Cookie 未持久化');
-      }
+      const list = mergeCookie(cookie); // 多账号去重合并，同时写单键
+      $.setdata(String(Date.now()), COOKIE_KEY + '_ts');
+      console.log('[SMZDM] Cookie 已保存: ' + getAccountName(cookie) + '（共 ' + list.length + ' 个账号）');
       if (typeof $notify !== 'undefined') {
-        $notify('什么值得买签到', '✅ Cookie 已保存', '已写入 ' + cookie.length + ' 字符，可以注释掉抓取规则了');
+        $notify('什么值得买签到', '✅ Cookie 已保存', getAccountName(cookie) + ' 已写入，共 ' + list.length + ' 个账号，可注释抓取规则');
       } else if (typeof $notification !== 'undefined' && $notification.post) {
-        $notification.post('什么值得买签到', '✅ Cookie 已保存', '已写入 ' + cookie.length + ' 字符，可以注释掉抓取规则了');
+        $notification.post('什么值得买签到', '✅ Cookie 已保存', getAccountName(cookie) + ' 已写入，共 ' + list.length + ' 个账号，可注释抓取规则');
       }
     } catch (e) {
       console.log('[SMZDM] Cookie 处理异常: ' + e);
