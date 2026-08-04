@@ -5,7 +5,8 @@
  * 功能：
  *   1. 查询签到状态（/signinzgreen/toc/taskGet，每日签到任务 taskStatus=true 即已签）
  *   2. 查询任务奖励（/taskProgress/taskMsg，展示可领取项）
- *   3. 自动收集：能量碎片（batchApply）+ 碳能量球（collectedAllEnergy）
+ *   3. 自动收集：能量碎片（batchApply/collectIntegralZeekrBalls）+ 碳能量球（collectedAllEnergy），
+ *      先列出待收集奖励 → 分类收集 → 复查剩余
  *   4. 完整结果推送到通知
  *
  * 说明（2026-08 实测确认）：
@@ -429,7 +430,7 @@ async function runAccount(acc) {
     }
   }
 
-  // 3. 收集能量碎片 + 碳能量球（碎片分两类：任务碎片 batchApply，达标碎片 collectIntegralZeekrBalls；碳能量 collectedAllEnergy）
+  // 3. 收集能量碎片 + 碳能量球（先查待收集列出，再分类收集，最后复查剩余）
   const id = getTokenId(token);
   if (id) {
     const uc = await getUncollected(token, id);
@@ -444,6 +445,9 @@ async function runAccount(acc) {
       if (!easy.length && !integral.length && !carbon.length) {
         lines.push('⚡ 能量球: 已全部收集');
       } else {
+        // 收集前：列出待收集项（sceneRemark 为活动名称，如「减碳2000g」；取不到则回退场景编码）
+        const label = it => (it && (it.sceneRemark || it.valName || it.name)) || (it ? it.sceneCode : '?');
+        lines.push('⚡ 待收集 ' + uc.data.uncollectedVal.length + ' 项: ' + uc.data.uncollectedVal.map(label).join('、'));
         if (easy.length) {
           const cd = await collectDebris(token, easy);
           if (cd.success) {
@@ -468,6 +472,14 @@ async function runAccount(acc) {
           const failMsgs = (cc._failMsgs || []).filter(m => m && m.indexOf('已核销') === -1);
           lines.push(ok ? `⚡ 碳能量收取成功 ${ok} 项` : `⚡ 碳能量无可收取`);
           if (failMsgs.length) lines.push(`  ⚠️ ${failMsgs.join('；')}`);
+        }
+        // 收集后复查：还剩什么奖励
+        const uc2 = await getUncollected(token, id);
+        const remain = (uc2.success && uc2.data && uc2.data.uncollectedVal) || [];
+        if (!remain.length) {
+          lines.push('⚡ 复查: 奖励已全部收取');
+        } else {
+          lines.push(`⚡ 复查: 剩余 ${remain.length} 项未收取: ${remain.map(label).join('、')}`);
         }
       }
     } else {
