@@ -11,7 +11,7 @@
  *
  * 使用方法：
  *   [task_local]
- *   30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js, tag=什么值得买签到, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png, enabled=true
+ *   30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js, tag=什么值得买签到, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/smzdm.png, enabled=true
  *
  *   [rewrite_local]
  *   ^https?:\/\/user-api\.smzdm\.com\/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js

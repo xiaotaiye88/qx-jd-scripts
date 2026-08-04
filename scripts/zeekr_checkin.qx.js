@@ -26,7 +26,7 @@
  *
  * 使用方法：
  *   [task_local]
- *   30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/zeekr_checkin.qx.js, tag=极氪签到, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png, enabled=true
+ *   30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/zeekr_checkin.qx.js, tag=极氪签到, img-url=https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/icon/zeekr.png, enabled=true
  *
  *   [rewrite_local]
  *   ^https?:\/\/api-gw-toc\.zeekrlife\.com\/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/zeekr_checkin.qx.js

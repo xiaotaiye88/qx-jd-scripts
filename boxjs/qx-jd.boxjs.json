@@ -3313,7 +3313,7 @@
    "id": "smzdm_签到",
    "name": "什么值得买签到",
    "desc": "什么值得买自动签到（smzdm_checkin.qx.js）：打开 App 自动抓 Cookie 存到 smzdm_cookie，每天定时签到+领连续奖励+查会员。\ncron: 30 9 * * *",
-   "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
+   "icon": "https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/smzdm.png",
    "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
    "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js",
    "keys": [
@@ -3349,7 +3349,7 @@
    "id": "zeekr_签到",
    "name": "极氪签到",
    "desc": "极氪（ZeekrLife）自动签到（zeekr_checkin.qx.js）：打开 App 自动抓 Token 存到 zeekr_token，每天定时签到 + 领任务奖励 + 收集能量球。\ncron: 30 9 * * *",
-   "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
+   "icon": "https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/icon/zeekr.png",
    "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
    "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/zeekr_checkin.qx.js",
    "keys": [
