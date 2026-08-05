@@ -1,7 +1,7 @@
 # 极氪 (ZeekrLife) 自动签到 - Quantumult X
 
 基于抓包 + H5 前端 JS 逆向的圈x 自动签到脚本，支持：
-- ✅ 每日签到状态查询（Z-Green 签到）
+- ✅ 每日**自动签到**（zgreen/center，进 Z-Green 页面即签，first=true 本次生效）
 - ✅ **多账号**（按 JWT `jti` 去重，循环执行，汇总通知）
 - ✅ 任务奖励**自动领取**（任务达成 → 碎片自动入账 → 脚本收集即领取）
 - ✅ 能量碎片自动收集（任务碎片 batchApply + 能量达标碎片 collectIntegralZeekrBalls，均实测成功）
@@ -23,7 +23,12 @@ x_ca_sign = SHA1( [签名密钥, x_ca_nonce, x_ca_timestamp].sort().join('') )
 以 `app_code: toc_h5_green_zeekrapp`（H5 免签通道）请求原生网关接口即可通过校验。
 
 **接口清单**（2026-08 实测验证）：
-- `GET /zeekrlife-mp-sic/v1/signinzgreen/toc/taskGet` — 签到状态查询（每日签到任务 `taskStatus=true` 即已签）
+- `POST /zeekrlife-mp-val/toc/v1/zgreen/center` — **每日签到动作**（进 Z-Green 页面即自动签到，body `{}`，实测成功）：
+  ```
+  { }
+  ```
+  返回 `data.first=true` 表示今日首次签到（本次签到生效），`false` 表示已签过。逆向自 H5 前端 `index-94ba24e9.js` 的 `V()` 函数：进入页面调 `zgreen/center` → 服务端自动签到 → 签到碎片 `signup-<日期>` 进入待收集列表。
+- `GET /zeekrlife-mp-sic/v1/signinzgreen/toc/taskGet` — 签到状态查询（备用，每日签到任务 `taskStatus=true` 即已签）
 - `GET /zeekrlife-app-user/v1/user/info/home` — 用户信息（昵称/积分等）
 - `POST /zeekrlife-mp-mkt/open/v1/taskProgress/taskMsg` — 任务列表（活动 medal_compose_task_manage）
 - `POST /zeekrlife-mp-val/v1/carEnergy/getUncollectedBallsPageNew` — 待收集能量球/碎片查询

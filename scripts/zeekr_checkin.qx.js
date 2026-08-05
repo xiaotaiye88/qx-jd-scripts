@@ -3,7 +3,7 @@
  *  极氪 (ZeekrLife) 自动签到 - Quantumult X
  * ================================================
  * 功能：
- *   1. 查询签到状态（/signinzgreen/toc/taskGet，每日签到任务 taskStatus=true 即已签）
+ *   1. 签到动作（POST /zeekrlife-mp-val/toc/v1/zgreen/center，进 Z-Green 页面即自动签到，first=true 即本次签到生效）
  *   2. 查询任务奖励（/taskProgress/taskMsg，展示可领取项）
  *   3. 自动收集：能量碎片（batchApply/collectIntegralZeekrBalls）+ 碳能量球（collectedAllEnergy），
  *      先列出待收集奖励 → 分类收集 → 复查剩余
@@ -21,8 +21,8 @@
  *   - 纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）走 POST /carEnergy/collectedAllEnergy，
  *     body: { energyIds: [id] }（逐个收集；字段名是 energyIds，不是 accountId/ids）。
  *     实测成功（H5 前端 JS index-94ba24e9.js 的 te 函数确认）。
- *   - 「每日签到」任务描述 = 每日进入 Z-Green 页面可得碎片，进页面即自动签到，
- *     脚本通过 taskGet 查询状态（taskStatus=true 即已签，当天只跑一次不会重复）。
+ *   - 「每日签到」任务描述 = 每日进入 Z-Green 页面可得碎片，进页面即自动签到。
+ *     脚本通过 zgreen/center 执行签到动作（first=true 本次签到生效；当天只跑一次不会重复）。
  *
  * 使用方法：
  *   [task_local]
@@ -319,9 +319,12 @@ function request(method, url, body, token, verbose = false) {
 
 // ---------- 核心功能 ----------
 // 各函数接受 token 参数，由 main() 按账号传入
-// 签到状态（H5 Z-Green 页：/signinzgreen/toc/taskGet，每日签到任务 taskStatus=true 即已签）
-async function getSigninStatus(token) {
-  return request('GET', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-sic/v1/signinzgreen/toc/taskGet', undefined, token);
+// 签到动作（H5 Z-Green 首页）：进入页面即自动签到
+// 逆向自 H5 前端 index-94ba24e9.js 的 V() 函数：进页面 → POST /zeekrlife-mp-val/toc/v1/zgreen/center
+//   → 服务端自动签到（签成功即有「签到成功」提示），返回 first=true 表示今日首次签到
+// body: {}（HAR 实测可加 app_version，空对象即可）
+async function zgreenCenter(token) {
+  return request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-val/toc/v1/zgreen/center', {}, token);
 }
 
 // 已确认接口：能量碎片/活动奖励收集 = POST /zeekrlife-mp-mkt/toc/v1/apply/batchApply
@@ -407,15 +410,13 @@ async function runAccount(acc) {
   const lines = [];
   lines.push(`👤 ${name}`);
 
-  // 1. 查签到状态（H5 Z-Green taskGet：每日签到任务 taskStatus=true 即今日已签）
-  const st = await getSigninStatus(token);
-  let already = false;
-  if (st.success && Array.isArray(st.data)) {
-    const daily = st.data.find(t => t && t.taskName && t.taskName.indexOf('签到') !== -1);
-    already = !!(daily && daily.taskStatus);
-    lines.push(already ? `✅ 今日已签到` : `📝 今日未签到`);
+  // 1. 执行签到动作（进入 Z-Green 页面即自动签到）
+  //    zgreen/center 返回 first=true 表示今日首次签到（签到动作本次生效），false 表示已签过
+  const st = await zgreenCenter(token);
+  if (st.success && st.data) {
+    lines.push(st.data.first === true ? `✅ 签到成功` : `✅ 今日已签到`);
   } else {
-    lines.push(`⚠️ 签到状态查询失败: ${st.msg || JSON.stringify(st).slice(0, 80)}`);
+    lines.push(`⚠️ 签到失败: ${st.msg || JSON.stringify(st).slice(0, 80)}`);
   }
 
   // 2. 任务列表（展示进度；奖励碎片会在条件达成后自动进入「待收集」，由步骤 3 收集即领取）
