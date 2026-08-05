@@ -1,7 +1,7 @@
 /*
  * 种豆得豆任务 (jd_plantBean.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-08-05 09:30:25 由 tools/build-all.js 自动生成
+ * 构建: 2026-08-05 09:45:01 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 21 7-21/2 * * *
@@ -426,7 +426,10 @@ function __qxSanitizeTaskList(txt) {
       if (t && Array.isArray(t.taskItemList)) {
         for (var k = 0; k < t.taskItemList.length; k++) {
           var it = t.taskItemList[k];
-          var pid = it && it.pipeExt ? it.pipeExt.itemId : undefined;
+          // 实测服务端字段名不统一：有的任务下 pipeExt.itemId，有的下 pipeExt.itemid（小写）。
+          // 之前只匹配 itemId 导致清洗漏掉小写写法，畸形任务仍然被脚本发起 → 白打一次 403。
+          var pe = it && it.pipeExt ? it.pipeExt : null;
+          var pid = pe ? (pe.itemId !== undefined ? pe.itemId : pe.itemid) : undefined;
           if (typeof pid === 'string' && pid.indexOf('null') === 0) { bad = true; break; }
         }
       }
