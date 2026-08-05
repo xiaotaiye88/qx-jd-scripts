@@ -3376,7 +3376,7 @@
   {
    "id": "jdjr_赚京豆",
    "name": "京东金融赚京豆",
-   "desc": "京东金融「做任务领京豆」自动接取（jdjr_coinquest.qx.js）：打开京东金融 App → 我的 → 京豆 → 做任务赚京豆，自动抓 Cookie + 任务请求参数（含风控签名），每天定时接取可做任务。\n⚠️ 有风控：接取请求里的 nonce/signature/deviceInfo1/h5st 与手机设备绑定，需定期打开 App 刷新；被拦时脚本会自动停手并提示。\ncron: 20 10 * * *",
+   "desc": "京东金融「做任务领京豆」自动接取（jdjr_coinquest.qx.js）：打开京东金融 App → 我的 → 京豆 → 做任务赚京豆，自动抓 Cookie + 任务请求参数（含风控签名）+ App 请求头，每天定时接取可做任务。\n⚠️ 抓取规则必须用 script-request-body（script-request-header 读不到 body）。\n⚠️ 有风控：接取请求里的 nonce/signature/deviceInfo1/h5st 与手机设备绑定，需定期打开 App 刷新；被拦时脚本会自动停手并提示。\ncron: 20 10 * * *",
    "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
    "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
    "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js",

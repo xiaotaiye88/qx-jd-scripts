@@ -13,9 +13,10 @@
  *   30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js, tag=京东金融赚京豆, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png, enabled=true
  *
  *   [rewrite_local]
- *   ^https?:\/\/ms\.jr\.jd\.com\/gw2\/generic\/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js
+ *   ^https?://ms\.jr\.jd\.com/gw2/generic/legogw/h5/m/getPageInfoSafetyTranslate\?pageType=11189 url script-request-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js
  *   (抓取 Cookie + 请求参数用。打开京东金融 App → 我的 → 京豆 → 做任务赚京豆，
- *    任意 ms.jr.jd.com 请求都会触发，抓到后可注释)
+ *    页面发任务列表请求时抓到，通知提示「已抓取参数」，抓到后可注释此规则。
+ *    ⚠️ 必须用 script-request-body 类型：script-request-header 读不到请求体)
  *
  * 原理（逆向自 member.jr.jd.com/coinQuest H5 页面 main_712f8c1d1f.js）：
  *   - 任务列表: POST /gw2/generic/legogw/h5/m/getPageInfoSafetyTranslate?pageType=11189
@@ -76,19 +77,14 @@ function setData(key, val) {
 }
 
 // ---------- 网络请求 ----------
-function request(url, body, cookie, extraHeaders) {
+// 优先使用抓取时保存的 App 真实请求头（headers），只补上 body 必需的 Content-Type 与 Cookie
+// —— 与 App 真实请求保持一致，避免伪造头被网关/风控识别导致「网络异常」
+function request(url, body, cookie, capturedHeaders) {
   return new Promise((resolve) => {
     const headers = {
+      ...(capturedHeaders || {}),
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json, text/plain, */*',
-      'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
-      'Origin': 'https://member.jr.jd.com',
-      'Referer': 'https://member.jr.jd.com/',
-      'x-referer-page': 'https://member.jr.jd.com/member/coinQuest/coin/',
-      'x-rp-client': 'h5_1.0.0',
-      'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/application=JDJR-App&clientType=ios&iosType=iphone&clientVersion=8.2.30&HiClVersion=8.2.30&isUpdate=0&osVersion=26.1&osName=iOS&screen=956*440&src=App Store&netWork=1&netWorkType=1&CpayJS=UnionPay/1.0 JDJR&stockSDK=stocksdk-iphone_6.0.0&sPoint=&jdPay=(*#@jdPaySDK*#@jdPayChannel=jdfinance&j',
-      'Cookie': cookie || '',
-      ...(extraHeaders || {})
+      'Cookie': cookie || ''
     };
     if (typeof $task !== 'undefined') {
       $task.fetch({ url, method: 'POST', headers, body })
@@ -146,7 +142,7 @@ async function fetchTaskList(cookie, savedReq) {
   const body = savedReq.body; // 完整的 reqData=...&cco=...&eid=...
   const resp = await request(
     'https://ms.jr.jd.com/gw2/generic/legogw/h5/m/getPageInfoSafetyTranslate?pageType=11189',
-    body, cookie
+    body, cookie, savedReq.headers
   );
   if (isRiskBlocked(resp)) return { risk: true, resp };
   const rd = resp.resultData || {};
@@ -179,7 +175,7 @@ async function receiveMission(cookie, mission, riskParams) {
   const body = 'reqData=' + encodeURIComponent(JSON.stringify(reqData));
   const resp = await request(
     'https://ms.jr.jd.com/gw2/generic/mission/newh5/m/receiveMissionForNa',
-    body, cookie
+    body, cookie, riskParams.headers
   );
   if (isRiskBlocked(resp)) return { risk: true, resp };
   const d = resp.resultData || {};
@@ -205,7 +201,8 @@ function parseRiskParams(savedReq) {
         sdkToken: ep.sdkToken || '',
         eid: (savedReq.cookie.match(/(?:^|; )3AB9D23F7A4B3C9B=([^;]+)/) || [])[1] || ep.sdkToken || '',
         token: ep.sdkToken || ''
-      }
+      },
+      headers: savedReq.headers || null
     };
   } catch (e) {
     return null;
@@ -356,22 +353,37 @@ function sleep(ms) {
 }
 
 // ================================================
-// 抓取模式：rewrite script-request-header
-// 任何 ms.jr.jd.com 请求都会经过这里
+// 抓取模式：rewrite script-request-body
+// 打开京东金融 App → 我的 → 京豆 → 做任务赚京豆
+// 页面发任务列表请求(11189)时触发，保存完整 body(含风控签名)+cookie
 // ================================================
 if (typeof $request !== 'undefined' && $request.url && /ms\.jr\.jd\.com/.test($request.url)) {
   const url = $request.url || '';
   const headers = ($request.headers) || {};
   const cookie = headers.Cookie || headers.cookie || '';
-  const isTaskList = /getPageInfoSafetyTranslate\?pageType=11189/.test(url) && $request.method === 'POST';
+  const method = $request.method || 'POST';
+  // script-request-body 才有 body；header 型 $request.body 为空，需兼容
+  const body = $request.body || '';
+  const isTaskList = /getPageInfoSafetyTranslate\?pageType=11189/.test(url) && /POST/i.test(method);
 
   if (cookie) setData(CK_KEY, cookie);
 
-  // 抓到任务列表请求时，保存完整 body（含风险签名）+ cookie
-  if (isTaskList && $request.body) {
-    setData(REQ_KEY, JSON.stringify({ body: $request.body, cookie, ts: Date.now() }));
-    setData(REQ_TS_KEY, String(Date.now()));
-    console.log('[JDJR] ✅ 已抓取任务列表请求参数（含风控签名），可注释抓取规则');
+  if (isTaskList) {
+    if (body) {
+      // 保存完整 body + cookie + App 真实请求 headers（重放时原样使用，避免伪造头被网关识别）
+      const capHeaders = {};
+      Object.keys(headers).forEach(k => { capHeaders[k] = String(headers[k]); });
+      setData(REQ_KEY, JSON.stringify({ body, cookie, headers: capHeaders, ts: Date.now() }));
+      setData(REQ_TS_KEY, String(Date.now()));
+      console.log('[JDJR] ✅ 已抓取任务列表请求参数（含风控签名 + 请求头），可注释抓取规则');
+      if (typeof $notify !== 'undefined') {
+        $notify('京东金融赚京豆', '✅ 参数已抓取', '任务列表请求参数已保存，可注释抓取规则');
+      } else if (typeof $notification !== 'undefined' && $notification.post) {
+        $notification.post('京东金融赚京豆', '✅ 参数已抓取', '任务列表请求参数已保存，可注释抓取规则');
+      }
+    } else {
+      console.log('[JDJR] ⚠️ 任务列表请求触发，但 body 为空（使用了 script-request-header？请改用 script-request-body）');
+    }
   } else if (cookie) {
     console.log('[JDJR] Cookie 已更新');
   }

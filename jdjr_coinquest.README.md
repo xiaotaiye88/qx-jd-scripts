@@ -18,10 +18,13 @@
 20 10 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js, tag=京东金融赚京豆, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png, enabled=true
 
 [rewrite_local]
-^https?://ms\.jr\.jd\.com/gw2/generic/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js
+^https?://ms\.jr\.jd\.com/gw2/generic/legogw/h5/m/getPageInfoSafetyTranslate\?pageType=11189 url script-request-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js
 ```
 
 MITM 需要包含 `ms.jr.jd.com`。
+
+> ⚠️ 抓取规则必须用 **script-request-body** 类型（不是 script-request-header）：
+> `script-request-header` 读不到请求体，无法保存任务列表请求参数。
 
 ### 2. 抓取参数（重要）
 
@@ -31,8 +34,9 @@ MITM 需要包含 `ms.jr.jd.com`。
 
 - **Cookie**（含 pt_key/pt_pin/设备 token）
 - **任务列表请求参数**（含 nonce/signature/deviceInfos/cco h5st 等风控签名字段）
+- **App 真实请求头**（UA 等，重放时原样使用，避免被网关识别为脚本）
 
-抓取成功后通知提示「已抓取任务列表请求参数」，之后可注释掉抓取规则（或保留，每次打开 App 会自动刷新）。
+抓取成功后通知提示「参数已抓取」，之后可注释掉抓取规则（或保留，每次打开 App 会自动刷新）。
 
 ### 3. 运行
 
