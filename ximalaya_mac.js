@@ -280,10 +280,13 @@ function rewritePlayV1Audio(body, audioUrl) {
       d.data.isVipFree = true;
       d.data.sampleDuration = 0;
       d.data.firstPlayStatus = false;
-      if (audioUrl) {
+      // audioUrl === "__KEEP_ORIG_SRC__" 表示保留服务器原返回的 src(已经可播放)
+      if (audioUrl && audioUrl !== "__KEEP_ORIG_SRC__") {
         d.data.src = audioUrl;
         d.data.playUrl = audioUrl;
       }
+      // 确保 playUrl 和 src 一致
+      if (d.data.src && !d.data.playUrl) d.data.playUrl = d.data.src;
     }
     return JSON.stringify(d);
   } catch (e) {
@@ -314,19 +317,46 @@ function main() {
     $done({ body: newBody });
   };
 
-  if (trackId) {
-    console.log("【喜马拉雅Mac】解析音频, TrackId:", trackId);
-    resolveWithEngine(trackId).then(function (audioUrl) {
-      if (audioUrl) {
-        console.log("【喜马拉雅Mac】解析成功:", audioUrl.slice(0, 100));
-      } else {
-        console.log("【喜马拉雅Mac】解析失败, TrackId:", trackId);
+  // 关键策略:
+  // - play/v1/audio: 这个接口本身(QX MITM 注入共享Cookie后)已能返回正确的可播放 URL,
+  //   脚本不重新解析, 只确保字段正确(canPlay/hasBuy 等), 保留服务器返回的 src。
+  // - v3/baseInfo: 服务器返回 ret:1001 错误, 脚本构造成功响应让播放器继续。
+  //   v3 不触发引擎解析(太慢会超时), 只标记可播放, 播放器会再去请求 play/v1/audio。
+  var isV3 = url.indexOf("track/v3/baseInfo") > -1;
+  var isPlay = url.indexOf("play/v1/audio") > -1;
+
+  if (isV3) {
+    // v3 接口: 直接构造成功响应, 不解析(避免超时)
+    console.log("【喜马拉雅Mac】v3/baseInfo 接口, 构造可播放响应");
+    doRewrite(null);
+  } else if (isPlay && trackId) {
+    // play/v1/audio: 先看原始响应是否已有可播放 src(QX 已注入Cookie时会有)
+    var origPlayable = false;
+    try {
+      var origD = JSON.parse($response.body || "{}");
+      if (origD.data && origD.data.src && origD.data.src.indexOf("http") === 0) {
+        origPlayable = true;
+        console.log("【喜马拉雅Mac】原始响应已含可播放 src, 直接改字段保留 src");
       }
-      doRewrite(audioUrl);
-    }).catch(function (e) {
-      console.log("【喜马拉雅Mac】异常:", e && e.message);
-      doRewrite(null);
-    });
+    } catch (e) {}
+    if (origPlayable) {
+      // 保留原 src, 只改字段
+      doRewrite("__KEEP_ORIG_SRC__");
+    } else {
+      // 原 src 为空, 才用引擎解析
+      console.log("【喜马拉雅Mac】解析音频, TrackId:", trackId);
+      resolveWithEngine(trackId).then(function (audioUrl) {
+        if (audioUrl) {
+          console.log("【喜马拉雅Mac】解析成功:", audioUrl.slice(0, 100));
+        } else {
+          console.log("【喜马拉雅Mac】解析失败, TrackId:", trackId);
+        }
+        doRewrite(audioUrl);
+      }).catch(function (e) {
+        console.log("【喜马拉雅Mac】异常:", e && e.message);
+        doRewrite(null);
+      });
+    }
   } else {
     doRewrite(null);
   }
