@@ -366,15 +366,20 @@ function main() {
     console.log("【喜马拉雅Mac】v3/baseInfo 接口, 构造可播放响应");
     doRewrite(null);
   } else if (isPlay && trackId) {
-    // play/v1/audio: 先看原始响应是否已有可播放 src(QX 已注入Cookie时会有)
+    // play/v1/audio: 先看原始响应是否已有可播放 src
     var origPlayable = false;
+    var origSrc = "";
     try {
       var origD = JSON.parse($response.body || "{}");
-      if (origD.data && origD.data.src && origD.data.src.indexOf("http") === 0) {
+      origSrc = (origD.data && origD.data.src) ? origD.data.src : "";
+      console.log("【喜马拉雅Mac】原始响应 src 长度:", origSrc.length, "| canPlay:", origD.data && origD.data.canPlay);
+      if (origSrc.indexOf("http") === 0) {
         origPlayable = true;
         console.log("【喜马拉雅Mac】原始响应已含可播放 src, 直接改字段保留 src");
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log("【喜马拉雅Mac】解析原始响应失败:", e.message, "| body前100:", ($response.body || "").slice(0, 100));
+    }
     if (origPlayable) {
       // 保留原 src, 只改字段
       doRewrite("__KEEP_ORIG_SRC__");
