@@ -389,38 +389,15 @@ function main() {
     console.log("【喜马拉雅Mac】v3/baseInfo 接口, 构造可播放响应");
     doRewrite(null);
   } else if (isPlay && trackId) {
-    // play/v1/audio: 先看原始响应是否已有可播放 src
-    var origPlayable = false;
+    // play/v1/audio: 注入 Cookie 后服务器直接返回可播放 src, 只改字段不解析
+    // (引擎解析是异步的, QX 等不到 $done 就释放响应导致 src 丢失, 所以绝不解析)
     var origSrc = "";
     try {
       var origD = JSON.parse($response.body || "{}");
       origSrc = (origD.data && origD.data.src) ? origD.data.src : "";
-      console.log("【喜马拉雅Mac】原始响应 src 长度:", origSrc.length, "| canPlay:", origD.data && origD.data.canPlay);
-      if (origSrc.indexOf("http") === 0) {
-        origPlayable = true;
-        console.log("【喜马拉雅Mac】原始响应已含可播放 src, 直接改字段保留 src");
-      }
-    } catch (e) {
-      console.log("【喜马拉雅Mac】解析原始响应失败:", e.message, "| body前100:", ($response.body || "").slice(0, 100));
-    }
-    if (origPlayable) {
-      // 保留原 src, 只改字段
-      doRewrite("__KEEP_ORIG_SRC__");
-    } else {
-      // 原 src 为空, 才用引擎解析
-      console.log("【喜马拉雅Mac】解析音频, TrackId:", trackId);
-      resolveWithEngine(trackId).then(function (audioUrl) {
-        if (audioUrl) {
-          console.log("【喜马拉雅Mac】解析成功:", audioUrl.slice(0, 100));
-        } else {
-          console.log("【喜马拉雅Mac】解析失败, TrackId:", trackId);
-        }
-        doRewrite(audioUrl);
-      }).catch(function (e) {
-        console.log("【喜马拉雅Mac】异常:", e && e.message);
-        doRewrite(null);
-      });
-    }
+    } catch (e) {}
+    console.log("【喜马拉雅Mac】play/v1/audio src 长度:", origSrc.length);
+    doRewrite(origSrc.indexOf("http") === 0 ? "__KEEP_ORIG_SRC__" : null);
   } else {
     doRewrite(null);
   }
