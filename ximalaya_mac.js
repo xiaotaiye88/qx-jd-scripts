@@ -98,13 +98,18 @@ function getEngineCode() {
 function extractUrl(captured) {
   try {
     var d = JSON.parse(captured.body);
+    var url = null;
     if (d.playUrlInfos && d.playUrlInfos.length > 0) {
-      return d.playUrlInfos[0].url;
+      url = d.playUrlInfos[0].url;
+    } else if (d.trackBaseVO && d.trackBaseVO.playUrl && d.trackBaseVO.playUrl.url) {
+      url = d.trackBaseVO.playUrl.url;
     }
-    if (d.trackBaseVO && d.trackBaseVO.playUrl && d.trackBaseVO.playUrl.url) {
-      return d.trackBaseVO.playUrl.url;
+    // 关键: Mac 客户端是 Electron(Chromium), https 页面会阻止 http 音频源(混合内容)
+    // 把 http:// 强制改成 https:// (已验证 https 版本可正常访问)
+    if (url && url.indexOf("http://") === 0) {
+      url = "https://" + url.slice(7);
     }
-    return null;
+    return url;
   } catch (e) {
     return null;
   }
@@ -328,6 +333,14 @@ function rewritePlayV1Audio(body, audioUrl) {
       if (audioUrl && audioUrl !== "__KEEP_ORIG_SRC__") {
         d.data.src = audioUrl;
         d.data.playUrl = audioUrl;
+      }
+      // 关键: Electron(Chromium) 的 https 页面会阻止 http 音频源(混合内容)
+      // 所有 src 统一转 https(已验证 audiopay 的 https 版本可访问)
+      if (d.data.src && d.data.src.indexOf("http://") === 0) {
+        d.data.src = "https://" + d.data.src.slice(7);
+      }
+      if (d.data.playUrl && d.data.playUrl.indexOf("http://") === 0) {
+        d.data.playUrl = "https://" + d.data.playUrl.slice(7);
       }
       // 确保 playUrl 和 src 一致
       if (d.data.src && !d.data.playUrl) d.data.playUrl = d.data.src;
