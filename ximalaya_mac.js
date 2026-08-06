@@ -118,17 +118,25 @@ function resolveWithEngine(trackId) {
         body: JSON.stringify({ ret: 0, data: { trackInfo: { trackId: Number(trackId), isPaid: true, isVipPaid: true } } })
       };
 
-      // 保存原有全局
-      var origRequest = global.$request, origResponse = global.$response;
-      var origDone = global.$done, origPrefs = global.$prefs, origNotify = global.$notify;
-      var origTask = global.$task;
+      // 保存原有全局（QX 的 JavaScriptCore 没有 global 对象，直接引用全局变量）
+      var origRequest = $request, origResponse = $response;
+      var origDone = $done, origPrefs = $prefs, origNotify = $notify;
+      var origTask = $task;
 
-      // 覆盖为引擎需要的环境
-      global.$request = fakeRequest;
-      global.$response = fakeResponse;
-      global.$done = function (o) { captured = o; };
-      global.$prefs = { valueForKey: function () { return null; }, setValueForKey: function () { return true; } };
-      global.$notify = function () {};
+      // 覆盖为引擎需要的环境（直接给全局变量赋值，QX 非严格模式下生效）
+      try {
+        $request = fakeRequest;
+        $response = fakeResponse;
+        $done = function (o) { captured = o; };
+        $prefs = { valueForKey: function () { return null; }, setValueForKey: function () { return true; } };
+        $notify = function () {};
+        console.log("【喜马拉雅Mac】引擎环境已设置");
+      } catch (e) {
+        console.log("【喜马拉雅Mac】设置引擎环境失败:", e.message);
+        cleanup();
+        resolve(null);
+        return;
+      }
 
       // 引擎发起的网络请求：直接用快照的 ORIG_TASK，绝不再经过 netGet(避免递归)
       var engineTask = { fetch: function (o) {
@@ -154,17 +162,17 @@ function resolveWithEngine(trackId) {
           return { statusCode: r.statusCode, status: r.status, headers: r.headers || {}, body: r.body || "", bodyBytes: r.bodyBytes || null };
         });
       }};
-      global.$task = engineTask;
+      $task = engineTask;
 
       function cleanup() {
         if (done) return;
         done = true;
-        global.$request = origRequest;
-        global.$response = origResponse;
-        global.$done = origDone;
-        global.$prefs = origPrefs;
-        global.$notify = origNotify;
-        global.$task = origTask;
+        $request = origRequest;
+        $response = origResponse;
+        $done = origDone;
+        $prefs = origPrefs;
+        $notify = origNotify;
+        $task = origTask;
       }
 
       // 超时保护
@@ -178,8 +186,10 @@ function resolveWithEngine(trackId) {
         // 关键: 引擎 getEnv() 通过 "typeof module !== undefined" 判断 Node 环境。
         // QX (JavaScriptCore) 里 module 是全局对象，会导致引擎误判为 Node 环境
         // 从而走 require('fs') 分支静默中断。这里把 module 覆盖为 undefined 强制走 QX 分支。
+        console.log("【喜马拉雅Mac】开始执行引擎, 代码长度:", code.length);
         var fn = new Function("module", "require", "module = undefined; try { " + code + " } catch(e) { console.log('引擎异常:', e && e.message); }");
         fn(undefined, function (name) { throw new Error("no module " + name); });
+        console.log("【喜马拉雅Mac】引擎已启动, 等待异步解析...");
       } catch (e) {
         console.log("【喜马拉雅Mac】引擎执行异常:", e.message);
         cleanup();
