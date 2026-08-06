@@ -38,7 +38,8 @@ function netGet(url, headers) {
     if (!optHeaders["User-Agent"]) optHeaders["User-Agent"] = "Mozilla/5.0";
 
     if (ORIG_TASK) {
-      ORIG_TASK.fetch({ url: url, method: "GET", headers: optHeaders }).then(function (resp) {
+      // 关键: 指定 DIRECT 直连策略, 避免 GitHub 请求被 filter 规则路由到代理节点(Shawn)失败
+      ORIG_TASK.fetch({ url: url, method: "GET", headers: optHeaders, policy: "DIRECT" }).then(function (resp) {
         resolve({
           status: resp.statusCode || resp.status || 200,
           body: resp.body || "",
@@ -46,7 +47,17 @@ function netGet(url, headers) {
           bodyBytes: resp.bodyBytes || null
         });
       }, function (err) {
-        resolve({ status: 0, body: "", error: err && err.error || err });
+        // 失败时重试一次(不带 policy, 走默认)
+        ORIG_TASK.fetch({ url: url, method: "GET", headers: optHeaders }).then(function (resp2) {
+          resolve({
+            status: resp2.statusCode || resp2.status || 200,
+            body: resp2.body || "",
+            headers: resp2.headers || {},
+            bodyBytes: resp2.bodyBytes || null
+          });
+        }, function (err2) {
+          resolve({ status: 0, body: "", error: err2 && err2.error || err2 });
+        });
       });
     } else if (ORIG_HTTPCLIENT) {
       ORIG_HTTPCLIENT.get({ url: url, headers: optHeaders }, function (err, resp, body) {
@@ -147,7 +158,10 @@ function resolveWithEngine(trackId) {
         if (!optHeaders["User-Agent"]) optHeaders["User-Agent"] = "Mozilla/5.0";
         var p;
         if (ORIG_TASK) {
-          p = ORIG_TASK.fetch({ url: url, method: "GET", headers: optHeaders });
+          p = ORIG_TASK.fetch({ url: url, method: "GET", headers: optHeaders, policy: "DIRECT" }).catch(function () {
+            // 失败重试走默认策略
+            return ORIG_TASK.fetch({ url: url, method: "GET", headers: optHeaders });
+          });
         } else if (ORIG_HTTPCLIENT) {
           p = new Promise(function (res) {
             ORIG_HTTPCLIENT.get({ url: url, headers: optHeaders }, function (err, resp, body) {
