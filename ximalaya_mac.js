@@ -216,31 +216,57 @@ function resolveWithEngine(trackId) {
 // ============ 响应改写 ============
 
 // 改写 www.ximalaya.com/mobile-playpage/track/v3/baseInfo 响应
-function rewriteV3BaseInfo(body, audioUrl) {
-  try {
-    var d = JSON.parse(body);
-    var targets = [];
-    if (d.data && d.data.trackInfo) targets.push(d.data.trackInfo);
-    if (d.trackInfo) targets.push(d.trackInfo);
-    for (var i = 0; i < targets.length; i++) {
-      var ti = targets[i];
-      ti.isPaid = false;
-      ti.isVipFree = true;
-      ti.canPlay = true;
-      ti.isAuthorized = true;
-      ti.isFree = true;
-      ti.vipInfo = ti.vipInfo || {};
-      ti.vipInfo.isVip = true;
-      ti.vipInfo.vipStatus = 1;
-      if (audioUrl) {
-        ti.playUrl = { url: audioUrl, ts: Date.now(), size: 0 };
-        if (d.data) d.data.playUrl = { url: audioUrl, ts: Date.now() };
-      }
-    }
-    return JSON.stringify(d);
-  } catch (e) {
-    return body;
+function rewriteV3BaseInfo(body, audioUrl, trackId) {
+  var d;
+  try { d = JSON.parse(body); } catch (e) { d = {}; }
+
+  // 从 URL 提取 trackId（v3 路径格式: /track/v3/baseInfo/{ts}?trackId=xxx）
+  if (!trackId) {
+    var m = (body || "").match(/trackId["\s:=]+(\d+)/);
+    if (m) trackId = m[1];
   }
+  var tid = Number(trackId) || 0;
+
+  // 关键: Mac 客户端请求 v3/baseInfo 时如果未登录/无权限, 服务器返回 {ret:1001,"系统繁忙"}
+  // 这种错误响应没有 data.trackInfo, 直接改字段无效。需要构造完整成功响应。
+  var isErrResp = (d.ret && d.ret !== 0 && d.ret !== 200) || (!d.data && !d.trackInfo);
+  if (isErrResp) {
+    d = {
+      ret: 0,
+      msg: "success",
+      data: {
+        trackInfo: {
+          trackId: tid,
+          isPaid: false,
+          isVipFree: true,
+          canPlay: true,
+          isAuthorized: true,
+          isFree: true,
+          vipInfo: { isVip: true, vipStatus: 1 }
+        }
+      }
+    };
+  }
+
+  var targets = [];
+  if (d.data && d.data.trackInfo) targets.push(d.data.trackInfo);
+  if (d.trackInfo) targets.push(d.trackInfo);
+  for (var i = 0; i < targets.length; i++) {
+    var ti = targets[i];
+    ti.isPaid = false;
+    ti.isVipFree = true;
+    ti.canPlay = true;
+    ti.isAuthorized = true;
+    ti.isFree = true;
+    ti.vipInfo = ti.vipInfo || {};
+    ti.vipInfo.isVip = true;
+    ti.vipInfo.vipStatus = 1;
+    if (audioUrl) {
+      ti.playUrl = { url: audioUrl, ts: Date.now(), size: 0 };
+      if (d.data) d.data.playUrl = { url: audioUrl, ts: Date.now() };
+    }
+  }
+  return JSON.stringify(d);
 }
 
 // 改写 pc.ximalaya.com/simple-revision-for-pc/play/v1/audio 响应
@@ -278,7 +304,7 @@ function main() {
   var doRewrite = function (audioUrl) {
     var newBody = $response.body || "";
     if (url.indexOf("track/v3/baseInfo") > -1) {
-      newBody = rewriteV3BaseInfo($response.body, audioUrl);
+      newBody = rewriteV3BaseInfo($response.body, audioUrl, trackId);
     } else if (url.indexOf("play/v1/audio") > -1) {
       newBody = rewritePlayV1Audio($response.body, audioUrl);
     }
