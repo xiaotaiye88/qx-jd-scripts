@@ -433,12 +433,21 @@ function main() {
       // 保留原 src, 只改字段
       doRewrite("__KEEP_ORIG_SRC__");
     } else {
-      // 原 src 为空, 用引擎解析(带超时保护: 8秒内必须 $done)
+      // 原 src 为空: 先查缓存, 有则直接填入; 无则引擎解析并缓存
+      var cacheKey = "ximalaya_mac_src_" + trackId;
+      var cachedUrl = "";
+      try { cachedUrl = $prefs.valueForKey(cacheKey) || ""; } catch (e) {}
+      if (cachedUrl && cachedUrl.indexOf("http") === 0) {
+        console.log("【喜马拉雅Mac】命中缓存 src, TrackId:", trackId);
+        doRewrite(cachedUrl);
+        return;
+      }
+      // 引擎解析(带超时保护: 8秒内必须 $done)
       console.log("【喜马拉雅Mac】解析音频, TrackId:", trackId);
       var timedOut = false;
       var timer = setTimeout(function () {
         timedOut = true;
-        console.log("【喜马拉雅Mac】解析超时, 返回原响应");
+        console.log("【喜马拉雅Mac】解析超时, 返回原响应(下次播放会命中缓存)");
         doRewrite(null);
       }, 8000);
       resolveWithEngine(trackId).then(function (audioUrl) {
@@ -446,6 +455,8 @@ function main() {
         clearTimeout(timer);
         if (audioUrl) {
           console.log("【喜马拉雅Mac】解析成功:", audioUrl.slice(0, 100));
+          // 缓存 URL(有效期较短, 签名 URL 有时效)
+          try { $prefs.setValueForKey(audioUrl, cacheKey); } catch (e) {}
         } else {
           console.log("【喜马拉雅Mac】解析失败, TrackId:", trackId);
         }
