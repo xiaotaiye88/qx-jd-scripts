@@ -12,9 +12,9 @@
 使用方式（在 default.conf 中添加）：
 [rewrite_local]
 # Mac 客户端 v3 播放接口
-^https?:\/\/www\.ximalaya\.com\/mobile-playpage\/track\/v3\/baseInfo url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/main/ximalaya_mac.js
+^https?:\/\/www\.ximalaya\.com\/mobile-playpage\/track\/v3\/baseInfo url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.js
 # Mac 客户端 pc 音频解析接口
-^https?:\/\/pc\.ximalaya\.com\/simple-revision-for-pc\/play\/v1\/audio url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/main/ximalaya_mac.js
+^https?:\/\/pc\.ximalaya\.com\/simple-revision-for-pc\/play\/v1\/audio url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.js
 [mitm]
 hostname = www.ximalaya.com, pc.ximalaya.com, *.ximalaya.com, *.xmcdn.com
  *
