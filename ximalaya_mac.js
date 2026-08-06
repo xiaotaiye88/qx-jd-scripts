@@ -269,6 +269,36 @@ function rewriteV3BaseInfo(body, audioUrl, trackId) {
   return JSON.stringify(d);
 }
 
+// 改写 pc.ximalaya.com/simple-revision-for-pc/track/simple 响应
+// 这是 Mac 客户端判断"付费内容"的主要依据: isPaid:true + isAuthorized:false → 显示付费提示
+function rewriteTrackSimple(body) {
+  try {
+    var d = JSON.parse(body);
+    // track/simple 响应: { ret:200, data: { trackInfo: { isPaid, isAuthorized, ... } } }
+    var targets = [];
+    if (d.data && d.data.trackInfo) targets.push(d.data.trackInfo);
+    if (d.data && d.data.albumInfo) targets.push(d.data.albumInfo);
+    if (d.trackInfo) targets.push(d.trackInfo);
+    for (var i = 0; i < targets.length; i++) {
+      var ti = targets[i];
+      ti.isPaid = false;
+      ti.isAuthorized = true;
+      ti.isFree = true;
+      ti.isVipFree = true;
+      ti.canPlay = true;
+      ti.hasBuy = true;
+      ti.isOwn = true;
+      ti.paidSoundType = 0;
+      ti.priceType = 0;
+      if ("price" in ti) ti.price = "0";
+      if ("discountedPrice" in ti) ti.discountedPrice = "0";
+    }
+    return JSON.stringify(d);
+  } catch (e) {
+    return body;
+  }
+}
+
 // 改写 pc.ximalaya.com/simple-revision-for-pc/play/v1/audio 响应
 function rewritePlayV1Audio(body, audioUrl) {
   try {
@@ -310,22 +340,28 @@ function main() {
       newBody = rewriteV3BaseInfo($response.body, audioUrl, trackId);
     } else if (url.indexOf("play/v1/audio") > -1) {
       newBody = rewritePlayV1Audio($response.body, audioUrl);
+    } else if (url.indexOf("track/simple") > -1 || url.indexOf("track/detail") > -1) {
+      newBody = rewriteTrackSimple($response.body);
     }
-    if (audioUrl && typeof $notify !== "undefined") {
+    if (audioUrl && audioUrl !== "__KEEP_ORIG_SRC__" && typeof $notify !== "undefined") {
       try { $notify("喜马拉雅Mac", "解析成功", "TrackId: " + trackId); } catch (e) {}
     }
     $done({ body: newBody });
   };
 
   // 关键策略:
-  // - play/v1/audio: 这个接口本身(QX MITM 注入共享Cookie后)已能返回正确的可播放 URL,
-  //   脚本不重新解析, 只确保字段正确(canPlay/hasBuy 等), 保留服务器返回的 src。
-  // - v3/baseInfo: 服务器返回 ret:1001 错误, 脚本构造成功响应让播放器继续。
-  //   v3 不触发引擎解析(太慢会超时), 只标记可播放, 播放器会再去请求 play/v1/audio。
+  // - track/simple: Mac 客户端判断"付费内容"的主要依据(isPaid/isAuthorized), 直接改字段, 不解析
+  // - v3/baseInfo: 服务器返回 ret:1001 错误, 构造成功响应让播放器继续, 不解析(避免超时)
+  // - play/v1/audio: 先看原始响应是否已有可播放 src, 有则保留, 无才用引擎解析
   var isV3 = url.indexOf("track/v3/baseInfo") > -1;
   var isPlay = url.indexOf("play/v1/audio") > -1;
+  var isTrackSimple = url.indexOf("track/simple") > -1 || url.indexOf("track/detail") > -1;
 
-  if (isV3) {
+  if (isTrackSimple) {
+    // track 信息接口: 直接改付费状态字段, 不解析(这个接口决定是否显示"付费内容")
+    console.log("【喜马拉雅Mac】track 信息接口, 改写付费状态");
+    doRewrite(null);
+  } else if (isV3) {
     // v3 接口: 直接构造成功响应, 不解析(避免超时)
     console.log("【喜马拉雅Mac】v3/baseInfo 接口, 构造可播放响应");
     doRewrite(null);
