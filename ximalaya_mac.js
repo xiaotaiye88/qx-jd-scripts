@@ -326,53 +326,41 @@ function rewritePlayV1Audio(body, audioUrl) {
 
 // ============ 主入口 ============
 // ============ 主入口 ============
-var SHARED_DATA_URL = "https://raw.githubusercontent.com/WeiGiegie/666/main/xmly_data.json";
+// 共享账号数据源(多源回退): 主源 xmly_data.json, 备源 himalaya_data.json, 再备 himalaya_cookie.json
+var SHARED_DATA_URLS = [
+  "https://raw.githubusercontent.com/WeiGiegie/666/main/xmly_data.json",
+  "https://raw.githubusercontent.com/WeiGiegie/666/main/himalaya_data.json",
+  "https://raw.githubusercontent.com/WeiGiegie/666/main/himalaya_cookie.json"
+];
+
+// 依次尝试各数据源, 返回第一个含有效 cookie 的
+function fetchCookieFromSources() {
+  var idx = 0;
+  function tryNext() {
+    if (idx >= SHARED_DATA_URLS.length) return Promise.resolve(null);
+    var url = SHARED_DATA_URLS[idx];
+    idx++;
+    return netGet(url).then(function (resp) {
+      var cookie = "";
+      try {
+        var d = JSON.parse(resp.body || "{}");
+        cookie = d.cookie || "";
+      } catch (e) {}
+      if (cookie) {
+        console.log("【喜马拉雅Mac】Cookie 来自:", url.split("/").pop());
+        return cookie;
+      }
+      return tryNext();
+    }).catch(function () { return tryNext(); });
+  }
+  return tryNext();
+}
 
 // 请求头注入处理(script-request-header): 给请求注入共享会员 Cookie
-// ============ 共享 Cookie 管理 ============
-var cachedCookie = null;   // 进程内缓存
-var cookieExpire = 0;
-
-// 备选数据源(主源失败时使用)
-var SHARED_DATA_URL_BACKUP = "https://cdn.jsdelivr.net/gh/WeiGiegie/666@main/xmly_data.json";
-
-function fetchCookieData(url) {
-  return netGet(url).then(function (resp) {
-    if (!resp.body) return null;
-    try {
-      var d = JSON.parse(resp.body);
-      if (d.cookie) return d.cookie;
-    } catch (e) {}
-    return null;
-  });
-}
-
-// 获取共享 Cookie: 主源 → 备源 → 进程内缓存
-function getSharedCookie() {
-  if (cachedCookie && Date.now() < cookieExpire) return Promise.resolve(cachedCookie);
-  return fetchCookieData(SHARED_DATA_URL).then(function (cookie) {
-    if (cookie) {
-      cachedCookie = cookie;
-      cookieExpire = Date.now() + 1800000; // 缓存30分钟
-      return cookie;
-    }
-    // 主源失败, 试备源
-    console.log("【喜马拉雅Mac】主源失败, 尝试备用源");
-    return fetchCookieData(SHARED_DATA_URL_BACKUP).then(function (cookie2) {
-      if (cookie2) {
-        cachedCookie = cookie2;
-        cookieExpire = Date.now() + 1800000;
-        return cookie2;
-      }
-      return null;
-    });
-  });
-}
-
 function handleRequestHeader() {
   var url = ($request && $request.url) || "";
   console.log("【喜马拉雅Mac】[请求] URL:", url.slice(0, 100));
-  getSharedCookie().then(function (cookie) {
+  fetchCookieFromSources().then(function (cookie) {
     if (!cookie) { console.log("【喜马拉雅Mac】[请求] 无Cookie, 放行"); $done({}); return; }
     var headers = ($request && $request.headers) || {};
     headers["Cookie"] = cookie;
@@ -427,15 +415,38 @@ function main() {
     console.log("【喜马拉雅Mac】v3/baseInfo 接口, 构造可播放响应");
     doRewrite(null);
   } else if (isPlay && trackId) {
-    // play/v1/audio: 注入 Cookie 后服务器直接返回可播放 src, 只改字段不解析
-    // (引擎解析是异步的, QX 等不到 $done 就释放响应导致 src 丢失, 所以绝不解析)
+    // play/v1/audio: 先看原始响应是否已有可播放 src
+    var origPlayable = false;
     var origSrc = "";
     try {
       var origD = JSON.parse($response.body || "{}");
       origSrc = (origD.data && origD.data.src) ? origD.data.src : "";
-    } catch (e) {}
-    console.log("【喜马拉雅Mac】play/v1/audio src 长度:", origSrc.length);
-    doRewrite(origSrc.indexOf("http") === 0 ? "__KEEP_ORIG_SRC__" : null);
+      console.log("【喜马拉雅Mac】原始响应 src 长度:", origSrc.length, "| canPlay:", origD.data && origD.data.canPlay);
+      if (origSrc.indexOf("http") === 0) {
+        origPlayable = true;
+        console.log("【喜马拉雅Mac】原始响应已含可播放 src, 直接改字段保留 src");
+      }
+    } catch (e) {
+      console.log("【喜马拉雅Mac】解析原始响应失败:", e.message, "| body前100:", ($response.body || "").slice(0, 100));
+    }
+    if (origPlayable) {
+      // 保留原 src, 只改字段
+      doRewrite("__KEEP_ORIG_SRC__");
+    } else {
+      // 原 src 为空, 才用引擎解析
+      console.log("【喜马拉雅Mac】解析音频, TrackId:", trackId);
+      resolveWithEngine(trackId).then(function (audioUrl) {
+        if (audioUrl) {
+          console.log("【喜马拉雅Mac】解析成功:", audioUrl.slice(0, 100));
+        } else {
+          console.log("【喜马拉雅Mac】解析失败, TrackId:", trackId);
+        }
+        doRewrite(audioUrl);
+      }).catch(function (e) {
+        console.log("【喜马拉雅Mac】异常:", e && e.message);
+        doRewrite(null);
+      });
+    }
   } else {
     doRewrite(null);
   }
