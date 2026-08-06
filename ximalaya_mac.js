@@ -433,9 +433,17 @@ function main() {
       // 保留原 src, 只改字段
       doRewrite("__KEEP_ORIG_SRC__");
     } else {
-      // 原 src 为空, 才用引擎解析
+      // 原 src 为空, 用引擎解析(带超时保护: 8秒内必须 $done)
       console.log("【喜马拉雅Mac】解析音频, TrackId:", trackId);
+      var timedOut = false;
+      var timer = setTimeout(function () {
+        timedOut = true;
+        console.log("【喜马拉雅Mac】解析超时, 返回原响应");
+        doRewrite(null);
+      }, 8000);
       resolveWithEngine(trackId).then(function (audioUrl) {
+        if (timedOut) return; // 已经超时返回了
+        clearTimeout(timer);
         if (audioUrl) {
           console.log("【喜马拉雅Mac】解析成功:", audioUrl.slice(0, 100));
         } else {
@@ -443,6 +451,8 @@ function main() {
         }
         doRewrite(audioUrl);
       }).catch(function (e) {
+        if (timedOut) return;
+        clearTimeout(timer);
         console.log("【喜马拉雅Mac】异常:", e && e.message);
         doRewrite(null);
       });
