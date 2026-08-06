@@ -1,6 +1,6 @@
 {
   "name": "京东脚本 - QX Task Gallery",
-  "description": "京东全家桶：55 个自动化脚本（签到/农场/牧场/种豆/抽奖/价保/话费等），上游 @6dylan6/jdpro，由 @xiaotaiye88 移植打包",
+  "description": "京东全家桶：54 个自动化脚本（签到/农场/牧场/种豆/抽奖/价保/话费等），上游 @6dylan6/jdpro，由 @xiaotaiye88 移植打包",
   "raw": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/tasks/qx-jd-tasks.json",
   "task": [
     "3 12 3 12 * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_AutoEval.qx.js, tag=带图评价晒单, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_shop.png, enabled=true",
@@ -57,10 +57,11 @@
     "11 9,16 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xqmh.qx.js, tag=新奇盲盒, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png, enabled=true",
     "38 7,19 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xsjx.qx.js, tag=限时京喜, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jingxi.png, enabled=true",
     "20 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_yssign.qx.js, tag=ys每日签到, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png, enabled=true",
+    "6 8,16 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_hdyxzd.qx.js, tag=互动游戏赚豆, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true",
+    "50 8,16 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jrddzjd.qx.js, tag=天天赚京豆, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png, enabled=true",
+    "23 9,13 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jrttlqy.qx.js, tag=天天领权益, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true",
+    "10 9,15 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_zjindan.qx.js, tag=天天砸金蛋, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true",
     "30 7 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ckcheck_qx.js, tag=CK检测, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true",
-    "57 21,9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wskey_convert.qx.js, tag=WS转换, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true",
-    "20 10 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js, tag=京东金融赚京豆, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png, enabled=true",
-    "30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/smzdm_checkin.qx.js, tag=什么值得买签到, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/smzdm.png, enabled=true",
-    "30 9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/zeekr_checkin.qx.js, tag=极氪签到, img-url=https://raw.githubusercontent.com/Sliverkiss/QuantumultX/main/icon/zeekr.png, enabled=true"
+    "57 21,9 * * * https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wskey_convert.qx.js, tag=WS转换, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd.png, enabled=true"
   ]
 }
