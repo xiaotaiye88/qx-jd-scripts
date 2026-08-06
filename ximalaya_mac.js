@@ -325,7 +325,30 @@ function rewritePlayV1Audio(body, audioUrl) {
 }
 
 // ============ 主入口 ============
+// ============ 主入口 ============
+var SHARED_DATA_URL = "https://raw.githubusercontent.com/WeiGiegie/666/main/xmly_data.json";
+
+// 请求头注入处理(script-request-header): 给请求注入共享会员 Cookie
+function handleRequestHeader() {
+  var url = ($request && $request.url) || "";
+  console.log("【喜马拉雅Mac】[请求] URL:", url.slice(0, 100));
+  netGet(SHARED_DATA_URL).then(function (resp) {
+    var cookie = "";
+    try { cookie = JSON.parse(resp.body).cookie || ""; } catch (e) {}
+    if (!cookie) { console.log("【喜马拉雅Mac】[请求] 无Cookie, 放行"); $done({}); return; }
+    var headers = ($request && $request.headers) || {};
+    headers["Cookie"] = cookie;
+    console.log("【喜马拉雅Mac】[请求] 已注入共享Cookie");
+    $done({ headers: headers });
+  }).catch(function (e) { console.log("【喜马拉雅Mac】[请求] 异常:", e.message); $done({}); });
+}
+
 function main() {
+  // 区分调用方式: script-request-header 只有 $request, 没有 $response
+  if (typeof $response === "undefined" || !$response) {
+    handleRequestHeader();
+    return;
+  }
   var url = $request.url || "";
   console.log("【喜马拉雅Mac】开始, URL:", url.slice(0, 130));
 
