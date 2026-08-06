@@ -22,6 +22,67 @@ try { if (typeof $prefs !== 'undefined') { var __tmpDbg = $prefs.valueForKey('JD
 
 var __QX_G = (typeof globalThis !== 'undefined') ? globalThis : this;
 
+// ==================== 京豆汇总（由 ZCode 注入，2026-08-06） ====================
+// 拦截 console.log：识别"---获得 X Y/Z"奖励行与"开始【账号N】"边界，结束时汇总京豆并 $notify
+// 不改脚本主逻辑，纯日志观察 + 通知。
+if (typeof __JDSUM !== 'undefined') { var __JDSUM_DONE = true; }
+var __JDSUM = (function () {
+  try {
+    if (typeof $prefs === 'undefined') return null;
+    if ($prefs.valueForKey('JD_ZJINDAN_SUM') === 'off') return null;
+  } catch (_) { return null; }
+  var acc = { cur: '', total: 0, per: {} };
+  var warned = false;
+  var realLog = console.log.bind(console);
+  // 推送汇总到 ntfy / bark（BoxJS 配置 JD_ZJINDAN_NTFY / JD_ZJINDAN_BARK，填 topic/key 或完整 URL）
+  function pushSummary(title, body) {
+    try {
+      var ntfy = ''; var bark = '';
+      try { ntfy = $prefs.valueForKey('JD_ZJINDAN_NTFY') || ''; } catch (_) {}
+      try { bark = $prefs.valueForKey('JD_ZJINDAN_BARK') || ''; } catch (_) {}
+      if (ntfy && typeof $task !== 'undefined' && $task.fetch) {
+        var ntfyUrl = ntfy.indexOf('http') === 0 ? ntfy : 'https://ntfy.sh/' + ntfy;
+        try { $task.fetch({ url: ntfyUrl, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: title, message: body }) }).catch(function () {}); } catch (_) {}
+      }
+      if (bark && typeof $task !== 'undefined' && $task.fetch) {
+        var barkUrl = bark.indexOf('http') === 0 ? bark : 'https://api.day.app/' + bark;
+        try { $task.fetch({ url: barkUrl + '/' + encodeURIComponent(title) + '/' + encodeURIComponent(body), method: 'GET' }).catch(function () {}); } catch (_) {}
+      }
+    } catch (_) {}
+  }
+  console.log = function () {
+    var line = '';
+    try { line = Array.prototype.map.call(arguments, function (x) { return (x === null || x === undefined) ? '' : String(x); }).join(' '); } catch (_) { line = String(arguments[0]); }
+    var m = /^---获得\s+([^\s]+)\s+([\d.]+)\/([\d.]+)$/.exec(line.trim());
+    if (m) {
+      var name = m[1];
+      var usable = parseFloat(m[2]), total = parseFloat(m[3]);
+      // 只统计京豆奖励：奖励名含"京豆"或"金豆"，且 usable>0
+      if (isFinite(usable) && usable > 0 && usable <= total && name.indexOf('京豆') >= 0) {
+        acc.total += usable;
+        acc.per[acc.cur || '未知'] = (acc.per[acc.cur || '未知'] || 0) + usable;
+      }
+    } else {
+      var bm = /开始【账号([^】]+)】/.exec(line);
+      if (bm) acc.cur = bm[1];
+      if (line.indexOf('结束!') >= 0 && !warned) {
+        warned = true;
+        try {
+          var lines = [];
+          Object.keys(acc.per).forEach(function (k) { lines.push(k + '：+' + acc.per[k] + '京豆'); });
+          if (acc.total > 0) lines.push('合计：+' + acc.total + '京豆');
+          var body = lines.length ? lines.join('\n') : '本次无京豆奖励';
+          $notify('📊 天天砸金蛋京豆汇总', acc.total + ' 京豆', body);
+          pushSummary('📊 天天砸金蛋京豆汇总 ' + acc.total + ' 京豆', body);
+        } catch (_) {}
+      }
+    }
+    return realLog.apply(console, arguments);
+  };
+  return acc;
+})();
+
+
 // ---------- CommonJS 模块注册表 ----------
 var __qxModules = {};    // name -> 已加载的 exports
 var __qxFactories = {};  // name -> 惰性工厂函数
