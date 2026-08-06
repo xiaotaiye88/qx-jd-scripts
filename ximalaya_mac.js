@@ -329,12 +329,50 @@ function rewritePlayV1Audio(body, audioUrl) {
 var SHARED_DATA_URL = "https://raw.githubusercontent.com/WeiGiegie/666/main/xmly_data.json";
 
 // 请求头注入处理(script-request-header): 给请求注入共享会员 Cookie
+// ============ 共享 Cookie 管理 ============
+var cachedCookie = null;   // 进程内缓存
+var cookieExpire = 0;
+
+// 备选数据源(主源失败时使用)
+var SHARED_DATA_URL_BACKUP = "https://cdn.jsdelivr.net/gh/WeiGiegie/666@main/xmly_data.json";
+
+function fetchCookieData(url) {
+  return netGet(url).then(function (resp) {
+    if (!resp.body) return null;
+    try {
+      var d = JSON.parse(resp.body);
+      if (d.cookie) return d.cookie;
+    } catch (e) {}
+    return null;
+  });
+}
+
+// 获取共享 Cookie: 主源 → 备源 → 进程内缓存
+function getSharedCookie() {
+  if (cachedCookie && Date.now() < cookieExpire) return Promise.resolve(cachedCookie);
+  return fetchCookieData(SHARED_DATA_URL).then(function (cookie) {
+    if (cookie) {
+      cachedCookie = cookie;
+      cookieExpire = Date.now() + 1800000; // 缓存30分钟
+      return cookie;
+    }
+    // 主源失败, 试备源
+    console.log("【喜马拉雅Mac】主源失败, 尝试备用源");
+    return fetchCookieData(SHARED_DATA_URL_BACKUP).then(function (cookie2) {
+      if (cookie2) {
+        cachedCookie = cookie2;
+        cookieExpire = Date.now() + 1800000;
+        return cookie2;
+      }
+      return null;
+    });
+  });
+}
+
 function handleRequestHeader() {
   var url = ($request && $request.url) || "";
   console.log("【喜马拉雅Mac】[请求] URL:", url.slice(0, 100));
-  netGet(SHARED_DATA_URL).then(function (resp) {
-    var cookie = "";
-    try { cookie = JSON.parse(resp.body).cookie || ""; } catch (e) {}
+  getSharedCookie().then(function (cookie) {
     if (!cookie) { console.log("【喜马拉雅Mac】[请求] 无Cookie, 放行"); $done({}); return; }
     var headers = ($request && $request.headers) || {};
     headers["Cookie"] = cookie;
