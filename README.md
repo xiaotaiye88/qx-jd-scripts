@@ -110,3 +110,39 @@ node tools/smoke-test.js   # 冒烟测试
 - 上游脚本：[6dylan6/jdpro](https://github.com/6dylan6/jdpro)
 - 跨平台 Env 设计：chavyleung / lxk0301 等前辈
 - 图标：[Orz-3/mini](https://github.com/Orz-3/mini)
+
+---
+
+## 喜马拉雅 Mac 客户端会员解锁
+
+适配 Mac 端 Quantumult X，解锁喜马拉雅 Mac 客户端 (Electron) 的 VIP 音频。
+
+### 原理
+
+Mac 客户端走 PC 接口 (`www.ximalaya.com/mobile-playpage/track/v3/baseInfo` + `pc.ximalaya.com/simple-revision-for-pc/play/v1/audio`)，与 iOS 的 v4 接口不同。`ximalaya_mac.js` 动态加载 [WeiGiegie/666](https://github.com/WeiGiegie/666) 的 `ximalaya.js` 解析引擎，复用其共享会员 Cookie 解析出真实 VIP 音频地址，并改写进 Mac 端响应。
+
+### 订阅方式 (推荐)
+
+Quantumult X → 设置 → 配置文件 → 资源订阅 → 添加 rewrite 订阅：
+
+```
+https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.conf
+```
+
+该配置包含全部 rewrite 规则 + MitM hostname，一次订阅即可。需确保 MitM 开启且已信任 QX 证书。
+
+### 手动配置方式
+
+在 `default.conf` 的 `[rewrite_local]` 中添加：
+
+```
+^https?:\/\/www\.ximalaya\.com\/mobile-playpage\/track\/v3\/baseInfo url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.js
+^https?:\/\/pc\.ximalaya\.com\/simple-revision-for-pc\/play\/v1\/audio url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.js
+```
+
+`[mitm]` hostname 需包含 `pc.ximalaya.com, www.ximalaya.com, *.ximalaya.com, *.xmcdn.com`。
+
+### 注意事项
+
+- 依赖 WeiGiegie 的共享会员账号 (Cookie)，账号过期后需等待上游更新。
+- 首次解析需下载引擎 + CryptoJS 约 500KB，稍慢，之后有缓存会加快。
