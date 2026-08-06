@@ -495,15 +495,28 @@ async function main() {
   const list = readTokenList();
   if (!list.length) {
     $.msg($.name, '❌ 未抓到 Token', '打开极氪 App 任意页面触发抓取（需 MITM api-gw-toc.zeekrlife.com）');
+    finish();
     return;
   }
   const lines = [];
-  for (let i = 0; i < list.length; i++) {
-    lines.push(await runAccount(list[i]));
-    if (i < list.length - 1) await $.wait(2000);
+  try {
+    for (let i = 0; i < list.length; i++) {
+      lines.push(await runAccount(list[i]));
+      if (i < list.length - 1) await $.wait(2000);
+    }
+    const multi = list.length > 1;
+    $.msg($.name, multi ? `✅ 完成 (${list.length} 个账号)` : '✅ 完成', lines.join('\n\n'));
+  } catch (e) {
+    $.log('❌ 异常:', e.message, e.stack);
+    $.msg($.name, '❌ 异常', e.message);
+  } finally {
+    finish();
   }
-  const multi = list.length > 1;
-  $.msg($.name, multi ? `✅ 完成 (${list.length} 个账号)` : '✅ 完成', lines.join('\n\n'));
+}
+
+// 任务模式收尾：调用 $.done() 结束脚本（QX 才能判定完成，否则一直挂起）
+function finish() {
+  try { $.done(); } catch (e) { console.log('done() failed:', e); }
 }
 
 // ================================================
@@ -535,7 +548,6 @@ if (typeof $request !== 'undefined' && $request.url && $request.url.indexOf('api
   // 定时任务模式
   main();
 }
-
 // ================================================
 // Env 工具类（圈x 通用）
 // ================================================
