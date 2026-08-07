@@ -438,9 +438,45 @@ function main() {
     console.log("【喜马拉雅Mac】track 信息接口, 改写付费状态");
     doRewrite(null);
   } else if (isV3) {
-    // v3 接口: 直接构造成功响应, 不解析(避免超时)
-    console.log("【喜马拉雅Mac】v3/baseInfo 接口, 构造可播放响应");
-    doRewrite(null);
+    // v3 接口: 关键! 播放器从 v3 响应的 playUrl 字段拿音频地址,
+    // 只构造"可播放"状态(canPlay:true)但没有 playUrl 会导致播放器停住。
+    // 必须解析音频URL并填入 v3 响应的 playUrl。
+    console.log("【喜马拉雅Mac】v3/baseInfo 接口, 解析音频填入playUrl, TrackId:", trackId);
+    // 先查缓存
+    var v3cacheKey = "ximalaya_mac_src_" + trackId;
+    var v3cachedUrl = "";
+    try { v3cachedUrl = $prefs.valueForKey(v3cacheKey) || ""; } catch (e) {}
+    if (v3cachedUrl && v3cachedUrl.indexOf("http") === 0) {
+      console.log("【喜马拉雅Mac】v3 命中缓存, 填入playUrl");
+      doRewrite(v3cachedUrl);
+      return;
+    }
+    var v3TimedOut = false;
+    var v3Timer = setTimeout(function () {
+      v3TimedOut = true;
+      console.log("【喜马拉雅Mac】v3 解析超时, 返回可播放状态(无playUrl)");
+      doRewrite(null);
+    }, 8000);
+    if (trackId) {
+      resolveWithEngine(trackId).then(function (audioUrl) {
+        if (v3TimedOut) return;
+        clearTimeout(v3Timer);
+        if (audioUrl) {
+          console.log("【喜马拉雅Mac】v3 解析成功, 填入playUrl");
+          try { $prefs.setValueForKey(audioUrl, v3cacheKey); } catch (e) {}
+        } else {
+          console.log("【喜马拉雅Mac】v3 解析失败");
+        }
+        doRewrite(audioUrl);
+      }).catch(function (e) {
+        if (v3TimedOut) return;
+        clearTimeout(v3Timer);
+        console.log("【喜马拉雅Mac】v3 异常:", e && e.message);
+        doRewrite(null);
+      });
+    } else {
+      doRewrite(null);
+    }
   } else if (isPlay && trackId) {
     // play/v1/audio: 先看原始响应是否已有可播放 src
     var origPlayable = false;
