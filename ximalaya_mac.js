@@ -442,11 +442,27 @@ function main() {
     // 只构造"可播放"状态(canPlay:true)但没有 playUrl 会导致播放器停住。
     // 必须解析音频URL并填入 v3 响应的 playUrl。
     console.log("【喜马拉雅Mac】v3/baseInfo 接口, 解析音频填入playUrl, TrackId:", trackId);
-    // 先查缓存
+    // 先查缓存(检查 URL 的 timestamp 是否过期, 签名URL通常10分钟内有效)
     var v3cacheKey = "ximalaya_mac_src_" + trackId;
     var v3cachedUrl = "";
     try { v3cachedUrl = $prefs.valueForKey(v3cacheKey) || ""; } catch (e) {}
+    var v3cacheValid = false;
     if (v3cachedUrl && v3cachedUrl.indexOf("http") === 0) {
+      // 提取 timestamp 检查过期
+      var tsMatch = v3cachedUrl.match(/timestamp=(\d+)/);
+      if (tsMatch) {
+        var urlTs = parseInt(tsMatch[1]);
+        var nowSec = Math.floor(Date.now() / 1000);
+        if (nowSec - urlTs < 600) { // 10分钟内有效
+          v3cacheValid = true;
+        } else {
+          console.log("【喜马拉雅Mac】v3 缓存URL已过期, 重新解析");
+        }
+      } else {
+        v3cacheValid = true;
+      }
+    }
+    if (v3cacheValid) {
       console.log("【喜马拉雅Mac】v3 命中缓存, 填入playUrl");
       doRewrite(v3cachedUrl);
       return;
