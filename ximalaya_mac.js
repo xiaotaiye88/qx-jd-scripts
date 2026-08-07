@@ -246,10 +246,20 @@ function rewriteV3BaseInfo(body, audioUrl, trackId) {
   }
   var tid = Number(trackId) || 0;
 
-  // 关键: Mac 客户端请求 v3/baseInfo 时如果未登录/无权限, 服务器返回 {ret:1001,"系统繁忙"}
-  // 这种错误响应没有 data.trackInfo, 直接改字段无效。需要构造完整成功响应。
-  // 注意: 完整结构参考 mobwsa 域名返回的成功响应(trackInfo + 双playUrl)
+  // 智能处理: 只有当服务器返回错误(1001/无data)时才构造成功响应,
+  // 正常响应(含 canPlay/playUrl)直接透传, 绝不修改(避免破坏免费音频播放)
   var isErrResp = (d.ret && d.ret !== 0 && d.ret !== 200) || (!d.data && !d.trackInfo);
+
+  // 检查原始响应是否已经可播放(canPlay:true) → 直接透传, 绝不修改
+  // (免费音频无playUrl但canPlay:true, 播放器会自行请求音频; 修改会破坏)
+  var origOk = false;
+  if (d.data && d.data.trackInfo) {
+    var oti = d.data.trackInfo;
+    if (oti.canPlay === true) {
+      origOk = true; // 原始响应已可播放, 透传
+    }
+  }
+
   if (isErrResp) {
     d = {
       ret: 0,
@@ -273,6 +283,9 @@ function rewriteV3BaseInfo(body, audioUrl, trackId) {
       d.data.trackInfo.playUrl = pu;
       d.data.playUrl = { url: audioUrl, ts: tsNow };
     }
+  } else if (origOk) {
+    // 原始响应已可播放, 直接透传(不修改)
+    return body;
   }
 
   var targets = [];
