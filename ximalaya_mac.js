@@ -432,6 +432,11 @@ function main() {
   if (m) trackId = m[1];
 
   var doRewrite = function (audioUrl) {
+    // __V3_PASSTHROUGH__: 原始v3响应已可播放, 直接透传不修改
+    if (audioUrl === "__V3_PASSTHROUGH__") {
+      $done({ body: $response.body || "" });
+      return;
+    }
     var newBody = $response.body || "";
     if (url.indexOf("track/v3/baseInfo") > -1) {
       newBody = rewriteV3BaseInfo($response.body, audioUrl, trackId);
@@ -459,11 +464,24 @@ function main() {
     console.log("【喜马拉雅Mac】track 信息接口, 改写付费状态");
     doRewrite(null);
   } else if (isV3) {
-    // v3 接口: 关键! 播放器从 v3 响应的 playUrl 字段拿音频地址,
-    // 只构造"可播放"状态(canPlay:true)但没有 playUrl 会导致播放器停住。
-    // 必须解析音频URL并填入 v3 响应的 playUrl。
-    console.log("【喜马拉雅Mac】v3/baseInfo 接口, 解析音频填入playUrl, TrackId:", trackId);
-    // 先查缓存(检查 URL 的 timestamp 是否过期, 签名URL通常10分钟内有效)
+    // v3 接口: 关键! 先判断原始响应是否已经可播放(canPlay:true)
+    // 可播放 → 直接透传(免费音频/服务器已放行的), 绝不修改
+    // 只有 1001 错误 → 查缓存/解析音频, 填入 playUrl
+    console.log("【喜马拉雅Mac】v3/baseInfo 接口, TrackId:", trackId);
+    var v3OrigPlayable = false;
+    try {
+      var v3od = JSON.parse($response.body || "{}");
+      if (v3od.data && v3od.data.trackInfo && v3od.data.trackInfo.canPlay === true) {
+        v3OrigPlayable = true;
+      }
+    } catch (e) {}
+    if (v3OrigPlayable) {
+      // 原始响应已可播放, 直接透传(不查缓存不解析, 避免破坏免费音频)
+      console.log("【喜马拉雅Mac】v3 原始响应可播放, 直接透传");
+      doRewrite("__V3_PASSTHROUGH__");
+      return;
+    }
+    // 1001 错误: 查缓存(检查 timestamp 过期)
     var v3cacheKey = "ximalaya_mac_src_" + trackId;
     var v3cachedUrl = "";
     try { v3cachedUrl = $prefs.valueForKey(v3cacheKey) || ""; } catch (e) {}
