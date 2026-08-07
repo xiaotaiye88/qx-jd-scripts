@@ -248,6 +248,7 @@ function rewriteV3BaseInfo(body, audioUrl, trackId) {
 
   // 关键: Mac 客户端请求 v3/baseInfo 时如果未登录/无权限, 服务器返回 {ret:1001,"系统繁忙"}
   // 这种错误响应没有 data.trackInfo, 直接改字段无效。需要构造完整成功响应。
+  // 注意: 完整结构参考 mobwsa 域名返回的成功响应(trackInfo + 双playUrl)
   var isErrResp = (d.ret && d.ret !== 0 && d.ret !== 200) || (!d.data && !d.trackInfo);
   if (isErrResp) {
     d = {
@@ -265,6 +266,13 @@ function rewriteV3BaseInfo(body, audioUrl, trackId) {
         }
       }
     };
+    // 如果有解析出的音频URL, 填入双playUrl(参考服务器成功响应结构)
+    if (audioUrl) {
+      var tsNow = Date.now();
+      var pu = { url: audioUrl, ts: tsNow, size: 0 };
+      d.data.trackInfo.playUrl = pu;
+      d.data.playUrl = { url: audioUrl, ts: tsNow };
+    }
   }
 
   var targets = [];
