@@ -502,7 +502,7 @@ function main() {
       }
     }
     if (v3cacheValid) {
-      console.log("【喜马拉雅Mac】v3 命中缓存, 填入playUrl");
+      console.log("【喜马拉雅Mac】v3 命中缓存, 填入playUrl:", v3cachedUrl.slice(0, 100));
       doRewrite(v3cachedUrl);
       return;
     }
