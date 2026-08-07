@@ -504,7 +504,7 @@ function main() {
       if (tsMatch) {
         var urlTs = parseInt(tsMatch[1]);
         var nowSec = Math.floor(Date.now() / 1000);
-        if (nowSec - urlTs < 600) { // 10分钟内有效
+        if (nowSec - urlTs < 1800) { // 30分钟内有效
           v3cacheValid = true;
         } else {
           console.log("【喜马拉雅Mac】v3 缓存URL已过期, 重新解析");
@@ -567,7 +567,23 @@ function main() {
       var cacheKey = "ximalaya_mac_src_" + trackId;
       var cachedUrl = "";
       try { cachedUrl = $prefs.valueForKey(cacheKey) || ""; } catch (e) {}
+      var cacheValid = false;
       if (cachedUrl && cachedUrl.indexOf("http") === 0) {
+        // 检查 timestamp 过期(签名URL约10-30分钟有效)
+        var tsM = cachedUrl.match(/timestamp=(\d+)/);
+        if (tsM) {
+          var uTs = parseInt(tsM[1]);
+          var nSec = Math.floor(Date.now() / 1000);
+          if (nSec - uTs < 1800) { // 30分钟内有效
+            cacheValid = true;
+          } else {
+            console.log("【喜马拉雅Mac】缓存URL已过期, 重新解析");
+          }
+        } else {
+          cacheValid = true;
+        }
+      }
+      if (cacheValid) {
         console.log("【喜马拉雅Mac】命中缓存 src, TrackId:", trackId);
         doRewrite(cachedUrl);
         return;
