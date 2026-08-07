@@ -78,6 +78,15 @@ var enginePromise = null;
 function getEngineCode() {
   if (engineCode) return Promise.resolve(engineCode);
   if (enginePromise) return enginePromise;
+  // 先查 $prefs 持久缓存(避免每次重新下载362KB引擎)
+  try {
+    var cachedEngine = $prefs.valueForKey("ximalaya_mac_engine_v14") || "";
+    if (cachedEngine && cachedEngine.indexOf("const $ = new Env") > -1 && cachedEngine.length > 10000) {
+      console.log("【喜马拉雅Mac】引擎命中持久缓存");
+      engineCode = cachedEngine;
+      return Promise.resolve(engineCode);
+    }
+  } catch (e) {}
   enginePromise = netGet(XIMALAYA_ENGINE_URL).then(function (resp) {
     if (!resp.body || resp.body.length < 10000) {
       console.log("【喜马拉雅Mac】引擎下载失败");
@@ -89,6 +98,9 @@ function getEngineCode() {
       return null;
     }
     engineCode = resp.body.slice(idx);
+    // 缓存到 $prefs(持久化, 避免下次重新下载)
+    try { $prefs.setValueForKey(engineCode, "ximalaya_mac_engine_v14"); } catch (e) {}
+    console.log("【喜马拉雅Mac】引擎下载并缓存, 长度:", engineCode.length);
     return engineCode;
   });
   return enginePromise;
