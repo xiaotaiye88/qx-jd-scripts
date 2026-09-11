@@ -88,6 +88,13 @@ const SKIP = new Set([
   'jd_code2url.js',      // 口令转链接（依赖第三方 nolan 服务，且为按需工具非定时任务）
   'jd_wxtoken_m.js',     // 微信 token 获取（需要 wx app）
   'jd_CheckCK.js',       // 通过青龙 API 管理 CK（ql.getEnvs/DisableCk），圈X 无对应接口；改用原生版 jd_ckcheck_qx.js
+  // 依赖库（不是任务，打包出来会被误加进任务清单定时执行）
+  'jdCookie.js',
+  'sendNotify.js',
+  'JDJRValidator_Pure.js',
+  'JDSignValidator.js',
+  'JS_USER_AGENTS.js',
+  'USER_AGENTS.js',
 ]);
 
 // 原生圈X 脚本（手写，不打包，直接引用文件 URL）。会追加进三种订阅。
