@@ -16,12 +16,11 @@
  *      引导类任务（如"固坑引导"）需在 App 内完成引导动作，直领会一直软拒绝，属预期。
  *      Cookie 失效时查询返回空响应体/未登录，脚本会明确提示。
  *
- * Cookie 来源（按优先级，多账号按 pt_pin 去重）:
- *   1. 青龙面板（推荐，配置 JD_QL_URL/JD_QL_CLIENT_ID/JD_QL_CLIENT_SECRET）:
- *      青龙 → 应用设置 → 新建应用 → 权限勾选「环境管理-查看」→ 得 client_id/client_secret
- *      读取全部 JD_COOKIE 环境变量（多账号换行分隔）。连接失败自动回退本地 Cookie。
- *   2. Quantumult X 本地: BoxJs 键 CookiesJD（由 qx_jd_all.js 抓取 rewrite 自动维护）
- *   3. Node 调试: 环境变量 JD_COOKIES（多账号换行分隔）或 JD_COOKIE（单账号）
+ * Cookie 来源（多账号按 pt_pin 去重）:
+ *   - Quantumult X（默认，无需配置）: BoxJs 键 CookiesJD（由 qx_jd_all.js 抓取 rewrite 自动维护）
+ *   - 可选青龙: 配置 JD_QL_URL/JD_QL_CLIENT_ID/JD_QL_CLIENT_SECRET 后改从青龙 JD_COOKIE 读取
+ *     （青龙 → 设置 → 应用设置 → 新建应用，权限勾「环境管理-查看」；连不上自动回退 CookiesJD）
+ *   - Node 调试: 环境变量 JD_COOKIES（多账号换行分隔）或 JD_COOKIE（单账号）
  *
  * 可调参数:
  *   JD_TRIAL_RETRY      软拒绝重试次数，默认 2
