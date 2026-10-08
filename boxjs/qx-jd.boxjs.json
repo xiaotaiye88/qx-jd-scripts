@@ -2730,7 +2730,10 @@
         "CookiesJD",
         "JD_NTFY_TOPIC",
         "JD_TRIAL_RETRY",
-        "JD_TRIAL_RETRY_WAIT"
+        "JD_TRIAL_RETRY_WAIT",
+        "JD_QL_URL",
+        "JD_QL_CLIENT_ID",
+        "JD_QL_CLIENT_SECRET"
       ],
       "settings": [
         {
@@ -2760,6 +2763,27 @@
           "val": "5000",
           "type": "number",
           "desc": "每次重试之间的等待时间。"
+        },
+        {
+          "id": "JD_QL_URL",
+          "name": "青龙地址（推荐）",
+          "val": "",
+          "type": "text",
+          "desc": "如 http://192.168.x.x:5700。配置后 Cookie 改从青龙 JD_COOKIE 读取（多账号换行分隔），连不上自动回退 CookiesJD。"
+        },
+        {
+          "id": "JD_QL_CLIENT_ID",
+          "name": "青龙 Client ID",
+          "val": "",
+          "type": "text",
+          "desc": "青龙 → 设置 → 应用设置 → 新建应用（权限：环境管理-查看）生成。"
+        },
+        {
+          "id": "JD_QL_CLIENT_SECRET",
+          "name": "青龙 Client Secret",
+          "val": "",
+          "type": "text",
+          "desc": "同上。"
         }
       ]
     }
