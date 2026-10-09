@@ -166,10 +166,22 @@ function makeEl(tag) {
 // localStorage → 持久化（QX: $persistentStore；Node: /tmp 文件），保持 fp 稳定
 var LS_STORE_KEY = 'jd_trial_ls';
 var lsStore = {};
+var docCookie = ''; // document.cookie 桩的真实值（h5st 采集器读取，缺失会导致服务端校验拒绝）
 try {
   if (IS_QX) { var _raw = $persistentStore.read(LS_STORE_KEY); if (_raw) lsStore = JSON.parse(_raw); }
   else if (IS_NODE) { lsStore = JSON.parse(require('fs').readFileSync('/tmp/jd_trial_ls.json', 'utf8')); }
 } catch (_) {}
+function rndHex(n) { var s = '', c = '0123456789abcdef'; for (var i = 0; i < n; i++) s += c.charAt(Math.floor(Math.random() * 16)); return s; }
+// 预置指纹 gatherer 缓存（真实 WebView 由完整版 SDK 写入；lite SDK 只读缓存）：
+// WQ_gather_wgl1=webglFp、WQ_gather_hio1=bu4、JDSt_behavior_flag=bu13（数组格式）
+(function seedFpCaches() {
+  try {
+    var now = Date.now();
+    if (!lsStore['WQ_gather_wgl1']) lsStore['WQ_gather_wgl1'] = JSON.stringify({ v: rndHex(32), t: now, e: 31536000 });
+    if (!lsStore['WQ_gather_hio1']) lsStore['WQ_gather_hio1'] = JSON.stringify({ v: rndHex(32), t: now, e: 31536000 });
+    if (!lsStore['JDSt_behavior_flag']) lsStore['JDSt_behavior_flag'] = JSON.stringify([{ v: rndHex(40) }]);
+  } catch (_) {}
+})();
 function lsSave() {
   try {
     if (IS_QX) $persistentStore.write(JSON.stringify(lsStore), LS_STORE_KEY);
@@ -182,7 +194,7 @@ function lsSave() {
 // （SDK 顶层要写 window.ParamsSignLite，普通对象必定可写），同时尽力挂回 G 以兼容 Node。
 var window, self, top, parent, navigator, document, screen, location, localStorage, sessionStorage,
     XMLHttpRequest, WebSocket, MutationObserver, ResizeObserver, IntersectionObserver,
-    Node, Element, HTMLElement, HTMLDocument, Document, Event, CustomEvent, Text, Comment, DocumentFragment,
+    Node, Element, HTMLElement, HTMLDocument, Document, Window, Event, CustomEvent, Text, Comment, DocumentFragment,
     Image, history, fetch, getComputedStyle, chrome, matchMedia,
     crypto, msCrypto, performance, btoa, atob, addEventListener, removeEventListener, dispatchEvent,
     devicePixelRatio, innerWidth, innerHeight, outerWidth, outerHeight;
@@ -197,7 +209,7 @@ navigator = {
   vendor: 'Apple Computer, Inc.', vendorSub: '', product: 'Gecko', productSub: '20030108',
   appName: 'Mozilla', appCodeName: 'Mozilla', geolocation: {}, mediaDevices: {},
   connection: { effectiveType: '4g' }, javaEnabled: function () { return false; },
-  sendBeacon: function () { return true; }, plugins: [], webdriver: false,
+  sendBeacon: function () { return true; }, plugins: [], mimeTypes: [], webdriver: false,
   maxTouchPoints: 5, hardwareConcurrency: 8, deviceMemory: 8,
 };
 document = {
@@ -205,7 +217,7 @@ document = {
   documentElement: { style: {}, clientWidth: 390, clientHeight: 844 },
   head: makeEl('head'), body: makeEl('body'),
   addEventListener: function () {}, removeEventListener: function () {},
-  cookie: '', referrer: 'https://pro.m.jd.com/',
+  get cookie() { return docCookie; }, set cookie(v) { docCookie = String(v == null ? '' : v); }, referrer: 'https://pro.m.jd.com/',
   visibilityState: 'visible', hidden: false, title: '京东试用', readyState: 'complete',
   getElementsByTagName: function () { return []; }, getElementsByName: function () { return []; },
   querySelector: function () { return null; }, querySelectorAll: function () { return []; },
@@ -237,11 +249,14 @@ performance = (typeof G.performance !== 'undefined') ? G.performance : { now: fu
 
 // XHR 桩：SDK 用它向 cactus.jd.com 拉算法 token
 XMLHttpRequest = function () {
-  this.readyState = 0; this.status = 0; this.responseText = ''; this._h = {};
+  this.readyState = 0; this.status = 0; this.responseText = ''; this._h = {}; this._ls = {};
 };
+XMLHttpRequest.prototype.addEventListener = function (ev, fn) { (this._ls[ev] = this._ls[ev] || []).push(fn); };
+XMLHttpRequest.prototype.removeEventListener = function () {};
 XMLHttpRequest.prototype.open = function (m, u) { this._m = m; this._u = u; this.readyState = 1; };
 XMLHttpRequest.prototype.setRequestHeader = function (k, v) { this._h[k] = v; };
-XMLHttpRequest.prototype.getAllResponseHeaders = function () { return ''; };
+XMLHttpRequest.prototype.getAllResponseHeaders = function () { return 'content-type: application/json'; };
+XMLHttpRequest.prototype.getResponseHeader = function (k) { return String(k).toLowerCase() === 'content-type' ? 'application/json' : null; };
 XMLHttpRequest.prototype.abort = function () {};
 XMLHttpRequest.prototype.send = function (data) {
   var xhr = this;
@@ -249,11 +264,16 @@ XMLHttpRequest.prototype.send = function (data) {
   for (var k in this._h) h[k] = this._h[k];
   http(this._m || 'POST', this._u, h, data).then(function (r) {
     xhr.status = r.status; xhr.responseText = r.body; xhr.readyState = 4;
-    if (xhr.onreadystatechange) xhr.onreadystatechange();
-    if (xhr.onload) xhr.onload();
+    var fire = function (ev) {
+      if (xhr['on' + ev]) { try { xhr['on' + ev](); } catch (e) { console.log('XHR on' + ev + ' err: ' + e); } }
+      (xhr._ls[ev] || []).forEach(function (fn) { try { fn({ type: ev, target: xhr }); } catch (e) { console.log('XHR ls ' + ev + ' err: ' + e); } });
+    };
+    fire('readystatechange'); fire('load'); fire('loadend');
   }).catch(function (e) {
     xhr.readyState = 4; xhr.status = 0;
-    if (xhr.onerror) xhr.onerror(e);
+    if (xhr.onerror) { try { xhr.onerror(e); } catch (e2) {} }
+    (xhr._ls.error || []).forEach(function (fn) { try { fn({ type: 'error', target: xhr }); } catch (e2) {} });
+    (xhr._ls.loadend || []).forEach(function (fn) { try { fn({ type: 'loadend', target: xhr }); } catch (e2) {} });
   });
 };
 
@@ -265,7 +285,7 @@ function NodeC() {} NodeC.prototype = { appendChild: function (c) { return c; },
 function ElementC() {} ElementC.prototype = Object.create(NodeC.prototype);
 function HTMLElementC() {} HTMLElementC.prototype = Object.create(ElementC.prototype);
 Node = NodeC; Element = ElementC; HTMLElement = HTMLElementC;
-HTMLDocument = function () {}; Document = function () {};
+HTMLDocument = function () {}; Document = function () {}; Window = function Window() {};
 Event = function () {}; CustomEvent = function () {};
 Text = function () {}; Comment = function () {}; DocumentFragment = function () {};
 MutationObserver = function () { this.observe = function () {}; this.disconnect = function () {}; };
@@ -352,16 +372,76 @@ var ParamsSignLite=function(){'use strict';function _4vve5(s){var o='';for(var i
 
 // ==================== 签名 ====================
 var signer = null;
-function initSigner() {
+function initSigner(cookieStr) {
   var PSL = (typeof ParamsSignLite !== 'undefined' && ParamsSignLite) || (window && window.ParamsSignLite) || G.ParamsSignLite;
   if (!PSL) throw new Error('h5st SDK 未加载');
+  // 构造期 gatherer 即读取 cookie（sdtoken 等风控数据），缺失会被服务端以 wl=94 拒绝
+  try { document.cookie = cookieStr || ''; } catch (_) {}
   signer = new PSL({ appId: H5ST_APPID });
   // 首次签名异步触发 cactus.jd.com/request_algo 拉 token，预热一次
-  try { signer.signSync({ functionId: 'qryH5BabelFloors', body: '{}', timestamp: Date.now() }); } catch (_) {}
+  try { signer.signSync({ functionId: 'qryH5BabelFloors', appid: 'newtry', client: 'apple', body: sha256hex('{}'), clientVersion: CLIENT_VERSION, t: Date.now() }); } catch (_) {}
 }
-function h5sign(functionId, bodyStr) {
-  var r = signer.signSync({ functionId: functionId, body: bodyStr, timestamp: Date.now() });
-  if (!r || !r.h5st) { r = signer.signSync({ functionId: functionId, body: bodyStr, timestamp: Date.now() }); }
+// ==================== SHA256（纯 JS，h5st body 字段用） ====================
+function sha256hex(ascii) {
+  ascii = unescape(encodeURIComponent(String(ascii)));
+  function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+  var mathPow = Math.pow, maxWord = mathPow(2, 32), result = '';
+  var words = [], asciiBitLength = ascii.length * 8, i, j;
+  var hash = [], k = [], primeCounter = 0, isComposite = {};
+  for (var candidate = 2; primeCounter < 64; candidate++) {
+    if (!isComposite[candidate]) {
+      for (i = 0; i < 313; i += candidate) { isComposite[i] = candidate; }
+      hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+      k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+    }
+  }
+  ascii += '\x80';
+  while (ascii.length % 64 - 56) { ascii += '\x00'; }
+  for (i = 0; i < ascii.length; i++) {
+    j = ascii.charCodeAt(i);
+    words[i >> 2] |= j << ((3 - i) % 4) * 8;
+  }
+  words[words.length] = ((asciiBitLength / maxWord) | 0);
+  words[words.length] = (asciiBitLength);
+  for (j = 0; j < words.length;) {
+    var w = words.slice(j, j += 16);
+    var oldHash = hash;
+    hash = hash.slice(0, 8);
+    for (i = 0; i < 64; i++) {
+      var w15 = w[i - 15], w2 = w[i - 2];
+      var a = hash[0], e = hash[4];
+      var temp1 = hash[7]
+        + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+        + ((e & hash[5]) ^ ((~e) & hash[6]))
+        + k[i]
+        + (w[i] = (i < 16) ? w[i] : (
+            w[i - 16]
+            + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+            + w[i - 7]
+            + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+          ) | 0);
+      var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+        + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+      hash = [(temp1 + temp2) | 0].concat(hash);
+      hash[4] = (hash[4] + temp1) | 0;
+    }
+    for (i = 0; i < 8; i++) { hash[i] = (hash[i] + oldHash[i]) | 0; }
+  }
+  for (i = 0; i < 8; i++) {
+    for (j = 3; j + 1; j--) {
+      var b = (hash[i] >> (j * 8)) & 255;
+      result += ((b < 16) ? 0 : '') + b.toString(16);
+    }
+  }
+  return result;
+}
+
+function h5sign(functionId, bodyStr, cookieStr) {
+  // 服务端对 h5st 做风控校验，采集器读 document.cookie；缺失时被 wl=94 拒绝
+  try { document.cookie = cookieStr || ''; } catch (_) {}
+  var sign = { functionId: functionId, appid: 'newtry', client: 'apple', body: sha256hex(bodyStr), clientVersion: CLIENT_VERSION, t: Date.now() };
+  var r = signer.signSync(sign);
+  if (!r || !r.h5st) { r = signer.signSync(sign); }
   if (!r || !r.h5st) throw new Error('h5st 签名失败（算法 token 未就绪）');
   return r.h5st;
 }
@@ -374,17 +454,19 @@ function apiUrl(functionId) {
 }
 
 // 带 h5st 的 POST；返回 {status, body, sd}（sd = 响应头下发的 sdtoken）
-function signedPost(functionId, bodyStr, h5st, cookieStr) {
-  var data = 'body=' + encodeURIComponent(bodyStr) + (h5st ? '&h5st=' + encodeURIComponent(h5st) : '');
-  return http('POST', apiUrl(functionId), {
+function signedPost(functionId, bodyStr, h5st, cookieStr, urlOverride) {
+  var eidM = String(cookieStr || '').match(/3AB9D23F7A4B3CSS=([^;]+)/);
+  var data = 'body=' + encodeURIComponent(bodyStr) + (h5st ? '&h5st=' + encodeURIComponent(h5st) : '') + (eidM ? '&x-api-eid-token=' + encodeURIComponent(eidM[1]) : '');
+  return http('POST', urlOverride || apiUrl(functionId), {
     'User-Agent': UA, 'Cookie': cookieStr,
     'Content-Type': 'application/x-www-form-urlencoded',
     'Accept': 'application/json, text/plain, */*',
     'x-rp-client': 'h5_2.4.0',
     'Origin': 'https://pro.m.jd.com', 'Referer': PAGE_URL, 'x-referer-page': PAGE_URL,
     'request-from': 'native', 'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
+    'Sec-Fetch-Site': 'same-site', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty',
   }, data).then(function (r) {
-    var out = { status: r.status, body: r.body, sd: null };
+    var out = { status: r.status, body: r.body, headers: r.headers, sd: null };
     var sdh = headerGet(r.headers, 'x-rp-sdtoken');
     if (sdh) {
       var p = String(sdh).split(';');
@@ -568,6 +650,25 @@ async function diag403(ck, res, log) {
   } catch (e) { log('诊断·Cookie透传失败: ' + String((e && e.message) || e).slice(0, 40)); }
 }
 
+// 403 隔离诊断：区分「圈X本机规则拦截」与「京东WAF拒绝」
+async function diag403isolate(cookieStr, sd, log) {
+  var ck = cookieStr + (sd ? '; sdtoken=' + sd : '');
+  var H = { 'User-Agent': UA, 'Cookie': ck, 'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'zh-CN,zh-Hans;q=0.9' };
+  try {
+    var p404 = await http('GET', 'https://api.m.jd.com/__zprobe404__', H);
+    log('诊断·404头: HTTP ' + p404.status + ' 头=' + JSON.stringify(p404.headers || {}).slice(0, 130));
+  } catch (e) { log('诊断·404头失败: ' + String((e && e.message) || e).slice(0, 40)); }
+  try {
+    var g = await http('GET', apiUrl('qryH5BabelFloors'), H);
+    log('诊断·GETbabel: HTTP ' + g.status + ' 头' + (g.headers && Object.keys(g.headers).length ? '有' : '空') + ' ' + String(g.body).replace(/\s+/g, ' ').slice(0, 60));
+  } catch (e) { log('诊断·GETbabel失败: ' + String((e && e.message) || e).slice(0, 40)); }
+  try {
+    var pc = await http('POST', 'https://api.m.jd.com/client.action?functionId=basicConfig',
+      Object.assign({ 'Content-Type': 'application/x-www-form-urlencoded' }, H), 'body=%7B%7D');
+    log('诊断·POSTcact: HTTP ' + pc.status + ' 头' + (pc.headers && Object.keys(pc.headers).length ? '有' : '空') + ' ' + String(pc.body).replace(/\s+/g, ' ').slice(0, 60));
+  } catch (e) { log('诊断·POSTcact失败: ' + String((e && e.message) || e).slice(0, 40)); }
+}
+
 async function queryTasks(cookieStr, pin, log) {
   var qBody = queryBody();
   var sd = sdLoad(pin);
@@ -576,20 +677,30 @@ async function queryTasks(cookieStr, pin, log) {
     if (boot) { sdSave(pin, boot); sd = boot.v; log('风控令牌已引导(basicConfig)'); }
   }
   var ck = cookieStr + (sd ? '; sdtoken=' + sd : '');
-  var res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody), ck);
+  var res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody, ck), ck);
   if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
   // 403 且响应未轮换 token：本地 token 可能已失效，重新引导后重试一次
   if (res.status === 403 && !res.sd) {
     var boot2 = await bootstrapSd();
     if (boot2) {
       sdSave(pin, boot2);
-      res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody), cookieStr + '; sdtoken=' + boot2.v);
+      res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody, cookieStr + '; sdtoken=' + boot2.v), cookieStr + '; sdtoken=' + boot2.v);
       if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
     }
   }
   if (res.status === 403) {
-    await diag403(ck, res, log);
-    throw new Error('查询 HTTP 403 风控拒绝（诊断见日志，建议1小时后再试）');
+    // 换 client.action 路径重试一次：本机规则/WAF 若只针对根路径可绕过
+    var resCA = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody, ck), ck,
+      'https://api.m.jd.com/client.action?' + apiUrl('qryH5BabelFloors').split('?')[1]);
+    if (resCA.sd) { sdSave(pin, resCA.sd); ck = cookieStr + '; sdtoken=' + resCA.sd.v; }
+    if (resCA.status !== 403) {
+      log('client.action 路径可用（根路径被拒）');
+      res = resCA;
+    } else {
+      await diag403(ck, res, log);
+      await diag403isolate(cookieStr, sd, log);
+      throw new Error('查询 HTTP 403 风控拒绝（诊断见日志，建议1小时后再试）');
+    }
   }
   var data;
   try { data = JSON.parse(res.body); } catch (e) {
@@ -643,7 +754,7 @@ async function claimTask(cookieStr, task, allowRetry, log) {
     if (attempt > 0) await sleep(RETRY_WAIT);
     var res;
     try {
-      res = await signedPost('common_do_task', body, h5sign('common_do_task', body), cookieStr);
+      res = await signedPost('common_do_task', body, h5sign('common_do_task', body, cookieStr), cookieStr);
     } catch (e) {
       lastMsg = (e && e.message) || String(e);
       continue;
@@ -730,7 +841,7 @@ async function main() {
 
   // h5st 预热：首次签名异步拉算法 token，等它落地
   try {
-    initSigner();
+    initSigner(cookies.length ? (cookies[0].cookie || '') : '');
     await sleep(5000);
   } catch (e) {
     console.log('h5st 初始化失败: ' + ((e && e.message) || e) + '，将退回无签名尝试');
