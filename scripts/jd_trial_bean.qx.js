@@ -544,6 +544,30 @@ function bootstrapSd() {
   }).catch(function () { return null; });
 }
 
+// 403 诊断（每次运行仅一次）：定位是 QX 剥头、出口IP被风控、还是令牌失效
+var __diag403done = false, __ipBlocked = false;
+async function diag403(ck, res, log) {
+  __ipBlocked = true;
+  if (__diag403done) return;
+  __diag403done = true;
+  try {
+    var h = {};
+    for (var k in (res.headers || {})) h[k] = String(res.headers[k]).slice(0, 50);
+    log('诊断·403响应头: ' + JSON.stringify(h).slice(0, 200));
+  } catch (_) {}
+  try {
+    var ipr = await http('GET', 'https://myip.ipip.net/', { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15' });
+    log('诊断·出口IP: ' + String(ipr.body).replace(/\s+/g, ' ').slice(0, 70));
+  } catch (e) { log('诊断·出口IP失败: ' + String((e && e.message) || e).slice(0, 40)); }
+  try {
+    var ur = await http('GET', 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
+      'User-Agent': UA, 'Cookie': ck, 'Accept': 'application/json',
+      'Referer': 'https://home.m.jd.com/myJd/newhome.action',
+    });
+    log('诊断·Cookie透传: HTTP ' + ur.status + ' ' + String(ur.body).replace(/\s+/g, ' ').slice(0, 80));
+  } catch (e) { log('诊断·Cookie透传失败: ' + String((e && e.message) || e).slice(0, 40)); }
+}
+
 async function queryTasks(cookieStr, pin, log) {
   var qBody = queryBody();
   var sd = sdLoad(pin);
@@ -563,9 +587,13 @@ async function queryTasks(cookieStr, pin, log) {
       if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
     }
   }
+  if (res.status === 403) {
+    await diag403(ck, res, log);
+    throw new Error('查询 HTTP 403 风控拒绝（诊断见日志，建议1小时后再试）');
+  }
   var data;
   try { data = JSON.parse(res.body); } catch (e) {
-    throw new Error('查询 HTTP ' + res.status + ' ' + (res.status === 403 ? '疑似风控限频' : '响应异常') + ': ' + String(res.body).slice(0, 60));
+    throw new Error('查询 HTTP ' + res.status + ' 响应异常: ' + String(res.body).slice(0, 60));
   }
   if (data.isLogin === false) throw new Error('Cookie 已失效，请更新 CookiesJD');
   if (String(data.code) !== '0') throw new Error('查询任务失败: ' + (data.msg || data.message || JSON.stringify(data).slice(0, 120)));
@@ -710,6 +738,7 @@ async function main() {
 
   var all = [], pendingTotal = 0;
   for (var i = 0; i < cookies.length; i++) {
+    if (__ipBlocked) { console.log('疑似出口IP被风控，跳过剩余账号'); break; }
     if (i > 0) await sleep(8000);   // 账号间拉开间隔，降低触发京东风控限频的概率
     var acc = cookies[i];
     var tag = '账号' + (i + 1) + '(' + acc.pin + ')';
