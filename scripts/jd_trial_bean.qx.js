@@ -69,10 +69,39 @@ var UA = 'jdapp;iPhone;' + CLIENT_VERSION + ';;;M/5.0;JDEbook/openapp.jdreader;a
 // ==================== HTTP ====================
 function qxFetch(opts) {
   return new Promise(function (resolve, reject) {
-    $task.fetch(opts).then(
-      function (r) { resolve({ status: r.status, body: r.body == null ? '' : r.body, headers: r.headers || {} }); },
-      function (e) { reject(new Error((e && (e.error || e.message)) || 'fetch失败')); }
-    );
+    var done = false;
+    function norm(r) {
+      if (done) return; done = true;
+      r = r || {};
+      var st = (r.status != null) ? r.status : (r.statusCode != null ? r.statusCode : null);
+      var bd = (r.body != null) ? r.body : (r.content != null ? r.content : '');
+      var hd = r.headers || r.rawHeaders || {};
+      if (st === null && String(bd) === '') {
+        var dump = '';
+        try { dump = JSON.stringify(r) || ''; } catch (_) { dump = String(r); }
+        reject(new Error('fetch 返回异常对象 keys=[' + Object.keys(r).join(',') + '] ' + dump.slice(0, 150)));
+        return;
+      }
+      resolve({ status: st === null ? 200 : st, body: String(bd), headers: hd });
+    }
+    var p = null;
+    try {
+      p = $task.fetch(Object.assign({ timeout: 30 }, opts), function (a, b) {
+        if (b !== undefined && (a === null || a === undefined || a.error)) { norm(b); return; }
+        norm(a);
+      });
+    } catch (e) {
+      if (!done) { done = true; reject(new Error('fetch 调用异常: ' + ((e && (e.error || e.message)) || e))); }
+      return;
+    }
+    if (p && typeof p.then === 'function') {
+      p.then(norm, function (e) {
+        if (done) return; done = true;
+        var m = (e && (e.error || e.message)) || '';
+        if (!m) { try { m = JSON.stringify(e) || String(e); } catch (_) { m = String(e); } }
+        reject(new Error('fetch 失败: ' + m));
+      });
+    }
   });
 }
 
