@@ -846,6 +846,7 @@ async function runAccount(acc, tag) {
 async function main() {
   var src = await collectCookies();
   var cookies = src.list;
+  console.log('脚本版本: 20261009-2 (wl诊断版)');
   console.log('Cookie 来源: ' + src.src);
   if (!cookies.length) {
     console.log('未找到京东 Cookie：QX 下请先运行一次京东App让 qx_jd_all.js 抓取；Node 下请设置 JD_COOKIES/JD_COOKIE');
