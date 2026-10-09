@@ -289,7 +289,38 @@ function NodeC() {} NodeC.prototype = { appendChild: function (c) { return c; },
 function ElementC() {} ElementC.prototype = Object.create(NodeC.prototype);
 function HTMLElementC() {} HTMLElementC.prototype = Object.create(ElementC.prototype);
 Node = NodeC; Element = ElementC; HTMLElement = HTMLElementC;
-HTMLDocument = function () {}; Document = function () {}; Window = function Window() {};
+HTMLDocument = function () {}; Document = function () {}; // native 函数伪装：SDK 采集 Window.toString() 检测环境真实性（wl=0 根因）
+function nativeFn(name, impl) {
+  var f = impl || function () { };
+  try {
+    Object.defineProperty(f, 'name', { value: name, configurable: true });
+    var fts = function toString() { return 'function ' + name + '() { [native code] }'; };
+    var h = function toString() { return 'function toString() { [native code] }'; };
+    Object.defineProperty(h, 'toString', { value: h, configurable: true }); // 自指：任意深度 .toString 都返回目标串
+    Object.defineProperty(fts, 'name', { value: 'toString', configurable: true });
+    Object.defineProperty(fts, 'toString', { value: h, configurable: true });
+    Object.defineProperty(f, 'toString', { value: fts, configurable: true, writable: true });
+  } catch (_) {}
+  return f;
+}
+Window = nativeFn('Window');
+try {
+  // SDK 采集 new Error().stack 末行判环境；stack 是实例 own property，须包一层构造函数
+  var __fakeStack = 'Error: sdk\n    at https://storage.360buyimg.com/webcontainer/js_security_v3_lite_0.1.5.js:1:58280';
+  var __RealError = Error;
+  Error = nativeFn('Error', function Error(message) {
+    var e = new __RealError(message);
+    try { Object.defineProperty(e, 'stack', { value: __fakeStack, configurable: true, writable: true }); } catch (_) {}
+    return e;
+  });
+  Error.prototype = __RealError.prototype;
+} catch (_) {}
+// document 方法套 native 伪装（防函数体泄漏进环境数据）
+try {
+  ['querySelector','querySelectorAll','getElementById','getElementsByTagName','getElementsByName','createElement','createElementNS','addEventListener','removeEventListener','write','writeln','open','close'].forEach(function (m) {
+    if (typeof document[m] === 'function' && !document[m].__nat) { var f = nativeFn(m, document[m]); f.__nat = 1; document[m] = f; }
+  });
+} catch (_) {}
 Event = function () {}; CustomEvent = function () {};
 Text = function () {}; Comment = function () {}; DocumentFragment = function () {};
 MutationObserver = function () { this.observe = function () {}; this.disconnect = function () {}; };
@@ -1056,7 +1087,7 @@ async function runAccount(acc, tag) {
 async function main() {
   var src = await collectCookies();
   var cookies = src.list;
-  console.log('脚本版本: 20261009-4 (会话预热版)');
+  console.log('脚本版本: 20261009-5 (环境伪装版)');
   console.log('Cookie 来源: ' + src.src);
   if (!cookies.length) {
     console.log('未找到京东 Cookie：QX 下请先运行一次京东App让 qx_jd_all.js 抓取；Node 下请设置 JD_COOKIES/JD_COOKIE');
