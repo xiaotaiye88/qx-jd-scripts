@@ -4,17 +4,15 @@
  * 覆盖活动页: https://pro.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4/index.html
  *   （京东App 搜索「1分购」进入的试用频道页，页内"领京豆"任务，每个 5~15 京豆）
  *
- * 原理（2026-10-08 抓包逆向）:
+ * 原理（2026-10-08~09 抓包+实测）:
  *   1. functionId=qryH5BabelFloors（appid=newtry）拉活动楼层，
  *      响应内嵌 AssignmentDetail 任务列表（encryptAssignmentId / completionFlag / rewards[京豆]）
- *   2. 对 completionFlag=false 的任务逐个调 functionId=common_do_task 领取，
- *      从响应 rewardsInfo.successRewards 汇总京豆数
- *   3. 两个接口均无需 h5st 签名（实测只校验 Cookie 登录态）。
- *      软拒绝有两层，都按可重试处理：
- *      - 业务层 bizCode -100/-101「当前参与人数较多/过多」
- *      - 接口层 code 404/405「活动火爆，请稍后再试」
- *      引导类任务（如"固坑引导"）需在 App 内完成引导动作，直领会一直软拒绝，属预期。
- *      Cookie 失效时查询返回空响应体/未登录，脚本会明确提示。
+ *      —— 查询接口无需任何签名，仅凭 Cookie 可用，稳定。
+ *   2. 领取（common_do_task）服务端强校验 App 上下文：实测无签名、h5st 3.0、
+ *      App 原生 sign=、附加 x-api-eid-token 四种组合全部被软拒（-100/-101/404/405「活动火爆」），
+ *      仅 App 内带 fresh h5st 5.3 的请求成功。脚本仍会尝试领取（万一风控放行），
+ *      失败则推送通知并附深链，点击直达活动页在 App 内一键领取（半自动）。
+ *   3. 引导类任务（如"固坑引导"）在 App 内也需完成引导动作，通知里如实显示。
  *
  * Cookie 来源（多账号按 pt_pin 去重）:
  *   - Quantumult X（默认，无需配置）: BoxJs 键 CookiesJD（由 qx_jd_all.js 抓取 rewrite 自动维护）
@@ -331,6 +329,10 @@ async function claimTask(cookie, task, allowRetry) {
 }
 
 // ==================== 主流程 ====================
+// 活动页 App 深链：点通知直达 JD App 活动页（App 内点领取走 h5st 5.3，必定成功）
+var JUMP_URL = 'openapp.jdmobile://virtual?params=' + encodeURIComponent(
+  JSON.stringify({ category: 'jump', des: 'getCoupon', url: 'https://pro.m.jd.com/mall/active/' + ACT_ID + '/index.html' }));
+
 async function runAccount(acc, tag) {
   var log = [];
   function p(s) { log.push(s); console.log('[' + tag + '] ' + s); }
@@ -340,11 +342,11 @@ async function runAccount(acc, tag) {
     tasks = await queryTasks(acc.cookie);
   } catch (e) {
     p('❌ 查询任务失败: ' + ((e && e.message) || e));
-    return log.join('\n');
+    return { text: log.join('\n'), pendingBeans: 0 };
   }
-  if (!tasks.length) { p('活动页未返回任务（可能已下线，活动参数需更新）'); return log.join('\n'); }
+  if (!tasks.length) { p('活动页未返回任务（可能已下线，活动参数需更新）'); return { text: log.join('\n'), pendingBeans: 0 }; }
 
-  var doneCnt = 0, gotBeans = 0, gotExtra = [];
+  var doneCnt = 0, gotBeans = 0, gotExtra = [], pendingBeans = 0, needApp = [];
   for (var i = 0; i < tasks.length; i++) {
     var t = tasks[i];
     var label = t.name + (t.beans ? '（' + t.beans + '京豆）' : (t.extra ? '（' + t.extra + '）' : ''));
@@ -360,15 +362,18 @@ async function runAccount(acc, tag) {
       if (r.extra) gotExtra.push(r.extra);
       p('✅ ' + label + ' +' + r.beans + '京豆' + (r.extra ? ' +' + r.extra : ''));
     } else {
-      p('⚠️ ' + label + ' 领取失败: ' + r.msg);
+      p('⚠️ ' + label + ' 脚本领取被拒（' + r.msg + '），需在App内领取');
+      pendingBeans += t.beans;
+      if (t.beans > 0) needApp.push(label);
     }
     if (i < tasks.length - 1) await sleep(2000);
   }
   var head = '共' + tasks.length + '个任务，已领' + doneCnt + '，本次' + (gotBeans ? '+' + gotBeans + '京豆' : '无新增');
   if (gotExtra.length) head += '（另有: ' + gotExtra.join('、') + '）';
+  if (pendingBeans > 0) head += '，待领' + pendingBeans + '京豆（点通知去App领取）';
   log.unshift(head);
   console.log('[' + tag + '] ' + head);
-  return log.join('\n');
+  return { text: log.join('\n'), pendingBeans: pendingBeans };
 }
 
 async function main() {
@@ -376,17 +381,19 @@ async function main() {
   var cookies = src.list;
   console.log('Cookie 来源: ' + src.src);
   if (!cookies.length) {
-    console.log('未找到京东 Cookie：QX 下请先运行一次京东App让 qx_jd_all.js 抓取，或在 BoxJs 配置青龙 JD_QL_*；Node 下请设置 JD_COOKIES');
+    console.log('未找到京东 Cookie：QX 下请先运行一次京东App让 qx_jd_all.js 抓取；Node 下请设置 JD_COOKIES/JD_COOKIE');
     if (IS_QX && typeof $done !== 'undefined') $done({});
     return;
   }
-  var all = [];
+  var all = [], pendingTotal = 0;
   for (var i = 0; i < cookies.length; i++) {
     if (i > 0) await sleep(8000);   // 账号间拉开间隔，降低触发京东风控限频的概率
     var acc = cookies[i];
     var tag = '账号' + (i + 1) + '(' + acc.pin + ')';
     try {
-      all.push('【' + acc.pin + '】\n' + await runAccount(acc, tag));
+      var r = await runAccount(acc, tag);
+      all.push('【' + acc.pin + '】\n' + r.text);
+      pendingTotal += r.pendingBeans;
     } catch (e) {
       var msg = (e && e.message) || e;
       console.log('[' + tag + '] 执行失败: ' + msg);
@@ -394,9 +401,10 @@ async function main() {
     }
   }
   var title = '京东试用领京豆';
+  var subtitle = pendingTotal > 0 ? '有待领' + pendingTotal + '京豆，点击去App领取' : '';
   var detail = all.join('\n\n');
-  try { if (typeof $notify !== 'undefined') $notify(title, '', detail); } catch (_) {}
-  try { if (typeof $notification !== 'undefined') $notification.post(title, '', detail); } catch (_) {}
+  try { if (typeof $notify !== 'undefined') $notify(title, subtitle, detail, pendingTotal > 0 ? { 'open-url': JUMP_URL } : undefined); } catch (_) {}
+  try { if (typeof $notification !== 'undefined') $notification.post(title, subtitle, detail, { url: pendingTotal > 0 ? JUMP_URL : undefined }); } catch (_) {}
   if (NTFY_TOPIC && NTFY_TOPIC !== 'false') {
     try {
       await httpPostJson('https://ntfy.sh/' + NTFY_TOPIC, detail, { Title: encodeURIComponent(title) });
