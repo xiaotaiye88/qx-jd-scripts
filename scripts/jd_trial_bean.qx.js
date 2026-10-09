@@ -678,7 +678,22 @@ async function diag403isolate(cookieStr, sd, log) {
   } catch (e) { log('诊断·POSTcact失败: ' + String((e && e.message) || e).slice(0, 40)); }
 }
 
+// 登录预检：wl=97 = 未登录类拒绝（pt_key 过期），提前给出明确提示
+async function checkLogin(cookieStr, log) {
+  var chk = await http('GET', 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
+    'User-Agent': UA, 'Cookie': cookieStr, 'Accept': 'application/json',
+    'Referer': 'https://home.m.jd.com/myJd/newhome.action',
+  });
+  var b = {};
+  try { b = JSON.parse(chk.body); } catch (_) {}
+  if (b.retcode === '1001' || (b.msg && /not login/i.test(String(b.msg)))) {
+    throw new Error('Cookie 已过期（pt_key 失效，wl=97）：请在京东App重新登录后更新 BoxJS CookiesJD 的 cookie（或让我重新抓一份）');
+  }
+  return true;
+}
+
 async function queryTasks(cookieStr, pin, log) {
+  await checkLogin(cookieStr, log);
   var qBody = queryBody();
   var sd = sdLoad(pin);
   if (!sd) {
@@ -713,7 +728,12 @@ async function queryTasks(cookieStr, pin, log) {
     } else {
       await diag403(ck, res, log);
       await diag403isolate(cookieStr, sd, log);
-      throw new Error('查询 HTTP 403 风控拒绝（诊断见日志，建议1小时后再试）');
+      var wl = wlOf(res);
+      var hint = wl === '94' ? 'h5st校验失败(签名数据流问题)'
+        : wl === '97' ? '未登录/Cookie失效'
+        : wl === '0' ? '客户端指纹层被拒(TLS/协议)'
+        : '未知拒绝码';
+      throw new Error('查询 HTTP 403 风控拒绝 wl=' + wl + '（' + hint + '）');
     }
   }
   var data;
