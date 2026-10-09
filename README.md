@@ -10,7 +10,7 @@
 | 积分换话费 | task 定时任务 | 京东「首页-赚话费」自动签到做任务，移植自 [6dylan6/jdpro](https://github.com/6dylan6/jdpro) 的 `jd_dwapp.js`（青龙版），经打包管线转换为圈X 单文件脚本 |
 | 什么值得买签到 | rewrite + task | 打开什么值得买 App 自动抓取 Cookie 存 BoxJs，每天定时签到 + 领连续奖励 + 查会员信息。签名算法由抓包反推验证，见 [smzdm_checkin.README.md](smzdm_checkin.README.md) |
 | 极氪签到 | rewrite + task | 打开极氪 App 自动抓取 Token 存 BoxJs，每天定时签到 + 领任务奖励 + 收集能量球。签名算法由 H5 前端 JS 逆向验证（SHA1），见 [zeekr_checkin.README.md](zeekr_checkin.README.md) |
-| 京东试用领京豆 | task 定时任务 | 京东App「1分购/试用」频道页"领京豆"任务自动领取（`qryH5BabelFloors` 查任务 + `common_do_task` 领取，实测无需 h5st 签名；Cookie 支持从青龙 JD_COOKIE 读取），见 [jd_trial_bean.README.md](jd_trial_bean.README.md) |
+| 京东试用领京豆 | task 定时任务 | 京东App「1分购/试用」频道页"领京豆"任务**全自动**领取（内嵌京东官方 h5st 5.3 lite SDK 逆向复刻签名，`qryH5BabelFloors` 查任务 + `common_do_task` 领取；Cookie 支持从青龙 JD_COOKIE 读取），见 [jd_trial_bean.README.md](jd_trial_bean.README.md) |
 | 北京移动签到+网龄 | rewrite + task | 打开移动 App 自动抓凭证，每天定时签到；网龄成长计划检测当月 1GB 流量包，未领可全自动领取（短信验证码走 ntfy 读取，AES+RSA 加密接口由抓包逆向复刻），见 [bj10086.README.md](bj10086.README.md) |
 
 ## 快速开始
