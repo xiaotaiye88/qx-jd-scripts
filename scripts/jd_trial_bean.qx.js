@@ -133,6 +133,10 @@ function headerGet(headers, name) {
   for (var k in headers) if (String(k).toLowerCase() === name) return headers[k];
   return null;
 }
+function wlOf(res) {
+  var w = headerGet(res && res.headers, 'x-api-wl-message');
+  return (w === null || w === undefined || w === '') ? '?' : String(w);
+}
 
 function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
@@ -633,6 +637,11 @@ async function diag403(ck, res, log) {
   if (__diag403done) return;
   __diag403done = true;
   try {
+    var wlh = headerGet(res.headers, 'x-api-wl-message');
+    var sdh2 = headerGet(res.headers, 'x-rp-sdtoken');
+    log('诊断·wl=' + (wlh === null ? '无' : String(wlh)) + ' token轮换=' + (sdh2 ? '有' : '无'));
+  } catch (_) {}
+  try {
     var h = {};
     for (var k in (res.headers || {})) h[k] = String(res.headers[k]).slice(0, 50);
     log('诊断·403响应头: ' + JSON.stringify(h).slice(0, 200));
@@ -680,11 +689,16 @@ async function queryTasks(cookieStr, pin, log) {
   var res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody, ck), ck);
   if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
   // 403 且响应未轮换 token：本地 token 可能已失效，重新引导后重试一次
-  if (res.status === 403 && !res.sd) {
-    var boot2 = await bootstrapSd();
-    if (boot2) {
-      sdSave(pin, boot2);
-      res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody, cookieStr + '; sdtoken=' + boot2.v), cookieStr + '; sdtoken=' + boot2.v);
+  if (res.status === 403) {
+    // 403：一律用最新令牌重试一次（优先响应轮换的，其次重新引导）
+    if (!res.sd) {
+      var boot2 = await bootstrapSd();
+      if (boot2) res.sd = boot2;
+    }
+    if (res.sd) {
+      sdSave(pin, res.sd);
+      var ck2 = cookieStr + '; sdtoken=' + res.sd.v;
+      res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody, ck2), ck2);
       if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
     }
   }
@@ -841,7 +855,8 @@ async function main() {
 
   // h5st 预热：首次签名异步拉算法 token，等它落地
   try {
-    initSigner(cookies.length ? (cookies[0].cookie || '') : '');
+    var sd0 = cookies.length ? sdLoad(cookies[0].pin) : null;
+    initSigner(cookies.length ? (cookies[0].cookie || '') + (sd0 ? '; sdtoken=' + sd0 : '') : '');
     await sleep(5000);
   } catch (e) {
     console.log('h5st 初始化失败: ' + ((e && e.message) || e) + '，将退回无签名尝试');
