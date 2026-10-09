@@ -526,16 +526,42 @@ function queryBody() {
   });
 }
 
+// sdtoken 引导：basicConfig（GET、免签名、免 cookie）响应头下发 X-Rp-Sdtoken。
+// babel 风控网关要求请求携带 sdtoken cookie，而 token 只能从网关响应获取，
+// 首次运行无 token 会被 403 拒绝，需先经此接口拿到 token 再访问 babel。
+function bootstrapSd() {
+  return http('GET', 'https://api.m.jd.com/client.action?functionId=basicConfig', {
+    'User-Agent': 'JD4iPhone/16.0.70 CFNetwork/3896.100.1.2.1 Darwin/27.0.0',
+    'Accept': '*/*',
+    'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
+  }).then(function (r) {
+    var sdh = headerGet(r.headers, 'x-rp-sdtoken');
+    if (sdh) {
+      var ps = String(sdh).split(';');
+      if (ps.length >= 3 && ps[0] === 'set') return { v: ps[2], ttl: parseInt(ps[1], 10) || 1800 };
+    }
+    return null;
+  }).catch(function () { return null; });
+}
+
 async function queryTasks(cookieStr, pin, log) {
   var qBody = queryBody();
   var sd = sdLoad(pin);
+  if (!sd) {
+    var boot = await bootstrapSd();
+    if (boot) { sdSave(pin, boot); sd = boot.v; log('风控令牌已引导(basicConfig)'); }
+  }
   var ck = cookieStr + (sd ? '; sdtoken=' + sd : '');
   var res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody), ck);
-  if (res.sd) { sdSave(pin, res.sd); sd = res.sd.v; ck = cookieStr + '; sdtoken=' + sd; }
-  // 首次可能未带 sdtoken，补签重查一次
-  if (!sd) {
-    res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody), ck);
-    if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
+  if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
+  // 403 且响应未轮换 token：本地 token 可能已失效，重新引导后重试一次
+  if (res.status === 403 && !res.sd) {
+    var boot2 = await bootstrapSd();
+    if (boot2) {
+      sdSave(pin, boot2);
+      res = await signedPost('qryH5BabelFloors', qBody, h5sign('qryH5BabelFloors', qBody), cookieStr + '; sdtoken=' + boot2.v);
+      if (res.sd) { sdSave(pin, res.sd); ck = cookieStr + '; sdtoken=' + res.sd.v; }
+    }
   }
   var data;
   try { data = JSON.parse(res.body); } catch (e) {
