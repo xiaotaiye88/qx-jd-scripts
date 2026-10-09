@@ -971,6 +971,10 @@ async function queryTasks(cookieStr, pin, log) {
         : wl === '97' ? '未登录/Cookie失效'
         : wl === '0' ? '客户端指纹层被拒(TLS/协议)'
         : '未知拒绝码';
+      if (wl === '0') {
+        var blindSummary = await blindClaim(cookieStr, log);
+        throw new Error('查询 HTTP 403 wl=0（客户端层拒绝，已盲领兜底: ' + blindSummary + '）');
+      }
       throw new Error('查询 HTTP 403 风控拒绝 wl=' + wl + '（' + hint + '）');
     }
   }
@@ -1051,6 +1055,28 @@ async function claimTask(cookieStr, task, allowRetry, log) {
     if (!isSoftMsg(lastMsg) || !allowRetry) break;
   }
   return { ok: false, msg: lastMsg };
+}
+
+// ==================== 盲领兜底（babel 被风控时的最后手段） ====================
+// HAR 实录的 3 个任务 ID（2026-10-08 抓包）。试用任务若未改版则 ID 稳定可复用；
+// 同时也能判定领取接口本身是否被 wl=0 层封锁（响应是业务码而非 403 即通）。
+var BLIND_TASK_IDS = ['cgu6TDz2xiuQ9CMEU4CNzmgKr8m', '3sp3y1Wczb99qNR9a2oRNFD47b6x', '3c2cBQA7BDeyEbJCzmPx18gfnGcA'];
+async function blindClaim(cookieStr, log) {
+  var ok = 0, done = 0, fail = 0, beans = 0, msgs = [];
+  for (var i = 0; i < BLIND_TASK_IDS.length; i++) {
+    var r = null;
+    try { r = await claimTask(cookieStr, { id: BLIND_TASK_IDS[i] }, false, log); } catch (e) { r = { ok: false, msg: String((e && e.message) || e) }; }
+    if (r && r.ok) { ok++; beans += r.beans || 0; msgs.push('+' + (r.beans || 0) + '豆'); }
+    else {
+      var m = String((r && r.msg) || '?');
+      if (/已经|已领|已完|重复|again/i.test(m)) { done++; msgs.push('已领'); }
+      else { fail++; msgs.push(m.slice(0, 24)); }
+    }
+    await sleep(1500);
+  }
+  var summary = '成功' + ok + '(+' + beans + '豆) 已领' + done + ' 失败' + fail;
+  log('盲领兜底: ' + summary + ' | ' + msgs.join(' | '));
+  return summary;
 }
 
 // ==================== 主流程 ====================
