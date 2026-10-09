@@ -678,22 +678,184 @@ async function diag403isolate(cookieStr, sd, log) {
   } catch (e) { log('诊断·POSTcact失败: ' + String((e && e.message) || e).slice(0, 40)); }
 }
 
-// 登录预检：wl=97 = 未登录类拒绝（pt_key 过期），提前给出明确提示
-async function checkLogin(cookieStr, log) {
-  var chk = await http('GET', 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
-    'User-Agent': UA, 'Cookie': cookieStr, 'Accept': 'application/json',
-    'Referer': 'https://home.m.jd.com/myJd/newhome.action',
-  });
-  var b = {};
-  try { b = JSON.parse(chk.body); } catch (_) {}
-  if (b.retcode === '1001' || (b.msg && /not login/i.test(String(b.msg)))) {
-    throw new Error('Cookie 已过期（pt_key 失效，wl=97）：请在京东App重新登录后更新 BoxJS CookiesJD 的 cookie（或让我重新抓一份）');
+// ==================== wskey 自动兑换 pt_key ====================
+// pt_key(app_open) 仅几小时有效；wskey 长期有效。BoxJS 键 JD_WSKEYS=[{"pin":..,"wskey":..}]
+// 由 qx_jd_wskey.js 抓取写入。本段实现 genToken(app 签名)→appjmp 两步兑换。
+var __wskey_x = String.fromCharCode(120);
+function __wskey_md5cycle(x, k) {
+  var a = x[0], b = x[1], c = x[2], d = x[3];
+  function cmn(q, a2, b2, x2, s, t) { a2 = (((a2 + (q | 0)) | 0) + ((x2 + t) | 0)) | 0; return (((a2 << s) | (a2 >>> (32 - s))) + b2) | 0; }
+  function ff(a2, b2, c2, d2, x2, s, t) { return cmn((b2 & c2) | (~b2 & d2), a2, b2, x2, s, t); }
+  function gg(a2, b2, c2, d2, x2, s, t) { return cmn((b2 & d2) | (c2 & ~d2), a2, b2, x2, s, t); }
+  function hh(a2, b2, c2, d2, x2, s, t) { return cmn(b2 ^ c2 ^ d2, a2, b2, x2, s, t); }
+  function ii(a2, b2, c2, d2, x2, s, t) { return cmn(c2 ^ (b2 | ~d2), a2, b2, x2, s, t); }
+  a = ff(a, b, c, d, k[0], 7, -680876936); d = ff(d, a, b, c, k[1], 12, -389564586); c = ff(c, d, a, b, k[2], 17, 606105819); b = ff(b, c, d, a, k[3], 22, -1044525330);
+  a = ff(a, b, c, d, k[4], 7, -176418897); d = ff(d, a, b, c, k[5], 12, 1200080426); c = ff(c, d, a, b, k[6], 17, -1473231341); b = ff(b, c, d, a, k[7], 22, -45705983);
+  a = ff(a, b, c, d, k[8], 7, 1770035416); d = ff(d, a, b, c, k[9], 12, -1958414417); c = ff(c, d, a, b, k[10], 17, -42063); b = ff(b, c, d, a, k[11], 22, -1990404162);
+  a = ff(a, b, c, d, k[12], 7, 1804603682); d = ff(d, a, b, c, k[13], 12, -40341101); c = ff(c, d, a, b, k[14], 17, -1502002290); b = ff(b, c, d, a, k[15], 22, 1236535329);
+  a = gg(a, b, c, d, k[1], 5, -165796510); d = gg(d, a, b, c, k[6], 9, -1069501632); c = gg(c, d, a, b, k[11], 14, 643717713); b = gg(b, c, d, a, k[0], 20, -373897302);
+  a = gg(a, b, c, d, k[5], 5, -701558691); d = gg(d, a, b, c, k[10], 9, 38016083); c = gg(c, d, a, b, k[15], 14, -660478335); b = gg(b, c, d, a, k[4], 20, -405537848);
+  a = gg(a, b, c, d, k[9], 5, 568446438); d = gg(d, a, b, c, k[14], 9, -1019803690); c = gg(c, d, a, b, k[3], 14, -187363961); b = gg(b, c, d, a, k[8], 20, 1163531501);
+  a = gg(a, b, c, d, k[13], 5, -1444681467); d = gg(d, a, b, c, k[2], 9, -51403784); c = gg(c, d, a, b, k[7], 14, 1735328473); b = gg(b, c, d, a, k[12], 20, -1926607734);
+  a = hh(a, b, c, d, k[5], 4, -378558); d = hh(d, a, b, c, k[8], 11, -2022574463); c = hh(c, d, a, b, k[11], 16, 1839030562); b = hh(b, c, d, a, k[14], 23, -35309556);
+  a = hh(a, b, c, d, k[1], 4, -1530992060); d = hh(d, a, b, c, k[4], 11, 1272893353); c = hh(c, d, a, b, k[7], 16, -155497632); b = hh(b, c, d, a, k[10], 23, -1094730640);
+  a = hh(a, b, c, d, k[13], 4, 681279174); d = hh(d, a, b, c, k[0], 11, -358537222); c = hh(c, d, a, b, k[3], 16, -722521979); b = hh(b, c, d, a, k[6], 23, 76029189);
+  a = hh(a, b, c, d, k[9], 4, -640364487); d = hh(d, a, b, c, k[12], 11, -421815835); c = hh(c, d, a, b, k[15], 16, 530742520); b = hh(b, c, d, a, k[2], 23, -995338651);
+  a = ii(a, b, c, d, k[0], 6, -198630844); d = ii(d, a, b, c, k[7], 10, 1126891415); c = ii(c, d, a, b, k[14], 15, -1416354905); b = ii(b, c, d, a, k[5], 21, -57434055);
+  a = ii(a, b, c, d, k[12], 6, 1700485571); d = ii(d, a, b, c, k[3], 10, -1894986606); c = ii(c, d, a, b, k[10], 15, -1051523); b = ii(b, c, d, a, k[1], 21, -2054922799);
+  a = ii(a, b, c, d, k[8], 6, 1873313359); d = ii(d, a, b, c, k[15], 10, -30611744); c = ii(c, d, a, b, k[6], 15, -1560198380); b = ii(b, c, d, a, k[13], 21, 1309151649);
+  a = ii(a, b, c, d, k[4], 6, -145523070); d = ii(d, a, b, c, k[11], 10, -1120210379); c = ii(c, d, a, b, k[2], 15, 718787259); b = ii(b, c, d, a, k[9], 21, -343485551);
+  x[0] = (a + x[0]) | 0; x[1] = (b + x[1]) | 0; x[2] = (c + x[2]) | 0; x[3] = (d + x[3]) | 0;
+}
+function md5hex(str) {
+  str = unescape(encodeURIComponent(String(str)));
+  var state = [1732584193, -271733879, -1732584194, 271733878], i, n = str.length;
+  var blk = new Array(16);
+  for (i = 64; i <= n; i += 64) {
+    var seg = str.substring(i - 64, i);
+    for (var j = 0; j < 16; j++) blk[j] = seg.charCodeAt(j*4) + (seg.charCodeAt(j*4+1) << 8) + (seg.charCodeAt(j*4+2) << 16) + (seg.charCodeAt(j*4+3) << 24);
+    __wskey_md5cycle(state, blk);
   }
-  return true;
+  var tail = str.substring(i - 64), tb = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], tl = tail.length;
+  for (i = 0; i < tl; i++) tb[i >> 2] |= tail.charCodeAt(i) << ((i % 4) << 3);
+  tb[tl >> 2] |= 0x80 << ((tl % 4) << 3);
+  if (tl > 55) { __wskey_md5cycle(state, tb); tb = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; }
+  tb[14] = n * 8;
+  __wskey_md5cycle(state, tb);
+  var r = '';
+  for (i = 0; i < 4; i++) {
+    var v = state[i];
+    r += ((v >> 0) & 255).toString(16).padStart(2, '0') + ((v >> 8) & 255).toString(16).padStart(2, '0') + ((v >> 16) & 255).toString(16).padStart(2, '0') + ((v >>> 24) & 255).toString(16).padStart(2, '0');
+  }
+  return r;
+}
+function b64std(bytes) {
+  var A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/', r = '', i;
+  for (i = 0; i < bytes.length; i += 3) {
+    var b0 = bytes[i], b1 = bytes[i + 1], b2 = bytes[i + 2];
+    r += A[b0 >> 2] + A[((b0 & 3) << 4) | (b1 === undefined ? 0 : (b1 >> 4))];
+    r += (b1 === undefined) ? '=' : A[((b1 & 15) << 2) | (b2 === undefined ? 0 : (b2 >> 6))];
+    r += (b2 === undefined) ? '=' : A[b2 & 63];
+  }
+  return r;
+}
+function strToBytes(s) { var o = []; for (var i = 0; i < s.length; i++) o.push(s.charCodeAt(i) & 255); return o; }
+function b64jd(s) {
+  var B = 'KLMNOPQRSTABCDEFGHIJUVWXYZabcdopqrstuvwxefghijklmnyz0123456789+/';
+  var A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  var raw = b64std(strToBytes(s)), r = '';
+  for (var i = 0; i < raw.length; i++) { var idx = B.indexOf(raw.charAt(i)); r += idx >= 0 ? A.charAt(idx) : raw.charAt(i); }
+  return r;
+}
+function jdSignCore(bin) {
+  var key = '80306f4370b39fd5630ad0529f77adb6';
+  var mask = [0x37, 0x92, 0x44, 0x68, 0xA5, 0x3D, 0xCC, 0x7F, 0xBB, 0x0F, 0xD9, 0x88, 0xEE, 0x9A, 0xE9, 0x5A];
+  var out = new Array(bin.length);
+  for (var i = 0; i < bin.length; i++) {
+    var r0 = bin[i], r2 = mask[i & 15], r4 = key.charCodeAt(i & 7);
+    r0 = r2 ^ r0; r0 = r0 ^ r4; r0 = r0 + r2; r2 = r2 ^ r0;
+    r2 = r2 ^ key.charCodeAt(i & 7);
+    out[i] = r2 & 255;
+  }
+  return out;
+}
+function jdGetSign(bodyJson) {
+  var CH = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  function rnd(n) { var r = ''; for (var i = 0; i < n; i++) r += CH.charAt(Math.floor(Math.random() * CH.length)); return r; }
+  var suid = rnd(16), ts = String(Date.now());
+  var bs = b64jd(suid);
+  var area = b64jd((1 + Math.floor(Math.random() * 10000)) + '_' + (1 + Math.floor(Math.random() * 10000)) + '_' + (1 + Math.floor(Math.random() * 10000)) + '_' + (1 + Math.floor(Math.random() * 10000)));
+  var dmodel = b64jd(['Mi11Ultra', 'Mi11', 'Mi10'][Math.floor(Math.random() * 3)]);
+  var ep = '{"hdid":"JM9F1ywUPwflvMIpYPok0tt5k9kW4ArJEU3lfLhxBqw=","ts":' + (Number(ts) - 100 - Math.floor(Math.random() * 900)) + ',"ridx":-1,"cipher":{"area":"' + area + '","d_model":"' + dmodel + '","wifiBssid":"dW5hbw93bq==","osVersion":"CJS=","d_brand":"WQvrb21f","screen":"CtS1DIenCNqm","uuid":"' + bs + '","aid":"' + bs + '","openudid":"' + bs + '"},"ciphertype":5,"version":"1.2.0","appname":"com.jingdong.app.mall"}';
+  var sv = ['102', '111', '120'][Math.floor(Math.random() * 3)];
+  var allArg = 'functionId=genToken&body=' + bodyJson + '&uuid=' + suid + '&client=android&clientVersion=11.2.8&st=' + ts + '&sv=' + sv;
+  var sign = md5hex(b64std(jdSignCore(strToBytes(allArg))));
+  return 'body=' + encodeURIComponent(bodyJson) + '&clientVersion=11.2.8&client=android&sdkVersion=31&lang=zh_CN&harmonyOs=0&networkType=wifi&oaid=' + suid + '&ef=1&ep=' + encodeURIComponent(ep) + '&st=' + ts + '&sign=' + sign + '&sv=' + sv;
+}
+async function wskeyConvert(pin, wskey, log) {
+  var GEN_BODY = 'body=%7B%22to%22%3A%22https%3A//plogin.m.jd.com/jd-mlogin/static/html/appjmp_blank.html%22%7D';
+  var H = { 'Cookie': 'pin=' + pin + ';wskey=' + wskey + ';', 'User-Agent': 'okhttp/3.12.1;jdmall;android;version/11.2.8', 'accept-language': 'zh-Hans-CN;q=1, en-CN;q=0.9', 'Content-Type': 'application/x-www-form-urlencoded;' };
+  try {
+    var url = 'https://api.m.jd.com/client.action?functionId=genToken&' + jdGetSign('{"url": "https://plogin.m.jd.com/jd-mlogin/static/html/appjmp_blank.html"}');
+    var r = await http('POST', url, H, GEN_BODY);
+    var tk = null;
+    try { tk = JSON.parse(r.body).tokenKey; } catch (_) {}
+    if (!tk || tk === __wskey_x + __wskey_x + __wskey_x) { log('genToken 未返回 tokenKey: ' + String(r.body).slice(0, 80)); return null; }
+    var r2 = await http('GET', 'https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=' + encodeURIComponent(tk) + '&to=' + encodeURIComponent('https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page') + '&client_type=android&appid=879&appup_type=1', { 'User-Agent': 'okhttp/3.12.1;jdmall;android', 'Accept': '*/*' });
+    var hs = '';
+    try { hs = JSON.stringify(r2.headers || {}); } catch (_) { hs = String(r2.headers); }
+    var km = hs.match(/pt_key=([^;"\\]+)/), pm = hs.match(/pt_pin=([^;"\\]+)/);
+    if (!km) { log('appjmp 未下发 pt_key (HTTP ' + r2.status + ')'); return null; }
+    return 'pt_key=' + km[1] + ';pt_pin=' + (pm ? pm[1] : pin) + ';';
+  } catch (e) { log('wskey 兑换异常: ' + String((e && e.message) || e).slice(0, 70)); return null; }
+}
+function wskeyFromStore(pin) {
+  // 1) 优先 CookiesJD 条目内嵌的 wskey 字段（qx_jd_all.js 抓包时同步维护）
+  try {
+    var arr = JSON.parse(getConf('CookiesJD', '[]'));
+    if (Array.isArray(arr)) for (var i = 0; i < arr.length; i++) {
+      var it = arr[i]; if (!it) continue;
+      var wm = String(it.wskey || '').match(/wskey=([^;]+)/);
+      if (!wm) continue;
+      var ckPin = (String(it.cookie || '').match(/pt_pin=([^;]+)/) || [])[1] || '';
+      var wsPin = (String(it.wskey).match(/pin=([^;]+)/) || [])[1] || '';
+      if (ckPin === pin || wsPin === pin || it.pin === pin) return { pin: pin, wskey: wm[1] };
+    }
+  } catch (_) {}
+  // 2) 备选独立键 JD_WSKEYS=[{"pin":..,"wskey":..}]
+  try {
+    var arr2 = JSON.parse(getConf('JD_WSKEYS', '[]'));
+    if (Array.isArray(arr2)) for (var j = 0; j < arr2.length; j++) if (arr2[j] && arr2[j].pin === pin && arr2[j].wskey) return arr2[j];
+  } catch (_) {}
+  return null;
+}
+function ptKeyK(pin) { return 'jd_trial_pt_' + pin; }
+function ptSave(pin, ck) {
+  try {
+    var v = JSON.stringify({ v: ck, exp: Date.now() + 2 * 3600 * 1000 });
+    if (IS_QX) $persistentStore.write(v, ptKeyK(pin));
+    else if (IS_NODE) require('fs').writeFileSync('/tmp/jd_trial_pt_' + pin + '.json', v);
+  } catch (_) {}
+}
+function ptLoad(pin) {
+  try {
+    var raw = '';
+    if (IS_NODE) { try { raw = require('fs').readFileSync('/tmp/jd_trial_pt_' + pin + '.json', 'utf8'); } catch (_) {} }
+    else raw = getConf(ptKeyK(pin), '') || '';
+    var s = JSON.parse(raw);
+    if (s && s.v && Date.now() < s.exp) return s.v;
+  } catch (_) {}
+  return null;
+}
+async function loginOk(cookieStr) {
+  try {
+    var chk = await http('GET', 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
+      'User-Agent': UA, 'Cookie': cookieStr, 'Accept': 'application/json',
+      'Referer': 'https://home.m.jd.com/myJd/newhome.action',
+    });
+    var b = {};
+    try { b = JSON.parse(chk.body); } catch (_) {}
+    return !(b.retcode === '1001' || (b.msg && /not login/i.test(String(b.msg))));
+  } catch (_) { return false; }
+}
+// 登录预检：wl=97 = 未登录类拒绝（pt_key 过期）。失效时优先 pt 缓存，再 wskey 兑换。
+async function ensureLogin(cookieStr, pin, log) {
+  if (await loginOk(cookieStr)) return cookieStr;
+  var cached = ptLoad(pin);
+  if (cached && await loginOk(cached)) { log('pt_key 已失效，改用兑换缓存'); return cached; }
+  var wk = wskeyFromStore(pin);
+  if (!wk) throw new Error('Cookie 已过期（pt_key 失效，wl=97）：请更新 BoxJS CookiesJD 的 cookie，或配置 wskey 抓取（JD_WSKEYS）后自动兑换');
+  log('pt_key 已失效，用 wskey 兑换新 pt_key…');
+  var fresh = await wskeyConvert(pin, wk.wskey, log);
+  if (!fresh) throw new Error('wskey 兑换 pt_key 失败（wskey 可能也已失效，请重新抓取）');
+  ptSave(pin, fresh);
+  log('wskey 兑换成功，新 pt_key 已缓存（2小时）');
+  return fresh;
 }
 
 async function queryTasks(cookieStr, pin, log) {
-  await checkLogin(cookieStr, log);
+  var ckLive = await ensureLogin(cookieStr, pin, log);
+  cookieStr = ckLive;
   var qBody = queryBody();
   var sd = sdLoad(pin);
   if (!sd) {
@@ -866,7 +1028,7 @@ async function runAccount(acc, tag) {
 async function main() {
   var src = await collectCookies();
   var cookies = src.list;
-  console.log('脚本版本: 20261009-2 (wl诊断版)');
+  console.log('脚本版本: 20261009-3 (wskey自动兑换版)');
   console.log('Cookie 来源: ' + src.src);
   if (!cookies.length) {
     console.log('未找到京东 Cookie：QX 下请先运行一次京东App让 qx_jd_all.js 抓取；Node 下请设置 JD_COOKIES/JD_COOKIE');
