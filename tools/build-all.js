@@ -104,6 +104,12 @@ const NATIVE_SCRIPTS = [
     desc: '读取 BoxJs 中存储的 wskey，自动转换为 pt_key 更新 CookiesJD（替代青龙的 jd_wsck.py）',
     cron: '57 21,9 * * *',
   },
+  {
+    file: 'jd_bean_expire_qx.js',
+    name: '京豆过期统计',
+    desc: '拉取京豆收支明细，按"获得次年12月31日过期"规则 FIFO 推算各批次过期时间与数量（京东过期查询接口已下线，此为推算值；每年12月1日自动跑，也可手动）',
+    cron: '23 10 1 12 *',
+  },
 ];
 
 function readCached(name) {
