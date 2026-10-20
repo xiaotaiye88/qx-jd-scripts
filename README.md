@@ -10,6 +10,8 @@
 | 积分换话费 | task 定时任务 | 京东「首页-赚话费」自动签到做任务，移植自 [6dylan6/jdpro](https://github.com/6dylan6/jdpro) 的 `jd_dwapp.js`（青龙版），经打包管线转换为圈X 单文件脚本 |
 | 什么值得买签到 | rewrite + task | 打开什么值得买 App 自动抓取 Cookie 存 BoxJs，每天定时签到 + 领连续奖励 + 查会员信息。签名算法由抓包反推验证，见 [smzdm_checkin.README.md](smzdm_checkin.README.md) |
 | 极氪签到 | rewrite + task | 打开极氪 App 自动抓取 Token 存 BoxJs，每天定时签到 + 领任务奖励 + 收集能量球。签名算法由 H5 前端 JS 逆向验证（SHA1），见 [zeekr_checkin.README.md](zeekr_checkin.README.md) |
+| 京东试用领京豆 | task 定时任务 | 京东App「1分购/试用」频道页"领京豆"任务**全自动**领取（内嵌京东官方 h5st 5.3 lite SDK 逆向复刻签名，`qryH5BabelFloors` 查任务 + `common_do_task` 领取；Cookie 支持从青龙 JD_COOKIE 读取），见 [jd_trial_bean.README.md](jd_trial_bean.README.md) |
+| 北京移动签到+网龄 | rewrite + task | 打开移动 App 自动抓凭证，每天定时签到；网龄成长计划检测当月 1GB 流量包，未领可全自动领取（短信验证码走 ntfy 读取，AES+RSA 加密接口由抓包逆向复刻），见 [bj10086.README.md](bj10086.README.md) |
 
 ## 快速开始
 
@@ -110,3 +112,62 @@ node tools/smoke-test.js   # 冒烟测试
 - 上游脚本：[6dylan6/jdpro](https://github.com/6dylan6/jdpro)
 - 跨平台 Env 设计：chavyleung / lxk0301 等前辈
 - 图标：[Orz-3/mini](https://github.com/Orz-3/mini)
+
+---
+
+## 喜马拉雅 Mac 客户端会员解锁
+
+适配 Mac 端 Quantumult X，解锁喜马拉雅 Mac 客户端 (Electron) 的 VIP 音频。
+
+### 原理
+
+Mac 客户端走 PC 接口 (`www.ximalaya.com/mobile-playpage/track/v3/baseInfo` + `pc.ximalaya.com/simple-revision-for-pc/play/v1/audio`)，与 iOS 的 v4 接口不同。`ximalaya_mac.js` 动态加载 [WeiGiegie/666](https://github.com/WeiGiegie/666) 的 `ximalaya.js` 解析引擎，复用其共享会员 Cookie 解析出真实 VIP 音频地址，并改写进 Mac 端响应。
+
+### 订阅方式 (推荐)
+
+Quantumult X → 设置 → 配置文件 → 资源订阅 → 添加 rewrite 订阅：
+
+```
+https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.conf
+```
+
+该配置包含全部 rewrite 规则 + MitM hostname，一次订阅即可。需确保 MitM 开启且已信任 QX 证书。
+
+### 手动配置方式
+
+在 `default.conf` 的 `[rewrite_local]` 中添加：
+
+```
+^https?:\/\/www\.ximalaya\.com\/mobile-playpage\/track\/v3\/baseInfo url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.js
+^https?:\/\/pc\.ximalaya\.com\/simple-revision-for-pc\/play\/v1\/audio url script-response-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/ximalaya_mac.js
+```
+
+`[mitm]` hostname 需包含 `pc.ximalaya.com, www.ximalaya.com, *.ximalaya.com, *.xmcdn.com`。
+
+### 注意事项
+
+- 依赖 WeiGiegie 的共享会员账号 (Cookie)，账号过期后需等待上游更新。
+- 首次解析需下载引擎 + CryptoJS 约 500KB，稍慢，之后有缓存会加快。
+
+## 北京移动签到 + 网龄成长计划
+
+适配**北京移动**：「签到赢好礼」每天自动签到；「网龄成长计划」检测当月 1GB 流量包，配合 ntfy 短信转发可全自动领取（领取接口的 AES-ECB + RSA 加密方案由 H5 前端 JS 逆向复刻）。凭证全部由 rewrite 钩子在打开 App 页面时自动捕获。
+
+### 快速开始
+
+1. 重写订阅（抓凭证必需）：
+   ```
+   https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/bj10086.conf
+   ```
+2. 任务订阅（每天 9:00 签到 + 每 15 分钟凭证接力）：
+   ```
+   https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/tasks/bj10086-tasks.json
+   ```
+3. BoxJs 订阅（自动领取时读短信验证码，需要）：
+   ```
+   https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/bj10086.boxjs.json
+   ```
+   在「北京移动签到」里填入 ntfy 主题地址（需与手机短信转发目标主题一致）。⚠️ ntfy 主题名即读取密码，请用随机长主题名。
+4. 开着圈X打开中国移动 App 的签到页和网龄页各一次，激活凭证。
+
+详见 [bj10086.README.md](bj10086.README.md)。

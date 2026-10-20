@@ -7,8 +7,10 @@
  *   2. 逐个调 me-api 检测有效性
  *   3. 明确失效（HTTP 200 且 retcode != 0）的 Cookie 从 BoxJs 中删除，并发通知
  *   4. 网络错误的不删（可能临时故障）；全部账号都失效时不删（多半是 API 抽风，避免误删）
+ *   5. 检测到有效的 Cookie 推送到 ntfy（BoxJs 设置 JD_NTFY_TOPIC，同 qx_jd_all.js；不配置则不推）
  *
  * BoxJs 开关: JD_CKCHECK_AUTODEL = "true"（默认）自动删除；"false" 仅通知不删
+ *             JD_NTFY_TOPIC = "mytopic"（可选）有效 CK 推送到 https://ntfy.sh/mytopic
  */
 
 const TIMEOUT = 20000;
@@ -75,6 +77,46 @@ function checkOne(ck) {
   });
 }
 
+// ntfy 推送地址：BoxJs 配置 JD_NTFY_TOPIC（与 qx_jd_all.js 共用同一开关），不配置返回 null
+function getNtfyUrl() {
+  const topic = readPref('JD_NTFY_TOPIC');
+  if (topic && topic !== 'false') return 'https://ntfy.sh/' + topic.trim();
+  return null;
+}
+
+// ntfy 推送（Promise 版，task 环境优先 $task.fetch，回退 $httpClient）
+function pushNtfy(url, body, title) {
+  return new Promise(resolve => {
+    let done = false;
+    const finish = (ok, info) => {
+      if (done) return;
+      done = true;
+      try { clearTimeout(timer); } catch (e) {}
+      console.log(ok ? '[NTFY] 推送成功: ' + title : '[NTFY] 推送失败: ' + info);
+      resolve(ok);
+    };
+    const timer = setTimeout(() => finish(false, 'timeout 8s'), 8000);
+    const opts = { url, headers: { 'Content-Type': 'text/plain', 'Title': title }, body };
+    if (typeof $task !== 'undefined' && $task.fetch) {
+      $task.fetch(Object.assign({ method: 'POST' }, opts)).then(
+        resp => finish(!!resp && resp.statusCode >= 200 && resp.statusCode < 300, resp ? 'HTTP ' + resp.statusCode : 'no response'),
+        e => finish(false, e ? (e.error || String(e)) : 'unknown')
+      );
+      return;
+    }
+    if (typeof $httpClient !== 'undefined' && $httpClient.post) {
+      try {
+        $httpClient.post(opts, (error, response) => {
+          const code = response && response.statusCode ? response.statusCode : 0;
+          finish(!error && code >= 200 && code < 300, error || ('HTTP ' + code));
+        });
+        return;
+      } catch (e) {}
+    }
+    finish(false, '无可用 HTTP API');
+  });
+}
+
 // 按 invalidPins 集合清理各 Cookie 来源，返回删除明细
 function cleanupInvalid(invalidPins) {
   const details = [];
@@ -129,12 +171,24 @@ function cleanupInvalid(invalidPins) {
     else if (r.netError) status = '⚠️ 网络错误（保留不删）retcode=' + r.retcode;
     else status = '❌ 失效 (retcode=' + r.retcode + ')';
     console.log('  [' + (i + 1) + '] ' + label + ': ' + status);
-    results.push({ label, pin: c.pin, ...r });
+    results.push({ label, pin: c.pin, cookie: c.cookie, ...r });
   }
 
   const valid = results.filter(r => r.valid);
   const definitive = results.filter(r => !r.valid && r.definitive);
   const netErr = results.filter(r => r.netError);
+
+  // ntfy 外推：检测到有效的 Cookie 逐个推送完整 cookie 行（标题格式与 qx_jd_all.js 一致）
+  const ntfyUrl = getNtfyUrl();
+  if (ntfyUrl && valid.length) {
+    console.log('[CK检测] 推送 ' + valid.length + ' 个有效 Cookie 到 ntfy...');
+    for (const r of valid) {
+      const pin = decodeURIComponent((r.pin || '').replace(/^pt_pin=|;$/g, ''));
+      await pushNtfy(ntfyUrl, r.cookie, 'JD_cookie_' + (pin || r.label));
+    }
+  } else if (!ntfyUrl && valid.length) {
+    console.log('[CK检测] 未配置 JD_NTFY_TOPIC，跳过 ntfy 外推');
+  }
 
   // 失效 pin 集合
   const invalidPins = new Set(definitive.map(r => r.pin));
