@@ -1,29 +1,22 @@
 /*
- * 京豆过期统计（Quantumult X 原生版）
- * cron: 23 10 1 12 *   （每年12月1日 + 可随时手动跑）
+ * 京豆过期统计（Quantumult X 原生版）— 精确查询
+ * cron: 23 10 1 * *   （每月1日 + 可随时手动跑）
  *
- * 背景:
- *   京东的过期查询接口 queryexpirejingdou 已下线(任何 cookie 都返回空), 精确有效期查不到。
- *   但有效期规则固定: 常规京豆有效期至"获得次年的12月31日"。
- *   因此拉取收支明细 -> 按获得时间分批 -> FIFO 扣减支出 -> 推算每批剩余的过期时间。
+ * 数据源（2026-10 逆向京东 App「权益中心」抓包验证）:
+ *   POST https://api.m.jd.com/api?functionId=bff_rightsCenter_userInfo&scene=userInfo
+ *   body: appid=plus_business&body={"scene":"userInfo","contentType":"28_29"}&...
+ *   无需 h5st 签名, 纯 pt_key;pt_pin cookie 即可。
+ *   返回官方精确值: expireBeans(将过期豆)/expireDays(天数)/jingBeans(余额)/jingBeanValue(元)
  *
- * 行为:
- *   1. 读取 BoxJs 的 CookiesJD / CookieJD / CookieJD2（多账号）
- *   2. 逐账号翻页拉取京豆收支明细（覆盖近两年, 约1-3分钟）
- *   3. FIFO 推算: 按过期年份分组统计剩余豆数
- *   4. 通知推送结果
+ * 历史: 旧的过期接口 queryexpirejingdou 已下线(返回空); 明细接口 getJingBeanBalanceDetail
+ *       风控 403。本接口是京东 App「我的-京豆」页面同一数据源。
  *
- * 注意: 活动发放的京豆(180天有效期)会比推算值更早过期, 明细无法区分类型,
- *       结果为"最晚过期时间", 保守起见每年12月初清一次豆即可。
+ * Cookie 失效(F10002 用户未登陆)时提示跑 CK检测 更新。
  */
 
 const TIMEOUT = 20000;
-const PAGE_SIZE = 20;
-const MAX_PAGE = 600;
-const PAGE_WAIT_MS = 350;
-// 明细拉取窗口: 覆盖"去年1月1日至今"(去年的豆今年12/31过期, 是统计重点; 更早的批次已扣完无需拉)
-const CUTOFF = new Date(new Date().getFullYear() - 1, 0, 1).getTime();
-const UA = 'jdapp;iPhone;11.0.4;15.0;network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148';
+const API = 'https://api.m.jd.com/api?functionId=bff_rightsCenter_userInfo&scene=userInfo';
+const UA = 'jdapp;iPhone;16.1.30;;;M/5.0;appBuild/171082;jdSupportDarkMode/0;lang/zh_CN;ctype/0;site/CN;ccy/CNY;elder/0;ef/1;';
 
 function readPref(key) {
   try { return $prefs.valueForKey(key) || ''; } catch (e) { return ''; }
@@ -48,93 +41,39 @@ function collectCookies() {
   push(readPref('CookieJD2'));
   return out;
 }
-const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-function fetchDetailPage(ck, page) {
+function queryUserInfo(ck) {
   return new Promise(resolve => {
+    const body = 'appid=plus_business&functionId=bff_rightsCenter_userInfo&body='
+      + encodeURIComponent(JSON.stringify({ scene: 'userInfo', contentType: '28_29' }))
+      + '&loginType=2&loginWQBiz=&xAPIClientLanguage=zh_CN&scval=undefined&t=' + Date.now();
     $task.fetch({
-      url: 'https://api.m.jd.com/client.action?functionId=getJingBeanBalanceDetail',
+      url: API,
       method: 'POST',
       headers: {
         'Cookie': ck,
         'User-Agent': UA,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Referer': 'https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean',
-        'Accept': '*/*',
+        'Referer': 'https://pro.m.jd.com/mall/active/4E1fFrgX1eGtWTc5KBNFzXMrh6xn/index.html',
+        'Origin': 'https://pro.m.jd.com',
       },
-      body: 'body=' + encodeURIComponent(JSON.stringify({ pageSize: String(PAGE_SIZE), page: String(page) })) + '&appid=ld',
+      body,
       timeout: TIMEOUT,
     }).then(resp => {
       try {
         if (resp.statusCode !== 200) { resolve({ err: 'HTTP ' + resp.statusCode }); return; }
         const j = JSON.parse(resp.body || '');
-        if (j.code !== '0') { resolve({ err: 'code=' + j.code }); return; }
-        resolve({ list: j.detailList || [] });
+        if (j.code === '1711000' && j.rs) {
+          resolve({ rs: j.rs });
+        } else if (j.code === 'F10002') {
+          resolve({ err: 'cookie失效(用户未登陆)' });
+        } else {
+          resolve({ err: 'code=' + j.code + ' ' + (j.msg || '') });
+        }
       } catch (e) { resolve({ err: '解析失败: ' + e.message }); }
     }, err => resolve({ err: '网络错误: ' + (err && err.message || err) }));
   });
 }
-
-async function pullDetail(ck, log) {
-  const all = [];
-  let page = 1, miss = 0;
-  while (page <= MAX_PAGE) {
-    const r = await fetchDetailPage(ck, page);
-    if (r.err) return { err: r.err };
-    if (!r.list.length) { if (++miss >= 2) break; page++; continue; }
-    let stop = false;
-    for (const it of r.list) {
-      const t = new Date(String(it.date).replace(/-/g, '/') + '+08:00').getTime();
-      if (t < CUTOFF) stop = true;
-      all.push(it);
-    }
-    if (stop) break;
-    page++;
-    if (page % 20 === 0) log(`  已拉 ${page} 页 / ${all.length} 条...`);
-    await sleep(PAGE_WAIT_MS);
-  }
-  return { list: all };
-}
-
-// FIFO 推算: 支出按获得先后抵扣(≈先过期先消耗), 剩余批次按"次年12月31日"过期
-function expireStats(list) {
-  const income = [], expense = [];
-  for (const it of list) {
-    const amt = parseInt(it.amount, 10) || 0;
-    const t = new Date(String(it.date).replace(/-/g, '/') + '+08:00');
-    if (amt > 0) income.push({ t, amt, event: String(it.eventMassage || it.event || '未知').trim() });
-    else if (amt < 0) expense.push({ t, amt: -amt });
-  }
-  income.sort((a, b) => a.t - b.t);
-  expense.sort((a, b) => a.t - b.t);
-  const batches = income.map(r => ({ ...r, remain: r.amt, expYear: r.t.getFullYear() + 1 }));
-  for (const e of expense) {
-    let need = e.amt;
-    for (const b of batches) {
-      if (need <= 0) break;
-      if (b.remain <= 0) continue;
-      const use = Math.min(b.remain, need);
-      b.remain -= use; need -= use;
-    }
-  }
-  const byYear = new Map();
-  for (const b of batches) {
-    if (b.remain <= 0) continue;
-    if (!byYear.has(b.expYear)) byYear.set(b.expYear, { total: 0, events: new Map() });
-    const g = byYear.get(b.expYear);
-    g.total += b.remain;
-    g.events.set(b.event, (g.events.get(b.event) || 0) + b.remain);
-  }
-  return {
-    incomeSum: income.reduce((s, r) => s + r.amt, 0),
-    expenseSum: expense.reduce((s, r) => s + r.amt, 0),
-    remain: batches.reduce((s, b) => s + b.remain, 0),
-    earliest: income.length ? income[0].t : null,
-    byYear,
-  };
-}
-
-function fmtDate(t) { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 
 (async () => {
   const accounts = collectCookies();
@@ -143,41 +82,35 @@ function fmtDate(t) { const d = new Date(t); return d.getFullYear() + '-' + Stri
     $done();
     return;
   }
-  console.log('京豆过期统计: 共 ' + accounts.length + ' 个账号, 明细窗口截止 ' + fmtDate(CUTOFF));
-  let allMsg = '';
+  console.log('京豆过期统计(权益中心精确查询): 共 ' + accounts.length + ' 个账号');
+  const lines = [];
   for (const acc of accounts) {
-    const pin = (acc.pin.match(/pt_pin=([^;]+);?/) || [])[1] || '账号';
-    const log = s => console.log('[' + decodeURIComponent(pin) + '] ' + s);
-    log('开始拉取明细...');
-    const r = await pullDetail(acc.cookie, log);
+    const pinRaw = (acc.pin.match(/pt_pin=([^;]+);?/) || [])[1] || '账号';
+    const name = decodeURIComponent(pinRaw);
+    const r = await queryUserInfo(acc.cookie);
     if (r.err) {
-      log('❌ ' + r.err);
-      allMsg += `【${decodeURIComponent(pin)}】拉取失败: ${r.err}\n`;
+      console.log('[' + name + '] ❌ ' + r.err);
+      lines.push(`❌ ${name}: ${r.err}${r.err.includes('失效') ? '（跑CK检测更新）' : ''}`);
       continue;
     }
-    if (!r.list.length) {
-      allMsg += `【${decodeURIComponent(pin)}】无明细数据\n`;
-      continue;
-    }
-    const st = expireStats(r.list);
-    log(`明细 ${r.list.length} 条 (${fmtDate(st.earliest)} ~ 今), 收入${st.incomeSum}/支出${st.expenseSum}, FIFO现存${st.remain}`);
-    let msg = `【${decodeURIComponent(pin)}】\n`;
-    msg += `明细窗口: ${fmtDate(st.earliest)} 起, 收入 ${st.incomeSum} / 支出 ${st.expenseSum} 豆\n`;
-    msg += `推算现存: 约 ${st.remain} 豆 (以App余额为准)\n`;
-    const years = [...st.byYear.keys()].sort();
-    for (const y of years) {
-      const g = st.byYear.get(y);
-      const days = Math.round((new Date(y, 11, 31) - Date.now()) / 86400000);
-      msg += `⏰ ${y}-12-31 前过期: ${g.total} 豆 (还有${days}天)\n`;
-      [...g.events.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4)
-        .forEach(([e, v]) => { msg += `   ${e}: ${v}豆\n`; });
-    }
-    allMsg += msg + '\n';
+    const rs = r.rs;
+    const beans = parseInt(rs.jingBeans, 10) || 0;
+    const exp = parseInt(rs.expireBeans, 10) || 0;
+    const days = parseInt(rs.expireDays, 10) || 0;
+    const val = rs.jingBeanValue || (beans / 100).toFixed(2);
+    console.log(`[${name}] 余额${beans}豆, ${days}天内过期${exp}豆`);
+    lines.push(
+      exp > 0
+        ? `⚠️ ${name}: 余额 ${beans} 豆(¥${val})，${days} 天内过期 ${exp} 豆！先花它`
+        : `✅ ${name}: 余额 ${beans} 豆(¥${val})，${days} 天内无过期`
+    );
   }
-  if (allMsg) {
-    allMsg += '⚠️ 活动豆(180天效期)可能更早过期; 建议每年12月初清豆';
-    console.log('\n' + allMsg);
-    $notify('京豆过期统计', accounts.length + ' 个账号', allMsg);
-  }
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  let tip = '数据来源: 京东App权益中心(精确值)';
+  if (month === 11 || month === 12) tip = '年底清豆期！常规京豆次年12/31过期, 尽快消耗将过期豆';
+  const msg = lines.join('\n') + '\n\n' + tip;
+  console.log('\n' + msg);
+  $notify('京豆过期统计', accounts.length + ' 个账号', msg);
   $done();
 })();
