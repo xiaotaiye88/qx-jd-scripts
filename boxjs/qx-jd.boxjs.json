@@ -61,6 +61,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -120,6 +127,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -179,6 +193,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -238,6 +259,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -297,6 +325,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -356,6 +391,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -415,6 +457,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -474,6 +523,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -533,6 +589,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -592,6 +655,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -651,6 +721,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -710,6 +787,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -769,6 +853,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -828,6 +919,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -887,6 +985,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -946,6 +1051,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1005,6 +1117,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1064,6 +1183,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1123,6 +1249,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1182,6 +1315,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1241,6 +1381,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1300,6 +1447,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1359,6 +1513,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1418,6 +1579,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1477,6 +1645,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1536,6 +1711,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1595,6 +1777,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1654,6 +1843,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1713,6 +1909,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1772,6 +1975,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1831,6 +2041,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1890,6 +2107,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -1949,6 +2173,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2008,6 +2239,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2067,6 +2305,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2126,6 +2371,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2185,6 +2437,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2244,6 +2503,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2303,6 +2569,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2362,6 +2635,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2421,6 +2701,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2480,6 +2767,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2539,6 +2833,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2598,6 +2899,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2657,6 +2965,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2716,6 +3031,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2784,6 +3106,13 @@
           "val": "",
           "type": "text",
           "desc": "同上。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     },
@@ -2843,6 +3172,13 @@
           "val": "true",
           "type": "boolean",
           "desc": "开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。"
+        },
+        {
+          "id": "JD_BARK_URL",
+          "name": "Bark 推送地址（可选）",
+          "val": "",
+          "type": "text",
+          "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
         }
       ]
     }

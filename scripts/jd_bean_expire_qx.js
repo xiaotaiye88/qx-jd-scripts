@@ -13,6 +13,8 @@
  * 历史: queryexpirejingdou(旧接口)已下线; getJingBeanBalanceDetail 无过期字段。
  *       本方案 = 官方精确值。
  * Cookie 失效(F10002)时提示跑 CK检测 更新。
+ * Bark 推送: BoxJs 配置 JD_BARK_URL（如 https://api.day.app/你的Key，填完整URL或仅设备码均可），
+ *            不配置则只用圈x本地通知。key 不入库（仓库公开，避免泄露）。
  */
 
 const TIMEOUT = 20000;
@@ -26,6 +28,12 @@ function readPref(key) {
 function pinFragment(ck) {
   const m = (ck || '').match(/pt_pin=[^;]+;?/);
   return m ? m[0] : '';
+}
+// Bark 推送地址: BoxJs 配置 JD_BARK_URL，不配置返回 null（key 不硬编码进公开仓库）
+function getBarkUrl() {
+  const v = (readPref('JD_BARK_URL') || '').trim();
+  if (!v || v === 'false') return null;
+  return /^https?:\/\//.test(v) ? v : 'https://api.day.app/' + v;
 }
 function collectCookies() {
   const out = [];
@@ -96,6 +104,23 @@ async function queryExpireDetail(ck) {
   } catch (e) { return { err: '解析失败: ' + e.message }; }
 }
 
+// Bark 推送（POST JSON, 内容含换行比 GET 干净）
+function pushBark(url, title, body) {
+  return new Promise(resolve => {
+    $task.fetch({
+      url, method: 'POST',
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
+      body: JSON.stringify({ title, body, group: 'JDBeanExpire' }),
+      timeout: TIMEOUT,
+    }).then(resp => {
+      let ok = false;
+      try { ok = resp.statusCode === 200 && /"code"\s*:\s*200/.test(resp.body || ''); } catch (e) {}
+      console.log('[Bark] 推送' + (ok ? '成功' : '失败: HTTP ' + resp.statusCode + ' ' + String(resp.body || '').slice(0, 100)));
+      resolve(ok);
+    }, err => { console.log('[Bark] 推送失败: ' + ((err && err.message) || err)); resolve(false); });
+  });
+}
+
 (async () => {
   const accounts = collectCookies();
   if (!accounts.length) {
@@ -144,5 +169,11 @@ async function queryExpireDetail(ck) {
   const msg = lines.join('\n') + '\n\n' + tip;
   console.log('\n' + msg);
   $notify('京豆过期统计', accounts.length + ' 个账号', msg);
+  const barkUrl = getBarkUrl();
+  if (barkUrl) {
+    await pushBark(barkUrl, '京豆过期统计', msg);
+  } else {
+    console.log('[Bark] 未配置 JD_BARK_URL，跳过 Bark 推送');
+  }
   $done();
 })();

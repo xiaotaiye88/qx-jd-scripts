@@ -17,13 +17,18 @@ const DETAIL_HTML = '<html><script>window.__data={"expireTransactions":['
   + ']};</script></html>';   // 含 num=0 的脏数据, 应被过滤; 合计 316
 
 let notifyCalls = [];
+let barkCalls = [];
 const sandbox = {
   console,
   Date, JSON, Math, String, Number, Array, Object, Promise, Error, Map, Set, RegExp, Boolean,
   parseInt, parseFloat, encodeURIComponent, decodeURIComponent, isNaN,
   setTimeout: (fn, ms) => { fn(); return 0; }, clearTimeout: () => {},
   $prefs: {
-    valueForKey: k => k === 'CookiesJD' ? JSON.stringify([{ cookie: CK_A }, { cookie: CK_B }, { cookie: CK_C }]) : '',
+    valueForKey: k => {
+      if (k === 'CookiesJD') return JSON.stringify([{ cookie: CK_A }, { cookie: CK_B }, { cookie: CK_C }]);
+      if (k === 'JD_BARK_URL') return process.env.TEST_BARK === 'off' ? '' : 'https://api.day.app/TESTKEY';
+      return '';
+    },
     setValueForKey: () => {},
   },
   $notify: (t, s, b) => { notifyCalls.push({ t, s, b }); },
@@ -31,6 +36,10 @@ const sandbox = {
   $task: {
     fetch: o => {
       const url = o.url || '';
+      if (/api\.day\.app/.test(url)) {
+        barkCalls.push({ url, body: JSON.parse(o.body) });
+        return Promise.resolve({ statusCode: 200, body: '{"code":200,"message":"success"}' });
+      }
       const pin = (o.headers.Cookie || '').match(/pt_pin=([^;]+)/)[1];
       if (url.includes('bff_rightsCenter_userInfo')) {
         if (pin === 'jd_testA') return Promise.resolve({ statusCode: 200, body: JSON.stringify({ code: '1711000', rs: { expireBeans: 316, expireDays: 30, jingBeanValue: '24.15', jingBeans: '2415' } }) });
@@ -62,6 +71,13 @@ setTimeout(() => {
   ok.push(['B: 30 天内无过期', /jd_testB: 余额 500 豆\(¥5\.00\)，30 天内无过期/.test(msg)]);
   ok.push(['C: cookie 失效提示 CK检测', /jd_testC: cookie失效.*CK检测/s.test(msg)]);
   ok.push(['数据来源说明', /权益中心/.test(msg)]);
+  // Bark 推送 (TEST_BARK=off 场景验证"未配置则跳过", 默认场景验证"配置则推送")
+  if (process.env.TEST_BARK === 'off') {
+    ok.push(['Bark: 未配置则不推送', barkCalls.length === 0]);
+  } else {
+    ok.push(['Bark: 推送1次到配置URL', barkCalls.length === 1 && barkCalls[0].url === 'https://api.day.app/TESTKEY']);
+    ok.push(['Bark: POST JSON 含 title/body/group', barkCalls.length === 1 && barkCalls[0].body.title === '京豆过期统计' && /jd_testA/.test(barkCalls[0].body.body) && barkCalls[0].body.group === 'JDBeanExpire']);
+  }
   let pass = true;
   for (const [name, v] of ok) { console.log((v ? '✔' : '✘'), name); if (!v) pass = false; }
   process.exit(pass ? 0 : 1);

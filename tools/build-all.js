@@ -328,6 +328,7 @@ function generateBoxJs(scripts) {
     { id: 'JD_ENV_JSON', name: '高级：环境变量注入', val: '{}', type: 'textarea', desc: 'JSON 对象，注入为脚本的 process.env。仅高级用户。' },
     { id: 'JD_NTFY_TOPIC', name: 'Ntfy 推送 Topic（可选）', val: '', type: 'text', desc: '设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。' },
     { id: 'JD_CKCHECK_AUTODEL', name: 'CK检测自动清理失效Cookie', val: 'true', type: 'boolean', desc: '开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。' },
+    { id: 'JD_BARK_URL', name: 'Bark 推送地址（可选）', val: '', type: 'text', desc: '填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。' },
   ];
 
   const apps = scripts.map(s => ({
