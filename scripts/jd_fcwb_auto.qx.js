@@ -1,7 +1,7 @@
 /*
  * 欢乐挖宝任务 (jd_fcwb_auto.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-10-20 09:40:24 由 tools/build-all.js 自动生成
+ * 构建: 2026-10-22 06:17:14 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 1 1 1 1 *

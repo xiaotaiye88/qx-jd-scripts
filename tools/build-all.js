@@ -15,6 +15,9 @@ const NOW = new Date().toISOString().replace('T', ' ').slice(0, 19);
 const REPO = 'https://github.com/xiaotaiye88/qx-jd-scripts';
 
 const FULL = process.argv.includes('--full');
+// 脚本 URL 版本参数: QX 会缓存任务脚本文件, URL 变化才能强制重新下载
+// 用构建时间戳, 每次重建都生成新 URL
+const SCRIPT_VER = 'v' + new Date().toISOString().replace(/[-T: ]/g, '').slice(0, 12);
 const FILTER = process.argv.find(a => a.startsWith('--filter='));
 const FILTER_VAL = FILTER ? FILTER.split('=')[1].toLowerCase() : '';
 
@@ -115,7 +118,7 @@ const NATIVE_SCRIPTS = [
     file: 'jd_bean_expire_qx.js',
     name: '京豆过期统计',
     desc: '拉取京豆收支明细，按"获得次年12月31日过期"规则 FIFO 推算各批次过期时间与数量（京东过期查询接口已下线，此为推算值；每年12月1日自动跑，也可手动）',
-    cron: '23 10 1 12 *',
+    cron: '23 10 1 * *',
   },
 ];
 
@@ -286,7 +289,7 @@ function generateConf(scripts) {
   ];
 
   for (const s of scripts) {
-    const url = `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`;
+    const url = `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}?v=${SCRIPT_VER}`;
     const escName = s.name.replace(/,/g, '，');
     lines.push(`# ${escName}`);
     lines.push(`${s.cron} ${url}, tag=${escName}, img-url=${s.icon}, enabled=true`);
@@ -302,7 +305,7 @@ function generateConf(scripts) {
 
 function generateTasks(scripts) {
   const tasks = scripts.map(s => {
-    const url = `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`;
+    const url = `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}?v=${SCRIPT_VER}`;
     const tag = s.name.replace(/,/g, '，');
     return `${s.cron} ${url}, tag=${tag}, img-url=${s.icon}, enabled=true`;
   });
@@ -338,7 +341,7 @@ function generateBoxJs(scripts) {
     desc: `${s.desc}（${s.file}）\ncron: ${s.cron}`,
     icon: s.icon,
     repo: REPO,
-    script: `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}`,
+    script: `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/${s.file}?v=${SCRIPT_VER}`,
     keys: ['CookiesJD', 'CookieJD', 'CookieJD2', 'JD_ENV_JSON', 'JD_NTFY_TOPIC'],
     settings,
   }));
