@@ -27,6 +27,7 @@ const sandbox = {
     valueForKey: k => {
       if (k === 'CookiesJD') return JSON.stringify([{ cookie: CK_A }, { cookie: CK_B }, { cookie: CK_C }]);
       if (k === 'JD_BARK_URL') return process.env.TEST_BARK === 'off' ? '' : 'https://api.day.app/TESTKEY';
+      if (k === 'JD_PIN_PHONE_MAP') return JSON.stringify({ jd_testA: '18610564466', jd_testB: '13601090811' });
       return '';
     },
     setValueForKey: () => {},
@@ -64,11 +65,11 @@ setTimeout(() => {
   console.log('===== 断言 =====');
   const ok = [];
   ok.push(['通知已发出', notifyCalls.length === 1]);
-  ok.push(['A: 余额+过期总数', /jd_testA: 余额 2415 豆\(¥24\.15\)，30 天内过期 316 豆/.test(msg)]);
+  ok.push(['A: 余额+过期总数', /18610564466 jd_testA: 余额 2415 豆\(¥24\.15\)，30 天内过期 316 豆/.test(msg)]);
   ok.push(['A: 逐日明细 11-12 过期 21 豆', /11-12 过期 21 豆/.test(msg)]);
   ok.push(['A: num=0 脏数据被过滤(无 11-14)', !/11-14/.test(msg)]);
   ok.push(['A: 明细合计 316 无出入提示', !/有出入/.test(msg)]);
-  ok.push(['B: 30 天内无过期', /jd_testB: 余额 500 豆\(¥5\.00\)，30 天内无过期/.test(msg)]);
+  ok.push(['B: 30 天内无过期', /13601090811 jd_testB: 余额 500 豆\(¥5\.00\)，30 天内无过期/.test(msg)]);
   ok.push(['C: cookie 失效提示 CK检测', /jd_testC: cookie失效.*CK检测/s.test(msg)]);
   ok.push(['数据来源说明', /权益中心/.test(msg)]);
   // Bark 推送 (TEST_BARK=off 场景验证"未配置则跳过", 默认场景验证"配置则推送")

@@ -29,6 +29,14 @@ function pinFragment(ck) {
   const m = (ck || '').match(/pt_pin=[^;]+;?/);
   return m ? m[0] : '';
 }
+// pin -> 手机号 映射: BoxJs 配置 JD_PIN_PHONE_MAP（JSON，与 CK检测 共用同一份）
+function phoneOf(pinFrag) {
+  try {
+    const map = JSON.parse(readPref('JD_PIN_PHONE_MAP') || '{}');
+    const pin = decodeURIComponent((pinFrag || '').replace(/^pt_pin=|;$/g, ''));
+    return map[pin] || '';
+  } catch (e) { return ''; }
+}
 // Bark 推送地址: BoxJs 配置 JD_BARK_URL，不配置返回 null（key 不硬编码进公开仓库）
 function getBarkUrl() {
   const v = (readPref('JD_BARK_URL') || '').trim();
@@ -134,10 +142,12 @@ function pushBark(url, title, body) {
   for (const acc of accounts) {
     const pinRaw = (acc.pin.match(/pt_pin=([^;]+);?/) || [])[1] || '账号';
     const name = decodeURIComponent(pinRaw);
+    const phone = phoneOf(acc.pin);
+    const display = phone ? phone + ' ' + name : name;   // 手机号前置, 与 CK检测 一致
     const ui = await queryUserInfo(acc.cookie);
     if (ui.err) {
-      console.log('[' + name + '] ❌ ' + ui.err);
-      lines.push(`❌ ${name}: ${ui.err}${ui.err.includes('失效') ? '（跑CK检测更新）' : ''}`);
+      console.log('[' + display + '] ❌ ' + ui.err);
+      lines.push(`❌ ${display}: ${ui.err}${ui.err.includes('失效') ? '（跑CK检测更新）' : ''}`);
       continue;
     }
     const beans = parseInt(ui.rs.jingBeans, 10) || 0;
@@ -146,13 +156,13 @@ function pushBark(url, title, body) {
     const val = ui.rs.jingBeanValue || (beans / 100).toFixed(2);
     console.log(`[${name}] 余额${beans}豆, ${days}天内过期${expTotal}豆`);
     if (expTotal <= 0) {
-      lines.push(`✅ ${name}: 余额 ${beans} 豆(¥${val})，${days} 天内无过期`);
+      lines.push(`✅ ${display}: 余额 ${beans} 豆(¥${val})，${days} 天内无过期`);
       continue;
     }
-    let msg = `⚠️ ${name}: 余额 ${beans} 豆(¥${val})，${days} 天内过期 ${expTotal} 豆`;
+    let msg = `⚠️ ${display}: 余额 ${beans} 豆(¥${val})，${days} 天内过期 ${expTotal} 豆`;
     const det = await queryExpireDetail(acc.cookie);
     if (det.err) {
-      console.log('[' + name + '] 明细: ' + det.err);
+      console.log('[' + display + '] 明细: ' + det.err);
       msg += '（明细获取失败: ' + det.err + '）';
     } else if (!det.list.length) {
       msg += '（无逐日明细）';
