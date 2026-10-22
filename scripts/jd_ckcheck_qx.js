@@ -32,6 +32,15 @@ function autoDeleteOn() {
   const v = readPref('JD_CKCHECK_AUTODEL');
   return v !== 'false'; // 默认开
 }
+// pin -> 手机号 映射: BoxJs 配置 JD_PIN_PHONE_MAP（JSON 对象，如 {"jd_xxx":"13800001234"}）
+// 手机号来源: 青龙 JD_COOKIE 环境变量备注。未配置或 pin 无映射时通知只显示 pin
+function phoneOf(pinFrag) {
+  try {
+    const map = JSON.parse(readPref('JD_PIN_PHONE_MAP') || '{}');
+    const pin = decodeURIComponent((pinFrag || '').replace(/^pt_pin=|;$/g, ''));
+    return map[pin] || '';
+  } catch (e) { return ''; }
+}
 
 function collectCookies() {
   const out = [];
@@ -165,13 +174,15 @@ function cleanupInvalid(invalidPins) {
   for (let i = 0; i < cookies.length; i++) {
     const c = cookies[i];
     const r = await checkOne(c.cookie);
-    const label = c.pin ? decodeURIComponent(c.pin.replace(/;$/, '')) : ('账号' + (i + 1));
+    const label = c.pin ? decodeURIComponent(c.pin.replace(/^pt_pin=|;$/g, '')) : ('账号' + (i + 1));
+    const phone = phoneOf(c.pin);
+    const display = phone ? phone + ' ' + label : label;   // 手机号在前更直观, 无映射时仅 pin
     let status;
     if (r.valid) status = '✅ 有效' + (r.name ? ' (' + r.name + ')' : '');
     else if (r.netError) status = '⚠️ 网络错误（保留不删）retcode=' + r.retcode;
     else status = '❌ 失效 (retcode=' + r.retcode + ')';
-    console.log('  [' + (i + 1) + '] ' + label + ': ' + status);
-    results.push({ label, pin: c.pin, cookie: c.cookie, ...r });
+    console.log('  [' + (i + 1) + '] ' + display + ': ' + status);
+    results.push({ label: display, pin: c.pin, cookie: c.cookie, ...r });
   }
 
   const valid = results.filter(r => r.valid);

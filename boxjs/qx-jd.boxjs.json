@@ -68,6 +68,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -134,6 +141,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -200,6 +214,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -266,6 +287,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -332,6 +360,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -398,6 +433,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -464,6 +506,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -530,6 +579,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -596,6 +652,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -662,6 +725,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -728,6 +798,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -794,6 +871,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -860,6 +944,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -926,6 +1017,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -992,6 +1090,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1058,6 +1163,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1124,6 +1236,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1190,6 +1309,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1256,6 +1382,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1322,6 +1455,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1388,6 +1528,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1454,6 +1601,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1520,6 +1674,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1586,6 +1747,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1652,6 +1820,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1718,6 +1893,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1784,6 +1966,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1850,6 +2039,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1916,6 +2112,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -1982,6 +2185,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2048,6 +2258,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2114,6 +2331,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2180,6 +2404,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2246,6 +2477,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2312,6 +2550,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2378,6 +2623,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2444,6 +2696,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2510,6 +2769,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2576,6 +2842,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2642,6 +2915,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2708,6 +2988,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2774,6 +3061,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2840,6 +3134,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2906,6 +3207,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -2972,6 +3280,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -3038,6 +3353,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -3113,6 +3435,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     },
@@ -3179,6 +3508,13 @@
           "val": "",
           "type": "text",
           "desc": "填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。"
+        },
+        {
+          "id": "JD_PIN_PHONE_MAP",
+          "name": "Pin→手机号 映射（可选）",
+          "val": "{}",
+          "type": "textarea",
+          "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
     }

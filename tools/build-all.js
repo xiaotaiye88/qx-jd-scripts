@@ -329,6 +329,7 @@ function generateBoxJs(scripts) {
     { id: 'JD_NTFY_TOPIC', name: 'Ntfy 推送 Topic（可选）', val: '', type: 'text', desc: '设置后 Cookie/Wskey 会推送到 https://ntfy.sh/你的topic。不填则仅 BoxJs 本地存储。' },
     { id: 'JD_CKCHECK_AUTODEL', name: 'CK检测自动清理失效Cookie', val: 'true', type: 'boolean', desc: '开启后 CK检测 任务会把明确失效的 Cookie 从 BoxJs 中删除。全部账号失效时不删（防误删）。' },
     { id: 'JD_BARK_URL', name: 'Bark 推送地址（可选）', val: '', type: 'text', desc: '填 https://api.day.app/你的Key（或仅设备码）。配置后 京豆过期统计 等脚本会把结果额外推送到 Bark。不填则仅圈x本地通知。' },
+    { id: 'JD_PIN_PHONE_MAP', name: 'Pin→手机号 映射（可选）', val: '{}', type: 'textarea', desc: 'JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {"jd_zWJBMaVKEFOS":"18600004466"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。' },
   ];
 
   const apps = scripts.map(s => ({
