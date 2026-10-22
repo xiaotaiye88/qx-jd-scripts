@@ -105,12 +105,13 @@ async function queryExpireDetail(ck) {
 }
 
 // Bark 推送（POST JSON, 内容含换行比 GET 干净）
+// isArchive='1' 必须带: 官方参数, 不带则只弹横幅不存档到 App 历史记录（点开就没了）
 function pushBark(url, title, body) {
   return new Promise(resolve => {
     $task.fetch({
       url, method: 'POST',
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
-      body: JSON.stringify({ title, body, group: 'JDBeanExpire' }),
+      body: JSON.stringify({ title, body, group: 'JDBeanExpire', isArchive: '1' }),
       timeout: TIMEOUT,
     }).then(resp => {
       let ok = false;

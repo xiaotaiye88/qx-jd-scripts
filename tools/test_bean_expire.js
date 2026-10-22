@@ -77,6 +77,7 @@ setTimeout(() => {
   } else {
     ok.push(['Bark: 推送1次到配置URL', barkCalls.length === 1 && barkCalls[0].url === 'https://api.day.app/TESTKEY']);
     ok.push(['Bark: POST JSON 含 title/body/group', barkCalls.length === 1 && barkCalls[0].body.title === '京豆过期统计' && /jd_testA/.test(barkCalls[0].body.body) && barkCalls[0].body.group === 'JDBeanExpire']);
+    ok.push(['Bark: isArchive=1 必须带上(否则历史不保存)', barkCalls.length === 1 && barkCalls[0].body.isArchive === '1']);
   }
   let pass = true;
   for (const [name, v] of ok) { console.log((v ? '✔' : '✘'), name); if (!v) pass = false; }
