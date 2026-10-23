@@ -11,7 +11,7 @@
       "desc": "带图评价晒单（jd_AutoEval.qx.js）\ncron: 3 12 3 12 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_shop.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_AutoEval.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_AutoEval.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -84,7 +84,7 @@
       "desc": "一键价保（jd_OnceApply.qx.js）\ncron: 55 11 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_shop.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_OnceApply.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_OnceApply.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -157,7 +157,7 @@
       "desc": "28 8,21（jd_bean_change.qx.js）\ncron: 28 8,21 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_change.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_change.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -230,7 +230,7 @@
       "desc": "京豆详情统计（jd_bean_info.qx.js）\ncron: 2 20 14 12 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_info.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_info.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -303,7 +303,7 @@
       "desc": "图书抽奖（jd_book_draw.qx.js）\ncron: 18 19 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_book_draw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_book_draw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -376,7 +376,7 @@
       "desc": "超级抓抓机（jd_cjzzj.qx.js）\ncron: 0 6,20 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_cjzzj.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_cjzzj.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -449,7 +449,7 @@
       "desc": "2 2 29 2（jd_dddraw.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dddraw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dddraw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -522,7 +522,7 @@
       "desc": "批量删垃圾券（jd_delLjq.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_unbind.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_delLjq.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_delLjq.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -595,7 +595,7 @@
       "desc": "天天领豆（jd_deliverySign_sign.qx.js）\ncron: 22 6,14 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_deliverySign_sign.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_deliverySign_sign.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -668,7 +668,7 @@
       "desc": "大牌浏览店铺（jd_dplhbshop.qx.js）\ncron: 30 7 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_shop.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dplhbshop.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dplhbshop.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -741,7 +741,7 @@
       "desc": "1 1 1 1（jd_dpqd_main.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_main.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_main.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -814,7 +814,7 @@
       "desc": "批量店铺签到（jd_dpqd_sign.qx.js）\ncron: 30 7 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_sign.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_sign.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -887,7 +887,7 @@
       "desc": "单个店铺签到（jd_dpqd_single.qx.js）\ncron: 7 7 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_single.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dpqd_single.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -960,7 +960,7 @@
       "desc": "首页-赚话费（jd_dwapp.qx.js）\ncron: 38 2,15 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_cash.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dwapp.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_dwapp.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1033,7 +1033,7 @@
       "desc": "新农场CK顺序助力（jd_farmnew_ck_help.qx.js）\ncron: 12 5,10 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_ck_help.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_ck_help.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1106,7 +1106,7 @@
       "desc": "新农场助力码助力（jd_farmnew_code_help.qx.js）\ncron: 22 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_code_help.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_farmnew_code_help.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1179,7 +1179,7 @@
       "desc": "APP —— 我的 —— 欢乐挖宝（jd_fcwb_auto.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_auto.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_auto.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1252,7 +1252,7 @@
       "desc": "1 1 1 1（jd_fcwb_help.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_help.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fcwb_help.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1325,7 +1325,7 @@
       "desc": "金融捕鱼助力（jd_fish_help.qx.js）\ncron: 8 8 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fish_help.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fish_help.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1398,7 +1398,7 @@
       "desc": "京东APP我的--东东农场（jd_fruit_new.qx.js）\ncron: 15 6,16 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fruit_new.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_fruit_new.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1471,7 +1471,7 @@
       "desc": "15 8（jd_hssign.qx.js）\ncron: 15 8 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_hssign.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_hssign.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1544,7 +1544,7 @@
       "desc": "33 7,15（jd_ifdraw.qx.js）\ncron: 33 7,15 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ifdraw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ifdraw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1617,7 +1617,7 @@
       "desc": "1 1 1 1（jd_jingpai.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jingpai.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jingpai.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1690,7 +1690,7 @@
       "desc": "京东app-我的-汪汪庄园（jd_joypark_leave.qx.js）\ncron: 1 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_leave.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_leave.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1763,7 +1763,7 @@
       "desc": "汪汪庄园任务（jd_joypark_task.qx.js）\ncron: 38 8,13 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_task.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_joypark_task.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1836,7 +1836,7 @@
       "desc": "29 2 29 2（jd_lmdraw.qx.js）\ncron: 29 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_lmdraw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_lmdraw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1909,7 +1909,7 @@
       "desc": "10 9（jd_luck_draw.qx.js）\ncron: 10 9 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luck_draw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luck_draw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -1982,7 +1982,7 @@
       "desc": "1 1 1 1（jd_luckyDraw.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luckyDraw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_luckyDraw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2055,7 +2055,7 @@
       "desc": "对暗号赢免单（jd_mkt_answer.qx.js）\ncron: 22 13 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mkt_answer.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mkt_answer.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2128,7 +2128,7 @@
       "desc": "13 9（jd_mohe.qx.js）\ncron: 13 9 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mohe.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_mohe.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2201,7 +2201,7 @@
       "desc": "1 1 1 1（jd_msDraw.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msDraw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msDraw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2274,7 +2274,7 @@
       "desc": "38 4,16（jd_msSign.qx.js）\ncron: 38 4,16 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msSign.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_msSign.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2347,7 +2347,7 @@
       "desc": "新农场幸运转盘（jd_newfarmlottery.qx.js）\ncron: 53 7,15 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_newfarmlottery.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_newfarmlottery.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2420,7 +2420,7 @@
       "desc": "礼品卡领豆（jd_pkabeans.qx.js）\ncron: 11 11 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_pkabeans.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_pkabeans.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2493,7 +2493,7 @@
       "desc": "APP我的--种豆得豆（jd_plantBean.qx.js）\ncron: 21 7-21/2 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdzz.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2566,7 +2566,7 @@
       "desc": "种豆得豆互助（jd_plantBean_help.qx.js）\ncron: 22 5,15 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdzz.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean_help.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_plantBean_help.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2639,7 +2639,7 @@
       "desc": "21 10（jd_qy_sign.qx.js）\ncron: 21 10 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_qy_sign.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_qy_sign.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2712,7 +2712,7 @@
       "desc": "1 1 1 1（jd_rankVote.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_rankingList.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rankVote.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rankVote.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2785,7 +2785,7 @@
       "desc": "清空购物车（jd_rmvcart.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_shop.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rmvcart.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_rmvcart.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2858,7 +2858,7 @@
       "desc": "天天领豆（jd_signbeanact_.qx.js）\ncron: 2 6,16 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_signbeanact_.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_signbeanact_.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -2931,7 +2931,7 @@
       "desc": "1 1 1 1（jd_sldraw.qx.js）\ncron: 1 1 1 1 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_sldraw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_sldraw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3004,7 +3004,7 @@
       "desc": "12 2 29 2（jd_superRedBagDraw.qx.js）\ncron: 12 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_superRedBagDraw.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_superRedBagDraw.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3077,7 +3077,7 @@
       "desc": "21 4,15（jd_ttgd.qx.js）\ncron: 21 4,15 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ttgd.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ttgd.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3150,7 +3150,7 @@
       "desc": "批量取关店铺和商品（jd_unsubscribe.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_unbind.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_unsubscribe.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_unsubscribe.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3223,7 +3223,7 @@
       "desc": "看视频赚现金-任务（jd_video_task.qx.js）\ncron: 1 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_watch.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_task.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_task.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3296,7 +3296,7 @@
       "desc": "看视频赚现金-浏览（jd_video_view.qx.js）\ncron: 1 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_watch.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_view.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_video_view.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3369,7 +3369,7 @@
       "desc": "V你50超市卡（jd_vu50.qx.js）\ncron: 15 10 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_syj.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_vu50.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_vu50.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3442,7 +3442,7 @@
       "desc": "新农场浇水（jd_water_new.qx.js）\ncron: 15 1 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_water_new.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_water_new.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3515,7 +3515,7 @@
       "desc": "29 2 29 2（jd_wduoyu.qx.js）\ncron: 29 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_cash.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wduoyu.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wduoyu.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3588,7 +3588,7 @@
       "desc": "12 7,15（jd_weGameLottery.qx.js）\ncron: 12 7,15 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_weGameLottery.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_weGameLottery.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3661,7 +3661,7 @@
       "desc": "京东app-我的-汪汪庄园（jd_wwmanor_merge.qx.js）\ncron: 2 2 29 2 *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wwmanor_merge.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wwmanor_merge.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3734,7 +3734,7 @@
       "desc": "11 9,16（jd_xqmh.qx.js）\ncron: 11 9,16 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_lotteryMachine.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xqmh.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xqmh.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3807,7 +3807,7 @@
       "desc": "38 7,19（jd_xsjx.qx.js）\ncron: 38 7,19 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jingxi.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xsjx.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_xsjx.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3880,7 +3880,7 @@
       "desc": "20 9（jd_yssign.qx.js）\ncron: 20 9 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jx_sign.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_yssign.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_yssign.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -3953,7 +3953,7 @@
       "desc": "6 8,16（jd_hdyxzd.qx.js）\ncron: 6 8,16 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_hdyxzd.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_hdyxzd.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -4026,7 +4026,7 @@
       "desc": "50 8,16（jd_jrddzjd.qx.js）\ncron: 50 8,16 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jrddzjd.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jrddzjd.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -4099,7 +4099,7 @@
       "desc": "23 9,13（jd_jrttlqy.qx.js）\ncron: 23 9,13 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jrttlqy.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_jrttlqy.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -4172,7 +4172,7 @@
       "desc": "10 9,15（jd_zjindan.qx.js）\ncron: 10 9,15 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_zjindan.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_zjindan.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -4245,7 +4245,7 @@
       "desc": "检测所有京东 Cookie 有效性，失效账号及时通知（圈X 原生版，替代青龙的 jd_CheckCK）（jd_ckcheck_qx.js）\ncron: 30 7 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ckcheck_qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_ckcheck_qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -4318,7 +4318,7 @@
       "desc": "读取 BoxJs 中存储的 wskey，自动转换为 pt_key 更新 CookiesJD（替代青龙的 jd_wsck.py）（jd_wskey_convert.qx.js）\ncron: 57 21,9 * * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wskey_convert.qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_wskey_convert.qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",
@@ -4391,7 +4391,7 @@
       "desc": "拉取京豆收支明细，按\"获得次年12月31日过期\"规则 FIFO 推算各批次过期时间与数量（京东过期查询接口已下线，此为推算值；每年12月1日自动跑，也可手动）（jd_bean_expire_qx.js）\ncron: 23 10 1 * *",
       "icon": "https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png",
       "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
-      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_expire_qx.js?v=v202610220617",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_bean_expire_qx.js?v=v202610230853",
       "keys": [
         "CookiesJD",
         "CookieJD",

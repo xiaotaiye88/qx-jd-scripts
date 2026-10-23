@@ -277,6 +277,12 @@ function main() {
 }
 
 function generateConf(scripts) {
+  // 手工维护的重写行(rebuild 不丢失)
+  const EXTRA_REWRITES = [
+    '# 京东金融赚京豆：抓取 Cookie + 任务列表请求参数（含风控签名），用于 jdjr_coinquest.qx.js',
+    '# ⚠️ script-request-body 才有请求体，script-request-header 抓不到 body',
+    '^https?://ms\\.jr\\.jd\\.com/gw2/generic/legogw/h5/m/getPageInfoSafetyTranslate\\?pageType=11189 url script-request-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jdjr_coinquest.qx.js',
+  ];
   const lines = [
     '# 京东脚本全家桶 (Quantumult X 资源订阅)',
     '# 订阅: https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/jd_scripts.conf',
@@ -284,6 +290,7 @@ function generateConf(scripts) {
     '[rewrite_local]',
     '# 抓取 pt_key + pt_pin + wskey，每分钟同账号最多推1次',
     '^https?://(api\\.m\\.jd\\.com|sh\\.jd\\.com)/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/qx_jd_all.js',
+    ...EXTRA_REWRITES,
     '',
     '[task_local]',
   ];
@@ -296,8 +303,17 @@ function generateConf(scripts) {
     lines.push('');
   }
 
+  // 手工维护的附加任务行(extra_tasks.conf): rebuild 不丢失(jdjr/paperclip 等)
+  const extraPath = path.join(ROOT, 'extra_tasks.conf');
+  if (fs.existsSync(extraPath)) {
+    const extra = fs.readFileSync(extraPath, 'utf8').split('\n').filter(l => l.trim() && !l.startsWith('#'));
+    lines.push(...extra);
+    console.log('已附加手工任务行 ' + extra.length + ' 条 (extra_tasks.conf)');
+  }
+
   lines.push('[mitm]');
-  lines.push('hostname = api.m.jd.com');
+  // ms.jr.jd.com: 京东金融赚京豆抓包需要(jdjr_coinquest)
+  lines.push('hostname = api.m.jd.com, ms.jr.jd.com');
 
   fs.writeFileSync(path.join(ROOT, 'jd_scripts.conf'), lines.join('\n'), 'utf8');
   console.log('已生成 jd_scripts.conf (' + scripts.length + ' 个任务)');

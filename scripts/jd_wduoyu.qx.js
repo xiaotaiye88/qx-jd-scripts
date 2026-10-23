@@ -1,7 +1,7 @@
 /*
  * 多投多赚 (jd_wduoyu.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-10-22 06:17:14 由 tools/build-all.js 自动生成
+ * 构建: 2026-10-23 08:53:38 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 29 2 29 2 *
