@@ -19,6 +19,10 @@
  * cron: 25 9 * * *
  * BoxJs 键: CookiesJD / CookieJD / CookieJD2（多账号）
  *           JD_SUPER_COUPON = "false" 时跳过「优惠券类」任务只做京豆类（默认做）
+ *
+ * 频率控制: 全程串行——账号一个一个来、任务一个一个做、每轮做完停一停。
+ *   轮间隔 5s / 任务间隔 6s / 账号间隔 15s（均带 ±20% 随机抖动, 避免机械节奏）。
+ *   最坏情况总时长 ≈ 20 分钟（含券类）; JD_SUPER_COUPON=false 时约 8 分钟。
  */
 
 const ACT_PAGE = 'https://pro.m.jd.com/mall/active/DvFPmKRas9GYjDPZjT9NT14BAv6/index.html';
@@ -35,6 +39,11 @@ const SIGN_PROJECT = '3iFuS7TyJpKixsa4tZj9EBMr1jxJ';
 const SIGN_ASSIGN = 'bWLRWiLiFiyMtVuzcwn5zWCAfcz';
 const UA = 'jdapp;iPhone;16.1.50;;;M/5.0;appBuild/171135;jdSupportDarkMode/1;lang/zh_CN;ctype/0;site/CN;ccy/CNY;elder/0;ef/1;';
 const TIMEOUT = 20000;
+
+// 频率控制（毫秒）: 全程串行执行, 三级间隔, 每次停顿带 ±20% 随机抖动
+const GAP_ROUND = 5000;    // 同一任务 每轮之间
+const GAP_TASK = 6000;     // 不同任务之间（含失败换任务）
+const GAP_ACCOUNT = 15000; // 不同账号之间
 
 // 任务黑名单: 名字含这些关键词的跳过（无法自动化/需要外部 App/真组件）
 const SKIP_NAME = ['助力', '安装桌面小组件', '小程序导流', '特价APP'];
@@ -194,6 +203,8 @@ function api(fid, body, ck, uuid) {
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+// 带随机抖动的间隔（±20%）, 避免固定节奏被识别为脚本
+const gap = base => sleep(Math.round(base * (0.8 + Math.random() * 0.4)));
 
 // ---------- 每日签到 ----------
 async function dailySign(ck, uuid) {
@@ -283,6 +294,7 @@ async function runAccount(ck, idx, total) {
     lines.push((s.ok ? '✅ 签到: ' : '⚠️ 签到: ') + s.msg);
     if (s.beans) beans += s.beans;
   } catch (e) { lines.push('⚠️ 签到异常: ' + e.message); }
+  await gap(GAP_TASK); // 签到与任务列表之间停顿
 
   // 2. 任务列表
   const tasks = await taskList(ck, uuid);
@@ -304,12 +316,13 @@ async function runAccount(ck, idx, total) {
   });
   lines.push('📋 可做任务 ' + todo.length + '/' + tasks.length + ' 个');
 
-  // 3. 逐个任务做到满次数
+  // 3. 逐个任务做到满次数（串行: 一个任务全部轮次做完, 才做下一个任务）
   let blockCnt = 0; // 连续 405 计数
   for (const t of todo) {
     const remain = (t.assignmentTimesLimit || 1) - (t.completionCnt || 0);
     let okCnt = 0;
     for (let i = 0; i < remain; i++) {
+      if (i > 0) await gap(GAP_ROUND); // 同任务轮与轮之间停顿
       const r = await doOneRound(t, ck, uuid);
       if (r.done) {
         okCnt++;
@@ -321,9 +334,9 @@ async function runAccount(ck, idx, total) {
         if (/405/.test(r.msg)) { blockCnt++; if (blockCnt >= 2) { lines.push('⛔ 连续风控405, 停止该账号剩余任务（冷却几小时再跑）'); return { pin, lines, beans }; } }
         break; // 该任务失败, 换下一个
       }
-      await sleep(3000); // 任务间隔拉长, 降低频控风险
     }
     if (okCnt) lines.push('✅ ' + t.assignmentName + ' x' + okCnt);
+    await gap(GAP_TASK); // 任务与任务之间停顿（无论成败）
   }
   return { pin, lines, beans };
 }
@@ -336,9 +349,10 @@ async function runAccount(ck, idx, total) {
     if (typeof $notify !== 'undefined') $notify('国补×超补', '未找到 Cookie', '请先打开京东 App 抓取');
     return;
   }
-  console.log('=== 国补×超补 频道任务, ' + cookies.length + ' 个账号 ===');
+  console.log('=== 国补×超补 频道任务, ' + cookies.length + ' 个账号（串行执行: 账号逐个来, 任务逐个做）===');
   const all = [];
   for (let i = 0; i < cookies.length; i++) {
+    if (i > 0) await gap(GAP_ACCOUNT); // 账号与账号之间停顿
     console.log('--- 账号 ' + (i + 1) + '/' + cookies.length + ': ' + pinOf(cookies[i]) + ' ---');
     try {
       const r = await runAccount(cookies[i], i, cookies.length);
