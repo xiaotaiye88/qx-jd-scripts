@@ -36,6 +36,9 @@ const DEP_MODULES = {
   // moment 由 prelude 内置轻量垫片提供（不用 moment.min.js，避免 JSC locale 报错）
   // jdCommon（jd_dpqd_single.js 需要）
   './function/jdCommon': 'jdCommon.js',
+  // 京东真实 UA 库：dylib 的 getUA/Check_Login 依赖 UARAM 函数与 USER_AGENT 常量。
+  // prelude 里的 3 条 UA 数组桩没有 UARAM，会让 jddToken 及后续签名静默拿到 undefined。
+  './USER_AGENTS':     'USER_AGENTS.js',
 };
 
 // 按需选择: 扫描主脚本来确定它引用了哪些模块（加 .js 后缀一并匹配）
@@ -47,12 +50,16 @@ function requiredModules(scriptSrc) {
       deps.add(k);
     }
   }
-  // 所有脚本都需要的基础三件套
+  // 所有脚本都需要的基础四件套
+  // ponytail: dylans 也无条件打包——jdpro 混淆脚本的 require 是运行时解码的，
+  // 静态扫描看不见它（jd_water_new 因此漏打包 dylans 而在签名步骤崩溃），
+  // 升级路径：混淆器改成静态可见调用后再收窄。
   deps.add('./function/dylib');
+  deps.add('./function/dylans');
   deps.add('./dyland.js');
+  deps.add('./USER_AGENTS');
   deps.add('crypto-js');
-  // dylans/dylanx 几乎所有脚本都需要（扫描命中率高）
-  if (scriptSrc.includes('dylans')) deps.add('./function/dylans');
+  // dylanx 扫描命中率高
   if (scriptSrc.includes('dylanx')) deps.add('./function/dylanx');
   return deps;
 }
@@ -120,10 +127,22 @@ const NATIVE_SCRIPTS = [
     desc: '拉取京豆收支明细，按"获得次年12月31日过期"规则 FIFO 推算各批次过期时间与数量（京东过期查询接口已下线，此为推算值；每年12月1日自动跑，也可手动）',
     cron: '23 10 1 * *',
   },
+  {
+    file: 'jd_activity_daily_qx.js',
+    name: '京豆活动合集',
+    desc: '奇遇盒抽奖 / 东东农场任务领奖 / 天降福利浏览得京豆 / 服饰美妆频道签到（圈X 原生版，免 h5st）',
+    cron: '8 9,20 * * *',
+  },
 ];
 
 function readCached(name) {
-  return fs.readFileSync(path.join(CACHE, name), 'utf8');
+  const cached = path.join(CACHE, name);
+  // .upstream 是 gitignore 的抓取缓存；个别模块（USER_AGENTS）已 vendor 进仓库，换机器也能构建
+  if (!fs.existsSync(cached)) {
+    const vendored = path.join(ROOT, 'src', 'vendor', name);
+    if (fs.existsSync(vendored)) return fs.readFileSync(vendored, 'utf8');
+  }
+  return fs.readFileSync(cached, 'utf8');
 }
 
 function wrapModule(requireName, source, dirname) {

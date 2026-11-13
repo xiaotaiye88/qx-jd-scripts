@@ -590,10 +590,19 @@ __qxDefine('axios', function () {
       for (var k in config.params) sp.push(encodeURIComponent(k) + '=' + encodeURIComponent(config.params[k]));
       url += (url.indexOf('?') >= 0 ? '&' : '?') + sp.join('&');
     }
+    var axHeaders = config.headers || {};
+    // 真 axios 对字符串 data 默认补 x-www-form-urlencoded、并带自己的 UA；
+    // 缺这两样时 gia.jd.com/jsTk.do 会直接回 {"code":20,"msg":"Invalid param"}，
+    // 而 dylib.jddToken 把它读成空对象 → 后续 .split 崩溃。
+    if (config.data !== undefined && typeof config.data === 'string') {
+      var hasCT = false;
+      for (var hk in axHeaders) if (hk.toLowerCase() === 'content-type') hasCT = true;
+      if (!hasCT) { axHeaders = Object.assign({}, axHeaders); axHeaders['content-type'] = 'application/x-www-form-urlencoded'; }
+    }
     return __qxFetch({
       url: url,
       method: config.method || 'GET',
-      headers: config.headers || {},
+      headers: axHeaders,
       body: config.data !== undefined ? (typeof config.data === 'string' ? config.data : JSON.stringify(config.data)) : undefined,
       timeout: config.timeout
     }).then(toAxiosResp);
