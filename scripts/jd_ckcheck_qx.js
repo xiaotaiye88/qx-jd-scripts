@@ -7,7 +7,7 @@
  *   2. 逐个调 me-api 检测有效性
  *   3. 明确失效（HTTP 200 且 retcode != 0）的 Cookie 从 BoxJs 中删除，并发通知
  *   4. 网络错误的不删（可能临时故障）；全部账号都失效时不删（多半是 API 抽风，避免误删）
- *   5. 检测到有效的 Cookie 推送到 ntfy（BoxJs 设置 JD_NTFY_TOPIC，同 qx_jd_all.js；不配置则不推）
+ *   5. 检测到有效的 Cookie 合并为一条消息推送到 ntfy（BoxJs 设置 JD_NTFY_TOPIC，同 qx_jd_all.js；不配置则不推）
  *
  * BoxJs 开关: JD_CKCHECK_AUTODEL = "true"（默认）自动删除；"false" 仅通知不删
  *             JD_NTFY_TOPIC = "mytopic"（可选）有效 CK 推送到 https://ntfy.sh/mytopic
@@ -189,13 +189,24 @@ function cleanupInvalid(invalidPins) {
   const definitive = results.filter(r => !r.valid && r.definitive);
   const netErr = results.filter(r => r.netError);
 
-  // ntfy 外推：检测到有效的 Cookie 逐个推送完整 cookie 行（标题格式与 qx_jd_all.js 一致）
+  // ntfy 外推：全部有效 Cookie 合并为一条消息（每行一个账号），超 3800 字符按 ntfy 单条 4KB 上限分片
   const ntfyUrl = getNtfyUrl();
   if (ntfyUrl && valid.length) {
-    console.log('[CK检测] 推送 ' + valid.length + ' 个有效 Cookie 到 ntfy...');
+    console.log('[CK检测] 合并推送 ' + valid.length + ' 个有效 Cookie 到 ntfy...');
+    const chunks = [];
+    let cur = [], curLen = 0;
     for (const r of valid) {
-      const pin = decodeURIComponent((r.pin || '').replace(/^pt_pin=|;$/g, ''));
-      await pushNtfy(ntfyUrl, r.cookie, 'JD_cookie_' + (pin || r.label));
+      if (curLen + r.cookie.length + 1 > 3800 && cur.length) { chunks.push(cur.join('\n')); cur = []; curLen = 0; }
+      cur.push(r.cookie);
+      curLen += r.cookie.length + 1;
+    }
+    if (cur.length) chunks.push(cur.join('\n'));
+    for (let i = 0; i < chunks.length; i++) {
+      const firstPin = valid[0].pin ? decodeURIComponent(valid[0].pin.replace(/^pt_pin=|;$/g, '')) : '';
+      const title = chunks.length === 1
+        ? 'JD_cookie_' + (valid.length === 1 ? (firstPin || valid[0].label) : 'x' + valid.length)
+        : 'JD_cookie_x' + valid.length + ' (' + (i + 1) + '/' + chunks.length + ')';
+      await pushNtfy(ntfyUrl, chunks[i], title);
     }
   } else if (!ntfyUrl && valid.length) {
     console.log('[CK检测] 未配置 JD_NTFY_TOPIC，跳过 ntfy 外推');
