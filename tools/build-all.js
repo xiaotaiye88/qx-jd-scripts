@@ -133,6 +133,12 @@ const NATIVE_SCRIPTS = [
     desc: '奇遇盒抽奖 / 东东农场任务领奖 / 天降福利浏览得京豆 / 服饰美妆频道签到（圈X 原生版，免 h5st）',
     cron: '8 9,20 * * *',
   },
+  {
+    file: 'jd_super_subsidy_qx.js',
+    name: '国补超补任务',
+    desc: '国补×超补频道每日签到 + 浏览类任务自动领京豆（rtb浏览/发豆/频道导流等, 2026-11 抓包逆向; do_task 网关校验严, 405 时自动降级跳过）',
+    cron: '25 9 * * *',
+  },
 ];
 
 function readCached(name) {

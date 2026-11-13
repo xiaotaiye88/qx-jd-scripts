@@ -4530,6 +4530,30 @@
           "desc": "JSON 对象，CK检测 通知里把 pin 显示为手机号。示例: {\"jd_zWJBMaVKEFOS\":\"18600004466\"}。手机号来源: 青龙 JD_COOKIE 环境变量备注。"
         }
       ]
+    },
+    {
+      "id": "jd_super_subsidy",
+      "name": "国补超补任务",
+      "desc": "国补×超补频道每日签到+浏览类任务自动领京豆（rtb浏览/发豆/频道导流; do_task 405 时自动降级）\ncron: 25 9 * * *",
+      "icons": [],
+      "keys": [
+        "CookiesJD",
+        "CookieJD",
+        "CookieJD2",
+        "JD_SUPER_COUPON"
+      ],
+      "settings": [
+        {
+          "id": "JD_SUPER_COUPON",
+          "name": "做优惠券类任务",
+          "val": "true",
+          "type": "boolean",
+          "desc": "关闭后只做京豆类任务（rtb浏览/发豆/小组件/逛频道），跳过发券/墨缘等纯券任务。"
+        }
+      ],
+      "author": "@xiaotaiye88",
+      "repo": "https://github.com/xiaotaiye88/qx-jd-scripts",
+      "script": "https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/scripts/jd_super_subsidy_qx.js"
     }
   ]
 }
