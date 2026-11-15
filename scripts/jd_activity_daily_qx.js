@@ -5,6 +5,7 @@
  *   2. 东东农场任务领奖    apTaskList + apTaskDrawAward         （实测可用）
  *   3. 天降福利浏览得京豆  apStartTaskTime → apDoTask → drawPrize（实测可用，已领到京豆）
  *   4. 服饰美妆频道签到    jxzy_active_querySign                 （实测返回 147 活动太火爆）
+ *   5. 种豆得豆每日签到    apTaskList + apDoTask CONSECUTIVE_SIGN_IN（实测可用，+5收获值）
  *
  * 全部走 api.m.jd.com/api，实测无需 h5st（缺 h5st 也能调通）。
  * 只做「领已达成奖励」和「浏览类任务」，不碰下单/助力/跨 App 任务。
@@ -266,6 +267,42 @@ function doJxzy(ck, log) {
   log.push('👗 服饰美妆: 该签到需页面侧 signStr 签名，脚本无法构造，请手动进频道页签到');
 }
 
+// ---------- 5) 种豆得豆每日签到 ----------
+// linkId 从 jd_plantBean 跑包日志的 apReportTaskPreInfo 里挖出。
+// 老系统 plantBeanIndex 一直「活动太火爆」，但新系统 apTaskList 是通的；
+// 其中 CONSECUTIVE_SIGN_IN 用 apDoTask（不带 s、免 h5st）直接 code=0，奖 HARVEST_VALUE 收获值自动到账。
+// 其余任务全是计时浏览类（timeLimitSwitch:2，回 2018）或跨App/下单类，不做。
+const LINK_PLANTBEAN = '4HcenxuZM4XiHesOb1HG4g';
+async function doPlantBean(ck, log) {
+  const r = await api('apTaskList', { linkId: LINK_PLANTBEAN, queryType: 0, channel: 4 }, { cookie: ck });
+  const tasks = (r.json && r.json.data) || [];
+  if (!tasks.length) {
+    log.push('🫘 种豆得豆: 列表获取失败(' + r.status + ')');
+    return;
+  }
+  const sign = tasks.find(t => t.taskType === 'CONSECUTIVE_SIGN_IN' && !t.taskFinished);
+  if (!sign) {
+    log.push('🫘 种豆得豆: 签到今日已完成（' + tasks.filter(t => t.taskFinished).length + '/' + tasks.length + '）');
+    return;
+  }
+  const r2 = await api('apDoTask', {
+    taskType: 'CONSECUTIVE_SIGN_IN',
+    taskId: -9999,
+    channel: 4,
+    checkVersion: true,
+    linkId: LINK_PLANTBEAN,
+    pipeExt: Object.assign({}, sign.pipeExt),
+    taskInsert: false,
+  }, { cookie: ck });
+  const d = (r2.json && r2.json.data) || {};
+  if (r2.json && r2.json.code === 0 && d.finished) {
+    const aw = (sign.configBaseList || [])[0] || {};
+    log.push('🫘 种豆得豆: 签到成功 +' + (aw.awardGivenNumber || '') + (aw.interactiveAwardName || '收获值'));
+  } else {
+    log.push('🫘 种豆得豆: 签到返回 ' + ((r2.json && r2.json.errMsg) || r2.status));
+  }
+}
+
 // ---------- 主流程 ----------
 !(async () => {
   const cookies = readCookies();
@@ -282,6 +319,7 @@ function doJxzy(ck, log) {
     try { await doFarm(ck, logs); } catch (e) { logs.push('🌱 农场异常: ' + e.message); }
     try { await doTianjiang(ck, logs); } catch (e) { logs.push('💰 天降福利异常: ' + e.message); }
     try { await doJxzy(ck, logs); } catch (e) { logs.push('👗 服饰美妆异常: ' + e.message); }
+    try { await doPlantBean(ck, logs); } catch (e) { logs.push('🫘 种豆得豆异常: ' + e.message); }
     const head = '【' + (i + 1) + '】' + pinOf(ck);
     console.log(head + '\n' + logs.join('\n'));
     allLogs.push(head + '\n' + logs.join('\n'));
