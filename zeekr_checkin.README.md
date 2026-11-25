@@ -6,7 +6,7 @@
 - ✅ 任务奖励**自动领取**（任务达成 → 碎片自动入账 → 脚本收集即领取）
 - ✅ 能量碎片自动收集（任务碎片 batchApply + 能量达标碎片 collectIntegralZeekrBalls，均实测成功）
 - ✅ **碳能量球自动收取**（WALK/驾车，实测 collectedAllEnergy 成功）
-- ✅ Token 自动抓取（打开 App 即存入 BoxJs）
+- ✅ Token 自动抓取（打开 App 即存入圈X原生存储；订阅 BoxJs 应用后可查看/复制）
 - ✅ 结果推送通知
 
 ## 原理说明
@@ -90,6 +90,10 @@ https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/qx-jd.b
 ```
 
 等待通知提示「Token 已保存」后，**注释掉上面的抓取规则**（避免每次请求都重复抓取）。
+
+查看/复制 Token（两种方式任选）：
+1. BoxJs → 添加应用订阅 `https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/boxjs/qx-jd.boxjs.json` → 刷新 → 「极氪签到」应用 → 复制 `zeekr_tokens`
+2. 圈X → 风车 → 工具 → 日志 → 搜索 `[ZEEKR][TOKEN]` → 长按复制该行
 
 ### 2. 配置定时任务
 

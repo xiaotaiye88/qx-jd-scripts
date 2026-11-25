@@ -45,7 +45,9 @@
  */
 
 // ================= 配置区 =================
-// Token（打开 App 后自动写入 BoxJs，也可在 BoxJs 中手动粘贴）
+// Token（打开 App 后自动写入圈X原生存储 $prefs，键 zeekr_token/zeekr_tokens；
+//        BoxJs 需订阅 boxjs/qx-jd.boxjs.json 才能看到「极氪签到」应用）
+// 复制 Token：圈X → 风车 → 工具 → 日志 搜 [ZEEKR][TOKEN]，或 BoxJs → 极氪签到 → zeekr_tokens
 // 需要的关键字段：Authorization 里的 Bearer JWT（含 accountId，长期有效）
 const TOKEN_KEY = 'zeekr_token';    // 单键 Token（旧版兼容 + 最近一个账号）
 const TOKENS_KEY = 'zeekr_tokens';  // 多账号 JSON 数组 [{"token":"...","name":"..."}]
@@ -534,10 +536,13 @@ if (typeof $request !== 'undefined' && $request.url && $request.url.indexOf('api
     try {
       const list = mergeToken(token);
       console.log('[ZEEKR] Token 已保存: ' + (getTokenName(token) || getTokenId(token)) + '（共 ' + list.length + ' 个账号）');
+      // 全量 Token 输出到脚本日志，便于复制到 BoxJs 之外的地方（如调试探针）
+      console.log('[ZEEKR][TOKEN] ' + token);
+      const hint = ' 共 ' + list.length + ' 个账号；复制 Token：圈X日志搜 [ZEEKR][TOKEN]，或 BoxJs→极氪签到';
       if (typeof $notify !== 'undefined') {
-        $notify('极氪签到', '✅ Token 已保存', (getTokenName(token) || getTokenId(token)) + ' 已写入，共 ' + list.length + ' 个账号，可注释抓取规则');
+        $notify('极氪签到', '✅ Token 已保存', (getTokenName(token) || getTokenId(token)) + hint);
       } else if (typeof $notification !== 'undefined' && $notification.post) {
-        $notification.post('极氪签到', '✅ Token 已保存', (getTokenName(token) || getTokenId(token)) + ' 已写入，共 ' + list.length + ' 个账号，可注释抓取规则');
+        $notification.post('极氪签到', '✅ Token 已保存', (getTokenName(token) || getTokenId(token)) + hint);
       }
     } catch (e) {
       console.log('[ZEEKR] Token 处理异常: ' + e);
