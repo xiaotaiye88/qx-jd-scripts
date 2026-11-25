@@ -18,6 +18,9 @@
  *       body: {applyCmdList:[{record:eventCode, payContent:{bubbleAssetsId:id}, applyExt:{origin:sourceId}}]}，实测成功。
  *     · 能量达标碎片（ENERGY_STANDARDS，eventCode=z_green_active 等）走 POST /carEnergy/collectIntegralZeekrBalls，
  *       body: {energyIds:[id]}，实测成功（batchApply 对它报「未查询到相关活动」）。
+ *     · 其余全部球也走 collectIntegralZeekrBalls（通用通道）：含 SIGN_CONTINUOUS_7_LOTTERY
+ *       七日连签抽奖球=「锦鲤泡泡」（eventCode 为空，2026-11-25 实测一发收走）。
+ *       分类必须三路全覆盖，漏网球会一直「飘着」不收（此前锦鲤泡泡就是被漏掉的那个）。
  *   - 纯碳能量球（WALK/TRAVEL_MILEAGE，eventCode 为空）走 POST /carEnergy/collectedAllEnergy，
  *     body: { energyIds: [id] }（逐个收集；字段名是 energyIds，不是 accountId/ids）。
  *     实测成功（H5 前端 JS index-94ba24e9.js 的 te 函数确认）。
@@ -389,11 +392,12 @@ async function collectCarbon(token, energyItems) {
   return { success: true, _okCount: okList.length, _failCount: failList.length, _failMsgs: failList.map(x => x.r.msg || JSON.stringify(x.r).slice(0, 60)) };
 }
 
-// 收集能量达标碎片（ENERGY_STANDARDS 等，eventCode 非空但不是 batchApply 活动编码，如 z_green_active）：
-// H5 前端 JS（index-94ba24e9.js 的 te 函数）：非 WALK/TRAVEL 走 collectIntegralZeekrBalls
-// body: { energyIds: [id] }（实测可收集 z_green_active，无需 riskToken）
+// 收集「其余全部球」（通用通道）：ENERGY_STANDARDS 达标碎片（z_green_active 等，有 eventCode），
+// 以及 SIGN_CONTINUOUS_7_LOTTERY 七日连签抽奖球（=锦鲤泡泡，eventCode 为空）等所有非 WALK/TRAVEL 球。
+// H5 前端 JS（index-94ba24e9.js 的 te 函数）：非 WALK/TRAVEL 一律走 collectIntegralZeekrBalls
+// body: { energyIds: [id] }（无需 riskToken；2026-11-25 实测可收走锦鲤泡泡）
 async function collectIntegral(token, energyItems) {
-  const items = (energyItems || []).filter(x => x && x.eventCode);
+  const items = (energyItems || []).filter(x => x && x.id);
   const okList = [], failList = [];
   for (const it of items) {
     const r = await request('POST', 'https://api-gw-toc.zeekrlife.com/zeekrlife-mp-val/v1/carEnergy/collectIntegralZeekrBalls',
@@ -438,13 +442,15 @@ async function runAccount(acc) {
   if (id) {
     const uc = await getUncollected(token, id);
     if (uc.success && uc.data && uc.data.uncollectedVal && uc.data.uncollectedVal.length) {
-      // 分类：
-      // - EASY_DEBRIS/DIFFICULT_DEBRIS 任务碎片 → batchApply（活动编码存在）
-      // - ENERGY_STANDARDS 等达标碎片（z_green_active）→ collectIntegralZeekrBalls
-      // - WALK/TRAVEL_MILEAGE 碳能量 → collectedAllEnergy
+      // 分类（2026-11-25 实测修订：三分类必须全覆盖，否则出现漏网球一直飘着不收）：
+      // - EASY_DEBRIS/DIFFICULT_DEBRIS 任务碎片（有 eventCode）→ batchApply
+      // - WALK/TRAVEL_MILEAGE 碳能量（无 eventCode）→ collectedAllEnergy
+      // - 其余全部（ENERGY_STANDARDS 达标碎片、SIGN_CONTINUOUS_7_LOTTERY 七日连签抽奖球=
+      //   「锦鲤泡泡」，eventCode 为空，实测 collectIntegralZeekrBalls 一发收走）→ collectIntegralZeekrBalls
+      //   （H5 前端 te() 的非 WALK/TRAVEL 通道；新球类型若走错通道只会收集失败并在复查里报告，不会丢）
       const easy = uc.data.uncollectedVal.filter(x => x && x.eventCode && (x.sceneCode === 'EASY_DEBRIS' || x.sceneCode === 'DIFFICULT_DEBRIS'));
-      const integral = uc.data.uncollectedVal.filter(x => x && x.eventCode && !easy.includes(x));
       const carbon = uc.data.uncollectedVal.filter(x => x && !x.eventCode && (x.sceneCode === 'WALK' || x.sceneCode === 'TRAVEL_MILEAGE'));
+      const integral = uc.data.uncollectedVal.filter(x => x && !easy.includes(x) && !carbon.includes(x));
       if (!easy.length && !integral.length && !carbon.length) {
         lines.push('⚡ 能量球: 已全部收集');
       } else {
@@ -466,7 +472,7 @@ async function runAccount(acc) {
           const ci = await collectIntegral(token, integral);
           const ok = ci._okCount || 0;
           const failMsgs = (ci._failMsgs || []).filter(m => m && m.indexOf('已核销') === -1);
-          lines.push(ok ? `⚡ 达标碎片收取成功 ${ok} 项` : `⚡ 达标碎片无可收取`);
+          lines.push(ok ? `⚡ 能量球收取成功 ${ok} 项` : `⚡ 能量球无可收取`);
           if (failMsgs.length) lines.push(`  ⚠️ ${failMsgs.join('；')}`);
         }
         if (carbon.length) {
