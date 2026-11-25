@@ -98,6 +98,7 @@ const SKIP = new Set([
   'jd_code2url.js',      // 口令转链接（依赖第三方 nolan 服务，且为按需工具非定时任务）
   'jd_wxtoken_m.js',     // 微信 token 获取（需要 wx app）
   'jd_CheckCK.js',       // 通过青龙 API 管理 CK（ql.getEnvs/DisableCk），圈X 无对应接口；改用原生版 jd_ckcheck_qx.js
+  'jd_fish_help.js',     // 金融捕鱼助力：用户决定不跑捕鱼任务，不进 QX 订阅
   // 依赖库（不是任务，打包出来会被误加进任务清单定时执行）
   'jdCookie.js',
   'sendNotify.js',
@@ -313,8 +314,9 @@ function generateConf(scripts) {
     '# 订阅: https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/jd_scripts.conf',
     '',
     '[rewrite_local]',
-    '# 抓取 pt_key + pt_pin + wskey，每分钟同账号最多推1次',
-    '^https?://(api\\.m\\.jd\\.com|sh\\.jd\\.com)/ url script-request-header https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/qx_jd_all.js',
+    '# 抓 pt_key+pt_pin+wskey + 完整设备指纹（UA 含 ep / uuid / x-api-eid-token / wg-sdk-token / d_brand / d_model / osVersion / build / clientVersion / area / lng / lat），推 ntfy 给 235 青龙喂 JDOOOK',
+    '# ⚠️ 必须 script-request-body：uuid/eid/机型在请求体里，script-request-header 抓不到 body',
+    '^https?://(api\\.m\\.jd\\.com|sh\\.jd\\.com)/ url script-request-body https://raw.githubusercontent.com/xiaotaiye88/qx-jd-scripts/master/qx_jd_all.js?v=' + SCRIPT_VER,
     ...EXTRA_REWRITES,
     '',
     '[task_local]',

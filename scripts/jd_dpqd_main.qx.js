@@ -1,7 +1,7 @@
 /*
  * 批量店铺签到（活动查询） (jd_dpqd_main.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-11-15 14:02:22 由 tools/build-all.js 自动生成
+ * 构建: 2026-11-25 06:50:43 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 1 1 1 1 *
