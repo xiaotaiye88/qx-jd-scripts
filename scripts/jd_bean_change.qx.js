@@ -1,7 +1,7 @@
 /*
  * 京东资产统计 (jd_bean_change.js) — QX 打包版
  * 上游: https://github.com/6dylan6/jdpro
- * 构建: 2026-11-26 06:37:20 由 tools/build-all.js 自动生成
+ * 构建: 2026-11-26 07:04:13 由 tools/build-all.js 自动生成
  * 仓库: https://github.com/xiaotaiye88/qx-jd-scripts
  *
  * cron: 28 8,21 * * *

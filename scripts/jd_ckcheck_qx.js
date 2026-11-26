@@ -220,18 +220,32 @@ function cleanupInvalid(invalidPins) {
   const definitive = results.filter(r => !r.valid && r.definitive);
   const netErr = results.filter(r => r.netError);
 
-  // ntfy 外推：逐账号推完整指纹行（设备字段取 jd_dev_<pin>；缺字段退回短 Cookie）
-  // 235 监听端按消息体识别短行/整行并直写对应 env，逐账号一条最稳（合并多行会被按首 pin 误解析）
+  // ntfy 外推：优先完整指纹行(设备字段取 jd_dev_<pin>)，缺字段退回短 Cookie。
+  // 合并成多行消息按 ntfy 单条 4KB 上限分片发，235 监听端已支持按行拆分逐账号处理——
+  // 省发布配额（ntfy.sh 免费档每日 250/访客 IP，两台手机共享额度）
   const ntfyUrl = getNtfyUrl();
   if (ntfyUrl && valid.length) {
     let full = 0, short = 0;
+    const lines = [];
     for (const r of valid) {
       const pin = r.pin ? decodeURIComponent(r.pin.replace(/^pt_pin=|;$/g, '')) : '';
       const line = fullDeviceLine(r.cookie, devCache(pin));
-      if (line) { await pushNtfy(ntfyUrl, line, 'JD_device_' + (pin || r.label)); full++; }
-      else { await pushNtfy(ntfyUrl, r.cookie, 'JD_cookie_' + (pin || r.label)); short++; }
+      if (line) { lines.push(line); full++; }
+      else { lines.push(r.cookie); short++; }
     }
-    console.log('[CK检测] ntfy 外推完成: 完整指纹 ' + full + ' 条, 短 Cookie ' + short + ' 条');
+    const chunks = [];
+    let cur = [], curLen = 0;
+    for (const ln of lines) {
+      if (curLen + ln.length + 1 > 3800 && cur.length) { chunks.push(cur.join('\n')); cur = []; curLen = 0; }
+      cur.push(ln);
+      curLen += ln.length + 1;
+    }
+    if (cur.length) chunks.push(cur.join('\n'));
+    console.log('[CK检测] 合并推送: 完整指纹 ' + full + ' 条, 短 Cookie ' + short + ' 条, 共 ' + chunks.length + ' 条消息');
+    for (let i = 0; i < chunks.length; i++) {
+      const title = chunks.length === 1 ? 'JD_ckcheck' : 'JD_ckcheck (' + (i + 1) + '/' + chunks.length + ')';
+      await pushNtfy(ntfyUrl, chunks[i], title);
+    }
   } else if (!ntfyUrl && valid.length) {
     console.log('[CK检测] 未配置 JD_NTFY_TOPIC，跳过 ntfy 外推');
   }
