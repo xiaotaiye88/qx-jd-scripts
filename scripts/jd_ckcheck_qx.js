@@ -86,6 +86,37 @@ function checkOne(ck) {
   });
 }
 
+// 完整指纹行：设备字段来自 qx_jd_all.js 写入的 jd_dev_<pin>（BoxJs），拼成 235/JDOOOK 认的整行。
+// 缺任一必需字段(ua/uuid/eid/机型四件套/系统/版本)则返回空串，调用方退回短 Cookie。
+function devCache(pin) {
+  try { return JSON.parse(readPref('jd_dev_' + pin) || '{}') || {}; } catch (e) { return {}; }
+}
+function fullDeviceLine(cookie, dev) {
+  if (!dev) return '';
+  const g = k => String(dev[k] == null ? '' : dev[k]).replace(/^\s+|\s+$/g, '');
+  const need = ['ua', 'uuid', 'eid', 'd_brand', 'd_model', 'osVersion', 'build', 'clientVersion'];
+  if (need.some(k => !g(k))) return '';
+  const add = (name, v) => (v ? name + '=' + v : '');
+  return [
+    add('pt_key', (cookie.match(/pt_key=([^;]+)/) || [])[1]),
+    add('pt_pin', (cookie.match(/pt_pin=([^;]+)/) || [])[1]),
+    add('User-Agent', g('ua')),
+    add('uuid', g('uuid')),
+    add('x-api-eid-token', g('eid')),
+    add('wg-sdk-token', g('wg')),
+    add('d_brand', g('d_brand')),
+    add('d_model', g('d_model')),
+    add('osVersion', g('osVersion')),
+    add('build', g('build')),
+    add('screen', g('screen')),
+    add('clientVersion', g('clientVersion')),
+    add('partner', g('partner')),
+    add('area', g('area')),
+    add('lng', g('lng')),
+    add('lat', g('lat')),
+  ].filter(Boolean).join(';') + ';';
+}
+
 // ntfy 推送地址：BoxJs 配置 JD_NTFY_TOPIC（与 qx_jd_all.js 共用同一开关），不配置返回 null
 function getNtfyUrl() {
   const topic = readPref('JD_NTFY_TOPIC');
@@ -189,25 +220,18 @@ function cleanupInvalid(invalidPins) {
   const definitive = results.filter(r => !r.valid && r.definitive);
   const netErr = results.filter(r => r.netError);
 
-  // ntfy 外推：全部有效 Cookie 合并为一条消息（每行一个账号），超 3800 字符按 ntfy 单条 4KB 上限分片
+  // ntfy 外推：逐账号推完整指纹行（设备字段取 jd_dev_<pin>；缺字段退回短 Cookie）
+  // 235 监听端按消息体识别短行/整行并直写对应 env，逐账号一条最稳（合并多行会被按首 pin 误解析）
   const ntfyUrl = getNtfyUrl();
   if (ntfyUrl && valid.length) {
-    console.log('[CK检测] 合并推送 ' + valid.length + ' 个有效 Cookie 到 ntfy...');
-    const chunks = [];
-    let cur = [], curLen = 0;
+    let full = 0, short = 0;
     for (const r of valid) {
-      if (curLen + r.cookie.length + 1 > 3800 && cur.length) { chunks.push(cur.join('\n')); cur = []; curLen = 0; }
-      cur.push(r.cookie);
-      curLen += r.cookie.length + 1;
+      const pin = r.pin ? decodeURIComponent(r.pin.replace(/^pt_pin=|;$/g, '')) : '';
+      const line = fullDeviceLine(r.cookie, devCache(pin));
+      if (line) { await pushNtfy(ntfyUrl, line, 'JD_device_' + (pin || r.label)); full++; }
+      else { await pushNtfy(ntfyUrl, r.cookie, 'JD_cookie_' + (pin || r.label)); short++; }
     }
-    if (cur.length) chunks.push(cur.join('\n'));
-    for (let i = 0; i < chunks.length; i++) {
-      const firstPin = valid[0].pin ? decodeURIComponent(valid[0].pin.replace(/^pt_pin=|;$/g, '')) : '';
-      const title = chunks.length === 1
-        ? 'JD_cookie_' + (valid.length === 1 ? (firstPin || valid[0].label) : 'x' + valid.length)
-        : 'JD_cookie_x' + valid.length + ' (' + (i + 1) + '/' + chunks.length + ')';
-      await pushNtfy(ntfyUrl, chunks[i], title);
-    }
+    console.log('[CK检测] ntfy 外推完成: 完整指纹 ' + full + ' 条, 短 Cookie ' + short + ' 条');
   } else if (!ntfyUrl && valid.length) {
     console.log('[CK检测] 未配置 JD_NTFY_TOPIC，跳过 ntfy 外推');
   }
