@@ -184,6 +184,11 @@ function tttValues(text) {
 }
 
 // 校验规则与 JDOOOK account_common 一致（密文/假值会被剔掉）
+function quant(v) {
+  // toFixed(4)：恒带小数点（JDOOOK 的 lng/lat 正则要求 \d+\.\d+，"117" 会被丢弃）
+  var n = parseFloat(v);
+  return isFinite(n) ? n.toFixed(4) : String(v);
+}
 function valid(key, v) {
   v = String(v || "");
   if (!v) return false;
@@ -273,6 +278,10 @@ function collect(req) {
     if (!f.osVersion && !dev0.osVersion) { var om = ua.match(/iPhone OS (\d+)_/); if (om) f.osVersion = om[1] + ".0"; }
     if (!f.d_brand && !dev0.d_brand && ua.indexOf("jdapp;iPhone;") === 0) f.d_brand = "iPhone";
   }
+  // 经纬度量化到 4 位小数（≈11 米）：GPS 抖动不再改变内容签名，
+  // 否则人不动也天天推新行，ntfy 免费档每日 250 条/访客 IP 会被打爆（实测 205/天）
+  if (f.lng) f.lng = quant(f.lng);
+  if (f.lat) f.lat = quant(f.lat);
   return f;
 }
 
@@ -342,14 +351,21 @@ function hash(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h * 33
 // ==================== ntfy 异步推送 ====================
 var pending = 0, ntfyUrl = null;
 function checkDone() { pending--; if (pending <= 0) $done({}); }
-function pushNtfy(body, title) {
+function pushNtfy(body, title, onOk) {
   if (!ntfyUrl) return;
   pending++;
   var done = false, timer = setTimeout(function () { finish(false, "timeout 8s"); }, 8000);
   function finish(ok, info) {
     if (done) return; done = true;
     if (timer) try { clearTimeout(timer); } catch (_) {}
-    log(ok ? ("推送成功: " + title) : ("推送失败: " + info));
+    if (ok) {
+      log("推送成功: " + title);
+      if (onOk) try { onOk(); } catch (_) {}
+    } else {
+      log("推送失败: " + info);
+      // 失败记时间戳，主流程 10 分钟冷却；pin 从标题恢复(JD_device_/JD_cookie_/JD_wskey_ 前缀)
+      pset(String(nowMs()), "jd_pushfail_" + title.split("_").slice(1).join("_"));
+    }
     checkDone();
   }
   var opts = { url: ntfyUrl, headers: { "Content-Type": "text/plain", "Title": title }, body: body };
@@ -412,12 +428,15 @@ function pushNtfy(body, title) {
     var now1 = nowMs(), ckLock = parseInt(pget("jd_cklock_" + pin)) || 0;
     var sig = hash(ckLine);
     var lastSig = pget("jd_devsig_" + pin);
+    var failAt = parseInt(pget("jd_pushfail_" + pin)) || 0;
     // 完整行内容没变就不重复推（省 ntfy 流量，235 还有 10 分钟去重）
     if (isFull && sig === lastSig) {
       log("完整指纹未变化，跳过: " + pin);
+    } else if (now1 - failAt < 600000) {
+      // 上次推送失败，10 分钟冷却防止失败循环轰 ntfy（限流/断网时保命）
+      log("上次推送失败(10 分钟冷却)，跳过: " + pin);
     } else if (now1 - ckLock > 30000) {
       pset(String(now1), "jd_cklock_" + pin);
-      pset(sig, "jd_devsig_" + pin);
       needCk = true;
       doNotify("JD 设备指纹", pin, isFull ? "完整行 " + ckLine.length + "B" : "短 Cookie");
       log((isFull ? "推送完整指纹" : "推送短CK") + ": " + pin);
@@ -447,6 +466,9 @@ function pushNtfy(body, title) {
   ntfyUrl = getNtfyUrl();
   if (!ntfyUrl) { log("未配置 JD_NTFY_TOPIC，仅 BoxJs 本地存储"); $done({}); return; }
 
-  if (needCk) pushNtfy(ckLine, (isFull ? "JD_device_" : "JD_cookie_") + pin);
+  if (needCk) pushNtfy(ckLine, (isFull ? "JD_device_" : "JD_cookie_") + pin, function () {
+    // 完整行只有推送成功才记签名；失败不记，30 秒锁过后自动重试
+    if (isFull) pset(sig, "jd_devsig_" + pin);
+  });
   if (needWs) pushNtfy(wsLine, "JD_wskey_" + wp);
 })();
